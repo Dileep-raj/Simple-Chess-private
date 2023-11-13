@@ -1,0 +1,109 @@
+package com.drdedd.simplechess_temp;
+
+import android.annotation.SuppressLint;
+import android.icu.text.SimpleDateFormat;
+import android.os.Environment;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.drdedd.simplechess_temp.GameData.ChessState;
+import com.drdedd.simplechess_temp.pieces.Piece;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Date;
+
+public class PGN implements Serializable {
+    private StringBuilder pgn;
+    int moveCount;
+    private final String event, date;
+    private String white, black;
+    private String result;
+    private ChessState gameState;
+
+    PGN(StringBuilder pgn, int moveCount, String event, String white, String black, String date, ChessState gameState) {
+        this.pgn = pgn;
+        this.moveCount = moveCount;
+        this.event = event;
+        this.white = white;
+        this.black = black;
+        this.date = date;
+        this.gameState = gameState;
+    }
+
+    public String exportPGN() throws IOException {
+        final String TAG = "PGN";
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
+        String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Simple chess/";
+        if (new File(dir).mkdir()) Log.d(TAG, "exportPGN:" + dir + " Folder created");
+        File file = new File(dir, "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn");
+        if (file.createNewFile()) Log.d(TAG, "exportPGN: File created successfully");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        objectOutputStream.writeChars(toString());
+        objectOutputStream.close();
+        fileOutputStream.close();
+        return dir;
+    }
+
+    public void addToPGN(Piece piece) {
+        moveCount++;
+        if (moveCount % 2 == 1) pgn.append(moveCount / 2 + 1).append(". ");
+        pgn.append(piece.getPosition()).append(" ");
+        switch (GameActivity.getGameState()) {
+            case WHITETOPLAY:
+            case BLACKTOPLAY:
+                result = "*";
+                break;
+            case RESIGN:
+            case CHECKMATE:
+                result = "";
+                break;
+            case STALEMATE:
+            case DRAW:
+                result = "1/2-1/2";
+                break;
+        }
+    }
+
+    public void resetPGN() {
+        moveCount = 0;
+        pgn = new StringBuilder();
+        result = "*";
+    }
+
+    public String getPGN() {
+        return String.valueOf(pgn);
+    }
+
+    public ChessState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(ChessState gameState) {
+        this.gameState = gameState;
+    }
+
+    public void setWhiteBlack(String white, String black) {
+        this.white = white;
+        this.black = black;
+    }
+
+    public String getWhite() {
+        return white;
+    }
+
+    public String getBlack() {
+        return black;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[Event \"" + event + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
+    }
+}

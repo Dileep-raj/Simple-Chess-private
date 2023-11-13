@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">simplechess_temp</string>
+    <string name="grey">Grey</string>
+    <string name="green">Green</string>
+    <string name="brown">Brown</string>
+    <string name="select_board_theme">Select board theme</string>
+    <string name="nav_open">Open</string>
+    <string name="nav_close">Close</string>
+    <string name="reset_board">Reset Board</string>
+    <string name="save_amp_exit"><![CDATA[Save & Exit]]></string>
+    <string name="save_pgn">Save PGN</string>
+    <string name="copy_pgn">Copy PGN</string>
+    <string name="export_pgn">Export PGN</string>
+    <string name="full_screen">Full Screen</string>
+</resources>
