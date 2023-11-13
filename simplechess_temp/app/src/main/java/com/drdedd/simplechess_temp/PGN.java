@@ -2,10 +2,12 @@ package com.drdedd.simplechess_temp;
 
 import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.pieces.Piece;
@@ -15,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class PGN implements Serializable {
@@ -35,17 +38,23 @@ public class PGN implements Serializable {
         this.gameState = gameState;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @SuppressLint("SimpleDateFormat")
     public String exportPGN() throws IOException {
         final String TAG = "PGN";
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
+
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
         String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Simple chess/";
+        Log.d(TAG, "exportPGN: Directory: " + dir);
+
         if (new File(dir).mkdir()) Log.d(TAG, "exportPGN:" + dir + " Folder created");
+
         File file = new File(dir, "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn");
+
         if (file.createNewFile()) Log.d(TAG, "exportPGN: File created successfully");
         FileOutputStream fileOutputStream = new FileOutputStream(file);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeChars(toString());
-        objectOutputStream.close();
+//      Convert String to UTF-8 CharacterSet
+        fileOutputStream.write(toString().getBytes(StandardCharsets.UTF_8));
         fileOutputStream.close();
         return dir;
     }

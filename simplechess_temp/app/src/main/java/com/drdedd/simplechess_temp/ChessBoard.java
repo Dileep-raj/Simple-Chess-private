@@ -69,10 +69,8 @@ public class ChessBoard extends View {
     private void loadBitmaps() {
         for (Integer id : resIDs) {
             Bitmap b = BitmapFactory.decodeResource(getResources(), id);
-            Log.d(TAG, "loadBitmaps: id: " + id + " Bitmap is null : " + (b == null));
             bitmaps.put(id, b);
         }
-        Log.d(TAG, "loadBitmaps: Bitmaps loaded");
     }
 
     public void setTheme(BoardTheme theme) {

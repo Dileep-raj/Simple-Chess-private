@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.HorizontalScrollView;
@@ -31,7 +32,7 @@ import java.util.Objects;
 
 public class GameActivity extends AppCompatActivity implements BoardInterface {
 
-    //    private final String TAG = "GameActivity";
+    private final String TAG = "GameActivity";
     private final String boardFile = "boardFile", PGNFile = "PGNFile";
     private String white = "White", black = "Black";
     private PGN pgn;
@@ -45,15 +46,19 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
 
-        Objects.requireNonNull(getSupportActionBar()).hide();   //Hide the action bar
-        View decorView = getWindow().getDecorView();            // Hide the status bar.
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        dataManager = new DataManager(this);
+        if (dataManager.isFullScreen()) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            Objects.requireNonNull(getSupportActionBar()).hide();   //Hide the action bar
+            View decorView = getWindow().getDecorView();            // Hide the status bar.
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+        }
 
         chessBoard = findViewById(R.id.chessBoard);
         PGN_textView = findViewById(R.id.pgn_textview);
@@ -65,29 +70,28 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_save_exit).setOnClickListener(view -> save_Exit());
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
+        }
 
         initializeData();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("SimpleDateFormat")
     private void initializeData() {
-        dataManager = new DataManager(this);
 
         white = dataManager.getWhite();
         black = dataManager.getBlack();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            pgnDate = new SimpleDateFormat("dd/MM/yyyy");
-        }
+        pgnDate = new SimpleDateFormat("dd/MM/yyyy");
 
         boardModel = (BoardModel) dataManager.readObject(boardFile);
         pgn = (PGN) dataManager.readObject(PGNFile);
 
         if (boardModel == null || pgn == null) {
             boardModel = new BoardModel();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
-            }
+            pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
         }
 
         gameState = pgn.getGameState();         //Get previous state from PGN
@@ -139,10 +143,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void reset(View v) {
+    public void reset() {
         boardModel.resetBoard();        //Reset the board to initial state
         pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
-//        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
+        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         pgn.resetPGN();
         gameState = pgn.getGameState();
         PGN_textView.setText(pgn.getPGN());
@@ -150,16 +154,20 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         chessBoard.invalidate();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void exportPGN() {
-        if (checkCallingOrSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             try {
                 String dir = pgn.exportPGN();
                 Toast.makeText(this, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
-                Toast.makeText(this, "File not saved", Toast.LENGTH_SHORT).show();
-//                Log.d(TAG, "exportPGN: " + file + "\n" + e);
+                Toast.makeText(this, "File not saved!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "exportPGN: \n" + e);
             }
-        } else ActivityCompat.requestPermissions(this, permissions, 0);
+        } else {
+            Toast.makeText(this, "Write permission is required to export PGN file", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this, permissions, 0);
+        }
     }
 
     public void copyPGN() {

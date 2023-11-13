@@ -27,13 +27,13 @@ public class DataManager {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
     private final HashMap<String, BoardTheme> themesMap = new HashMap<>();
+    public final BoardTheme[] themes = BoardTheme.get();
 
     public DataManager(Context context) {
         this.context = context;
 //        sharedPreferences = context.getSharedPreferences("GameData", Context.MODE_PRIVATE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
-        BoardTheme[] themes = BoardTheme.values();
         for (BoardTheme theme : themes)
             themesMap.put(theme.toString(), theme);
     }
