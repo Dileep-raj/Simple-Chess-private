@@ -7,8 +7,8 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import java.util.HashSet;
 
 public class Bishop extends Piece {
-    public Bishop(Player player, int row, int col, int absolutePosition, int resID) {
-        super(player, row, col, absolutePosition, Rank.BISHOP, resID);
+    public Bishop(Player player, int row, int col,  int resID) {
+        super(player, row, col,  Rank.BISHOP, resID);
     }
 
     @Override
@@ -68,5 +68,10 @@ public class Bishop extends Piece {
             } else if (tempPiece.getPlayerType() == getPlayerType()) break;
         }
         return legalMoves;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return moved;
     }
 }

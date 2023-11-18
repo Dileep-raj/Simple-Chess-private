@@ -27,7 +27,7 @@ public class DataManager {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
     private final HashMap<String, BoardTheme> themesMap = new HashMap<>();
-    public final BoardTheme[] themes = BoardTheme.get();
+    public final BoardTheme[] themes = BoardTheme.getValues();
 
     public DataManager(Context context) {
         this.context = context;

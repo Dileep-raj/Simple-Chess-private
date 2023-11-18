@@ -3,6 +3,7 @@ package com.drdedd.simplechess_temp;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -19,12 +20,11 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
-    private final HashMap<String, BoardTheme> themesMap = new HashMap<>();
     private DataManager dataManager;
     private EditText whiteName, blackName;
     private SwitchCompat fullScreenToggle;
     private Spinner themeSpinnerMenu;
-    private final BoardTheme[] themes = BoardTheme.get();
+    private final BoardTheme[] themes = BoardTheme.getValues();
     boolean fullScreen;
     private String[] items;
 
@@ -36,12 +36,15 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         dataManager = new DataManager(this);
+        fullScreen = dataManager.isFullScreen();
+
+        if (fullScreen)
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         items = new String[themes.length];
         int i = 0;
-        for (BoardTheme theme : themes) {
-            items[i] = theme.toString();
-            themesMap.put(items[i++], theme);
-        }
+        for (BoardTheme theme : themes)
+            items[i++] = theme.toString();
 
         themeSpinnerMenu = findViewById(R.id.themeSpinnerMenu);
         whiteName = findViewById(R.id.whiteName);
@@ -54,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         themeSpinnerMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                dataManager.setBoardTheme(Objects.requireNonNull(themesMap.get(items[position])));
+                dataManager.setBoardTheme(Objects.requireNonNull(themes[position]));
             }
 
             @Override
@@ -64,13 +67,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void initialize() {
-        fullScreen = dataManager.isFullScreen();
+
         fullScreenToggle.setChecked(fullScreen);
-        PGN pgn = (PGN) dataManager.readObject("PGNFile");
-        if (pgn != null) {
-            whiteName.setText(pgn.getWhite());
-            blackName.setText(pgn.getBlack());
-        }
+        whiteName.setText(dataManager.getWhite());
+        blackName.setText(dataManager.getBlack());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         themeSpinnerMenu.setAdapter(adapter);
         themeSpinnerMenu.setSelection(dataManager.getBoardTheme().ordinal());

@@ -7,8 +7,8 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import java.util.HashSet;
 
 public class Knight extends Piece {
-    public Knight(Player player, int row, int col, int absolutePosition, int resID) {
-        super(player, row, col, absolutePosition, Rank.KNIGHT, resID);
+    public Knight(Player player, int row, int col, int resID) {
+        super(player, row, col,  Rank.KNIGHT, resID);
     }
 
     @Override
@@ -46,5 +46,10 @@ public class Knight extends Piece {
                 }
             }
         return legalMoves;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return moved;
     }
 }

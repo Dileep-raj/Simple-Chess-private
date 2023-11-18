@@ -9,11 +9,10 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import java.util.HashSet;
 
 public class Pawn extends Piece {
-    int direction;
-    boolean moved;
+    final int direction;
 
-    public Pawn(Player player, int row, int col, int absolutePosition, int resID) {
-        super(player, row, col, absolutePosition, Rank.PAWN, resID);
+    public Pawn(Player player, int row, int col, int resID) {
+        super(player, row, col, Rank.PAWN, resID);
         direction = this.isWhite() ? 1 : -1;
         moved = false;
     }
@@ -42,6 +41,11 @@ public class Pawn extends Piece {
                 legalMoves.add((row + direction) * 8 + col + i);
         }
         return legalMoves;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return moved;
     }
 
     @Override

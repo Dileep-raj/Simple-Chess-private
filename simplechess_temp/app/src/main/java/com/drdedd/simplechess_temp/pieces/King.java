@@ -8,16 +8,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class King extends Piece {
-    boolean moved;
 
-    public King(Player player, int row, int col, int absolutePosition, int resID) {
-        super(player, row, col, absolutePosition, Rank.KING, resID);
+    private boolean castled;
+
+    public King(Player player, int row, int col, int resID) {
+        super(player, row, col, Rank.KING, resID);
         moved = false;
+        castled = false;
     }
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
+//        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
+        return getLegalMoves(boardInterface).contains(row * 8 + col);
+
     }
 
     @Override
@@ -41,7 +45,55 @@ public class King extends Piece {
                 else if (tempPiece.getPlayerType() != getPlayerType())
                     legalMoves.add(newRow * 8 + newCol);
             }
+        if (canShortCastle(boardInterface)) legalMoves.add(getRow() * 8 + getCol() + 2);
+        if (canLongCastle(boardInterface)) legalMoves.add(getRow() * 8 + getCol() - 2);
         return legalMoves;
     }
 
+    public boolean canShortCastle(BoardInterface boardInterface) {
+        if (!hasMoved()) {
+            for (int i = getCol() + 1; i < 7; i++)
+                if (boardInterface.pieceAt(getRow(), i) != null) return false;
+            Piece rook = boardInterface.pieceAt(getRow(), 7);
+            if (rook != null) if (rook.getRank() == Rank.ROOK) return !rook.hasMoved();
+        }
+        return false;
+    }
+
+    public boolean canLongCastle(BoardInterface boardInterface) {
+        if (!hasMoved()) {
+            for (int i = getCol() - 1; i > 0; i--)
+                if (boardInterface.pieceAt(getRow(), i) != null) return false;
+            Piece rook = boardInterface.pieceAt(getRow(), 0);
+            if (rook != null) if (rook.getRank() == Rank.ROOK) return !rook.hasMoved();
+        }
+        return false;
+    }
+
+    public void longCastle(BoardInterface boardInterface) {
+        Piece rook = boardInterface.pieceAt(getRow(), 0);
+        if (rook.getRank() == Rank.ROOK) {
+            rook.moveTo(getRow(), 3);
+            this.moveTo(getRow(), getCol() - 2);
+        }
+        castled = true;
+    }
+
+    public void shortCastle(BoardInterface boardInterface) {
+        Piece rook = boardInterface.pieceAt(getRow(), 7);
+        if (rook.getRank() == Rank.ROOK) {
+            rook.moveTo(getRow(), 5);
+            this.moveTo(getRow(), getCol() + 2);
+        }
+        castled = true;
+    }
+
+    public boolean isCastled() {
+        return castled;
+    }
+
+    @Override
+    public boolean hasMoved() {
+        return moved;
+    }
 }

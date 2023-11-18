@@ -115,4 +115,12 @@ public class PGN implements Serializable {
     public String toString() {
         return "[Event \"" + event + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
     }
+
+    public String toFEN(String boardFEN) {
+        StringBuilder FEN = new StringBuilder(boardFEN);
+        if (GameActivity.getGameState() == ChessState.WHITETOPLAY) FEN.append(" w");
+        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY) FEN.append(" b");
+        FEN.append(" - - ");
+        return String.valueOf(FEN);
+    }
 }

@@ -7,12 +7,9 @@ import com.drdedd.simplechess_temp.pieces.Piece;
 public interface BoardInterface {
     /**
      * Searches for piece at given row and column
-     *
-     * @return Piece or null
+     *  0 < Row & Column < 7
+     * @return Piece | null
      */
-//    Piece pieceAt(int row, int col);
-
-
     Piece pieceAt(int row, int col);
 
     /**

@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -30,8 +28,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
 
-public class GameActivity extends AppCompatActivity implements BoardInterface {
 
+@SuppressLint({"SimpleDateFormat", "NewApi"})
+public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
     private final String boardFile = "boardFile", PGNFile = "PGNFile";
     private String white = "White", black = "Black";
@@ -46,7 +45,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,17 +68,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_save_exit).setOnClickListener(view -> save_Exit());
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
-        }
+        findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
 
         initializeData();
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) if (extras.getBoolean("newGame")) reset();
+
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressLint("SimpleDateFormat")
     private void initializeData() {
-
         white = dataManager.getWhite();
         black = dataManager.getBlack();
 
@@ -123,7 +119,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
-        chessBoard.invalidate();
+        if (result) chessBoard.invalidate();
         return result;
     }
 
@@ -142,7 +138,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public void reset() {
         boardModel.resetBoard();        //Reset the board to initial state
         pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
@@ -154,7 +150,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         chessBoard.invalidate();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+
     public void exportPGN() {
         if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             try {

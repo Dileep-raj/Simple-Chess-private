@@ -7,10 +7,10 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import java.util.HashSet;
 
 public class Rook extends Piece {
-    boolean moved;
 
-    public Rook(Player player, int row, int col, int absolutePosition, int resID) {
-        super(player, row, col, absolutePosition, Rank.ROOK, resID);
+
+    public Rook(Player player, int row, int col,int resID) {
+        super(player, row, col, Rank.ROOK, resID);
         moved = false;
     }
 
@@ -73,5 +73,9 @@ public class Rook extends Piece {
             } else if (tempPiece.getPlayerType() == getPlayerType()) break;
         }
         return legalMoves;
+    }
+
+    public boolean hasMoved() {
+        return moved;
     }
 }

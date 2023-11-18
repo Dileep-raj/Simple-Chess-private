@@ -9,15 +9,15 @@ import java.util.Set;
 
 public abstract class Piece implements Serializable {
     private final Player player;
-    private int col, row, absolutePosition;
+    private int col, row;
     private final int resID;
     private final Rank rank;
+    protected boolean moved;
 
-    protected Piece(Player player, int row, int col, int absolutePosition, Rank rank, int resID) {
+    protected Piece(Player player, int row, int col, Rank rank, int resID) {
         this.player = player;
         this.row = row;
         this.col = col;
-        this.absolutePosition = absolutePosition;
         this.rank = rank;
         this.resID = resID;
     }
@@ -32,10 +32,6 @@ public abstract class Piece implements Serializable {
 
     public int getRow() {
         return row;
-    }
-
-    public int getAbsolutePosition() {
-        return absolutePosition;
     }
 
     public Rank getRank() {
@@ -66,13 +62,9 @@ public abstract class Piece implements Serializable {
     }
 
     public void moveTo(int row, int col) {
-        moveTo(col + row * 8);
         this.row = row;
         this.col = col;
-    }
-
-    public void moveTo(int absolutePosition) {
-        this.absolutePosition = absolutePosition;
+        this.moved = true;
     }
 
     /**
@@ -95,5 +87,7 @@ public abstract class Piece implements Serializable {
      * @return Set of legal positions of the piece
      */
     public abstract Set<Integer> getLegalMoves(BoardInterface boardInterface);
+
+    public abstract boolean hasMoved();
 
 }

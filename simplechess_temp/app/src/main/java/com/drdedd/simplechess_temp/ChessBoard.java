@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
+import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.util.HashMap;
@@ -106,8 +108,10 @@ public class ChessBoard extends View {
                 }
         Piece piece = boardInterface.pieceAt(fromRow, fromCol);
         if (piece != null) {
-            Bitmap b = bitmaps.get(piece.getResID());
-            canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
+            if (isPieceToPlay(piece)) {
+                Bitmap b = bitmaps.get(piece.getResID());
+                canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
+            } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
         }
         drawGuides(canvas);
     }
@@ -185,7 +189,9 @@ public class ChessBoard extends View {
         if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7)
             return false;
         if (!isPieceToPlay(movingPiece)) return false;
+
         Piece toPiece = boardInterface.pieceAt(toRow, toCol);
+        Log.d(TAG, "Piece: Type: " + movingPiece.getPlayerType() + " Rank: " + movingPiece.getRank());
         if (toPiece != null)
             if (movingPiece.getPlayerType() != toPiece.getPlayerType() && movingPiece.canCapture(boardInterface, toPiece)) {
                 movingPiece.moveTo(toRow, toCol);
@@ -194,6 +200,24 @@ public class ChessBoard extends View {
                 boardInterface.addToPGN(movingPiece);
                 return true;
             }
+        if (toPiece == null && movingPiece.getRank() == Rank.KING) {
+            King king = (King) movingPiece;
+
+            if (!king.isCastled() && king.canMoveTo(boardInterface, toRow, toCol)) {
+                if (toCol - fromCol == -2 && king.canLongCastle(boardInterface)) {
+                    king.longCastle(boardInterface);
+                    Log.d(TAG, "Castle: " + king.getPlayerType() + " King O-O-O");
+                    boardInterface.addToPGN(movingPiece);
+                    return true;
+                }
+                if (toCol - fromCol == 2 && king.canShortCastle(boardInterface)) {
+                    king.shortCastle(boardInterface);
+                    Log.d(TAG, "Castle: " + king.getPlayerType() + " King O-O");
+                    boardInterface.addToPGN(movingPiece);
+                    return true;
+                }
+            }
+        }
         if (toPiece == null && movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
             movingPiece.moveTo(toRow, toCol);
             Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
