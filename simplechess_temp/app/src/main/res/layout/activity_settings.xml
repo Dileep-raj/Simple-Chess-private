@@ -62,7 +62,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.3"
                 android:labelFor="@+id/whiteName"
                 android:text="White"
                 android:textAlignment="center"
@@ -73,7 +73,7 @@
                 android:id="@+id/whiteName"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_weight="3"
+                android:layout_weight="0.7"
                 android:autofillHints="White"
                 android:background="@null"
                 android:inputType="textPersonName"
@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.3"
                 android:labelFor="@+id/blackName"
                 android:text="Black"
                 android:textAlignment="center"
@@ -107,7 +107,7 @@
                 android:id="@+id/blackName"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
-                android:layout_weight="3"
+                android:layout_weight="0.7"
                 android:autofillHints="Black"
                 android:background="@null"
                 android:inputType="textPersonName"
@@ -161,5 +161,27 @@
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ThemeMenuLayout" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/cheatToggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Cheat Mode"
+        android:textColor="@color/light_grey_text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider3" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

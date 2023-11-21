@@ -14,14 +14,12 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
-import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.IOException;
@@ -32,7 +30,7 @@ import java.util.Objects;
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
-    private final String boardFile = "boardFile", PGNFile = "PGNFile";
+    public final String boardFile = "boardFile", PGNFile = "PGNFile";
     private String white = "White", black = "Black";
     private PGN pgn;
     private BoardModel boardModel = null;
@@ -44,6 +42,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
+    private boolean newGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,10 +69,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
         findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
 
-        initializeData();
         Bundle extras = getIntent().getExtras();
-        if (extras != null) if (extras.getBoolean("newGame")) reset();
-
+        if (extras != null) newGame = extras.getBoolean("newGame");
+        initializeData();
+//        if (newGame) reset();
     }
 
     private void initializeData() {
@@ -82,12 +81,14 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
         pgnDate = new SimpleDateFormat("dd/MM/yyyy");
 
-        boardModel = (BoardModel) dataManager.readObject(boardFile);
-        pgn = (PGN) dataManager.readObject(PGNFile);
+        if (!newGame) {
+            boardModel = (BoardModel) dataManager.readObject(boardFile);
+            pgn = (PGN) dataManager.readObject(PGNFile);
+        }
 
         if (boardModel == null || pgn == null) {
             boardModel = new BoardModel();
-            pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
+            pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
         }
 
         gameState = pgn.getGameState();         //Get previous state from PGN
@@ -118,9 +119,28 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
-        if (result) chessBoard.invalidate();
-        return result;
+        if (dataManager.cheatModeEnabled()) {
+            Piece movingPiece = boardModel.pieceAt(fromRow, fromCol);
+            if (movingPiece != null) {
+                Piece toPiece = boardModel.pieceAt(toRow, toCol);
+                if (toPiece != null) {
+                    if (toPiece.getPlayerType() == movingPiece.getPlayerType()) return false;
+                    else boardModel.removePiece(toPiece);
+                }
+                movingPiece.moveTo(toRow, toCol);
+                chessBoard.invalidate();
+                return true;
+            }
+            return false;
+        } else {
+            boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
+            if (result) {
+                toggleGameState();
+                chessBoard.invalidate();
+                horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+            }
+            return result;
+        }
     }
 
     public void save_Exit() {
@@ -130,18 +150,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         finish();
     }
 
-    public void addToPGN(Piece piece) {
-        pgn.addToPGN(piece);
-        toggleGameState();
+    public void addToPGN(Piece piece, String move) {
+        pgn.addToPGN(piece, move);
         pgn.setGameState(gameState);
         PGN_textView.setText(pgn.getPGN());
-        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
     }
-
 
     public void reset() {
         boardModel.resetBoard();        //Reset the board to initial state
-        pgn = new PGN(new StringBuilder(), 0, "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
+        pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
         Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         pgn.resetPGN();
         gameState = pgn.getGameState();
@@ -149,7 +166,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         showGameStateView();
         chessBoard.invalidate();
     }
-
 
     public void exportPGN() {
         if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
@@ -170,11 +186,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("PGN", pgn.toString());
         clipboard.setPrimaryClip(clip);
-    }
-
-    @Override
-    public boolean isPieceToPlay(@NonNull Piece piece) {
-        return piece.getPlayerType() == Player.WHITE && getGameState() == ChessState.WHITETOPLAY || piece.getPlayerType() == Player.BLACK && getGameState() == ChessState.BLACKTOPLAY;
     }
 
     @Override

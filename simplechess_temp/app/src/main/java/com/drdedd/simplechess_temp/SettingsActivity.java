@@ -16,16 +16,15 @@ import androidx.core.app.NavUtils;
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
     private DataManager dataManager;
     private EditText whiteName, blackName;
-    private SwitchCompat fullScreenToggle;
+    private SwitchCompat fullScreenToggle, cheatToggle;
     private Spinner themeSpinnerMenu;
     private final BoardTheme[] themes = BoardTheme.getValues();
-    boolean fullScreen;
+    private boolean fullScreen, cheatMode;
     private String[] items;
 
     @Override
@@ -37,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         dataManager = new DataManager(this);
         fullScreen = dataManager.isFullScreen();
+        cheatMode = dataManager.cheatModeEnabled();
 
         if (fullScreen)
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -50,10 +50,12 @@ public class SettingsActivity extends AppCompatActivity {
         whiteName = findViewById(R.id.whiteName);
         blackName = findViewById(R.id.blackName);
         fullScreenToggle = findViewById(R.id.fullScreenToggle);
+        cheatToggle = findViewById(R.id.cheatToggle);
 
         initialize();
 
         fullScreenToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> fullScreen = isChecked);
+        cheatToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> cheatMode = isChecked);
         themeSpinnerMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -67,20 +69,25 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void initialize() {
-
         fullScreenToggle.setChecked(fullScreen);
         whiteName.setText(dataManager.getWhite());
         blackName.setText(dataManager.getBlack());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         themeSpinnerMenu.setAdapter(adapter);
         themeSpinnerMenu.setSelection(dataManager.getBoardTheme().ordinal());
+        cheatToggle.setChecked(cheatMode);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dataManager.setFullScreen(fullScreen);
-        dataManager.saveWhiteBlack(whiteName.getText().toString(), blackName.getText().toString());
+        String white = whiteName.getText().toString().trim();
+        if (white.equals("")) white = "White";
+        String black = blackName.getText().toString().trim();
+        if (black.equals("")) black = "Black";
+        dataManager.saveWhiteBlack(white, black);
+        dataManager.setCheatMode(cheatMode);
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class King extends Piece {
-
     private boolean castled;
 
     public King(Player player, int row, int col, int resID) {
@@ -21,7 +20,6 @@ public class King extends Piece {
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
 //        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
         return getLegalMoves(boardInterface).contains(row * 8 + col);
-
     }
 
     @Override

@@ -15,22 +15,21 @@ import com.drdedd.simplechess_temp.pieces.Piece;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 public class PGN implements Serializable {
     private StringBuilder pgn;
-    int moveCount;
+    private int moveCount;
     private final String event, date;
     private String white, black;
     private String result;
     private ChessState gameState;
 
-    PGN(StringBuilder pgn, int moveCount, String event, String white, String black, String date, ChessState gameState) {
+    PGN(StringBuilder pgn, String event, String white, String black, String date, ChessState gameState) {
         this.pgn = pgn;
-        this.moveCount = moveCount;
+        this.moveCount = 0;
         this.event = event;
         this.white = white;
         this.black = black;
@@ -59,10 +58,13 @@ public class PGN implements Serializable {
         return dir;
     }
 
-    public void addToPGN(Piece piece) {
+    public void addToPGN(Piece piece, String move) {
         moveCount++;
         if (moveCount % 2 == 1) pgn.append(moveCount / 2 + 1).append(". ");
-        pgn.append(piece.getPosition()).append(" ");
+
+        if (move.equals("")) pgn.append(piece.getPosition()).append(" ");
+        else pgn.append(move).append(" ");
+
         switch (GameActivity.getGameState()) {
             case WHITETOPLAY:
             case BLACKTOPLAY:

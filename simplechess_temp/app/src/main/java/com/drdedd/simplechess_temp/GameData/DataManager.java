@@ -21,7 +21,7 @@ import java.util.HashMap;
  * A class to store and retrieve the game data using files or SharedPreferences
  */
 public class DataManager {
-    private final String TAG = "DataManager";
+    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile";
     private File file;
     private final Context context;
     private final SharedPreferences sharedPreferences;
@@ -31,7 +31,6 @@ public class DataManager {
 
     public DataManager(Context context) {
         this.context = context;
-//        sharedPreferences = context.getSharedPreferences("GameData", Context.MODE_PRIVATE);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
         for (BoardTheme theme : themes)
@@ -44,7 +43,6 @@ public class DataManager {
             FileInputStream fileInputStream = context.openFileInput(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Object obj = objectInputStream.readObject();
-            if (file.createNewFile()) Log.d(TAG, "File created successfully");
             objectInputStream.close();
             fileInputStream.close();
             return obj;
@@ -114,5 +112,14 @@ public class DataManager {
 
     public boolean isFullScreen() {
         return sharedPreferences.getBoolean("fullScreen", false);
+    }
+
+    public void setCheatMode(boolean cheatMode) {
+        editor.putBoolean("cheatMode", cheatMode);
+        editor.commit();
+    }
+
+    public boolean cheatModeEnabled() {
+        return sharedPreferences.getBoolean("cheatMode", false);
     }
 }
