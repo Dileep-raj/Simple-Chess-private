@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,7 +21,6 @@ import java.util.HashMap;
  */
 public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile";
-    private File file;
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -38,7 +36,6 @@ public class DataManager {
     }
 
     public Object readObject(String fileName) {
-        file = new File(context.getFilesDir(), fileName);
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName);
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
@@ -61,7 +58,6 @@ public class DataManager {
 
     public void saveObject(String fileName, Object obj) {
         try {
-            if (file.createNewFile()) Log.d(TAG, "File created successfully");
             FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(obj);

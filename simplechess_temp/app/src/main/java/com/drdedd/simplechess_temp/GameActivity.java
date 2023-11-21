@@ -72,7 +72,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         Bundle extras = getIntent().getExtras();
         if (extras != null) newGame = extras.getBoolean("newGame");
         initializeData();
-//        if (newGame) reset();
+        if (newGame) reset();
     }
 
     private void initializeData() {
