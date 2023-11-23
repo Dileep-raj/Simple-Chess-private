@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 public class Knight extends Piece {
     public Knight(Player player, int row, int col, int resID) {
-        super(player, row, col,  Rank.KNIGHT, resID);
+        super(player, row, col, Rank.KNIGHT, resID);
     }
 
     @Override
@@ -46,10 +46,5 @@ public class Knight extends Piece {
                 }
             }
         return legalMoves;
-    }
-
-    @Override
-    public boolean hasMoved() {
-        return moved;
     }
 }

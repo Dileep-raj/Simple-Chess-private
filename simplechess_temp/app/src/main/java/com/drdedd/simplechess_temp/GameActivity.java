@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.IOException;
@@ -64,14 +66,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         whiteName = findViewById(R.id.whiteNameTV);
         blackName = findViewById(R.id.blackNameTV);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) newGame = extras.getBoolean("newGame");
+        initializeData();
+
         findViewById(R.id.btn_save_exit).setOnClickListener(view -> save_Exit());
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
         findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) newGame = extras.getBoolean("newGame");
-        initializeData();
         if (newGame) reset();
     }
 
@@ -99,8 +102,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         whiteName.setText(white);
         blackName.setText(black);
 
-        chessBoard.setTheme(theme);
         chessBoard.boardInterface = this;
+        chessBoard.boardModel = boardModel;
+        chessBoard.setTheme(theme);
 
         showGameStateView();
 
@@ -191,6 +195,25 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     @Override
     public void removePiece(Piece piece) {
         boardModel.removePiece(piece);
+    }
+
+    @Override
+    public void promote(Pawn pawn, int row, int col) {
+        PromoteDialog promoteDialog = new PromoteDialog(this);
+        promoteDialog.show();
+
+
+//        Set image buttons as respective color pieces
+        promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.QUEEN.toString()));
+        promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.ROOK.toString()));
+        promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.BISHOP.toString()));
+        promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.KNIGHT.toString()));
+
+//        Invalidate chess board to show new promoted piece
+        promoteDialog.setOnDismissListener(dialogInterface -> {
+            boardModel.promote(pawn, promoteDialog.getRank(), row, col);
+            chessBoard.invalidate();
+        });
     }
 
 //    public void setGameState(ChessState gameState) { GameActivity.gameState = gameState; }

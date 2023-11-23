@@ -13,17 +13,29 @@ import com.drdedd.simplechess_temp.pieces.Queen;
 import com.drdedd.simplechess_temp.pieces.Rook;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 public class BoardModel implements Serializable {
     /**
      * Set of all the pieces on the board
      */
-    private final Set<Piece> pieces = new HashSet<>();
+    private final HashSet<Piece> pieces = new HashSet<>();
+    public final HashMap<String, Integer> resIDs = new HashMap<>();
+    private static King whiteKing, blackKing;
+//    private final String TAG = "BoardModel";
 
     BoardModel() {
         resetBoard();
+        resIDs.put(Player.WHITE + Rank.QUEEN.toString(), R.drawable.qw);
+        resIDs.put(Player.WHITE + Rank.ROOK.toString(), R.drawable.rw);
+        resIDs.put(Player.WHITE + Rank.BISHOP.toString(), R.drawable.bw);
+        resIDs.put(Player.WHITE + Rank.KNIGHT.toString(), R.drawable.nw);
+
+        resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qb);
+        resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rb);
+        resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bb);
+        resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nb);
     }
 
     /**
@@ -47,9 +59,12 @@ public class BoardModel implements Serializable {
         }
 
 //        King and Queen pieces
-        addPiece(new King(Player.WHITE, 0, 4, R.drawable.kw));
+        whiteKing = new King(Player.WHITE, 0, 4, R.drawable.kw);
+        blackKing = new King(Player.BLACK, 7, 4, R.drawable.kb);
+
+        addPiece(whiteKing);
         addPiece(new Queen(Player.WHITE, 0, 3, R.drawable.qw));
-        addPiece(new King(Player.BLACK, 7, 4, R.drawable.kb));
+        addPiece(blackKing);
         addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb));
 
 //        Pawn pieces
@@ -57,6 +72,14 @@ public class BoardModel implements Serializable {
             addPiece(new Pawn(Player.WHITE, 1, i, R.drawable.pw));
             addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb));
         }
+    }
+
+    public static King getBlackKing() {
+        return blackKing;
+    }
+
+    public static King getWhiteKing() {
+        return whiteKing;
     }
 
     public Piece pieceAt(int row, int col) {
@@ -72,6 +95,24 @@ public class BoardModel implements Serializable {
 
     public void addPiece(Piece piece) {
         pieces.add(piece);
+    }
+
+    public void promote(Piece pawn, Rank rank, int row, int col) {
+        Piece piece = null;
+        if (rank == Rank.QUEEN)
+            piece = new Queen(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.QUEEN.toString()));
+        if (rank == Rank.ROOK)
+            piece = new Rook(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.ROOK.toString()));
+        if (rank == Rank.BISHOP)
+            piece = new Bishop(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.BISHOP.toString()));
+        if (rank == Rank.KNIGHT)
+            piece = new Knight(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.KNIGHT.toString()));
+
+        if (piece != null) {
+            addPiece(piece);
+//            Log.d(TAG, "promote: Promoted " + pawn.getPosition().charAt(1) + " file pawn to " + piece.getRank());
+        }
+        removePiece(pawn);
     }
 
     @NonNull

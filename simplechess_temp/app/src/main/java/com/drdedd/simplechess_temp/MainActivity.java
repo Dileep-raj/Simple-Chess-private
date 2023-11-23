@@ -1,6 +1,5 @@
 package com.drdedd.simplechess_temp;
 
-
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;

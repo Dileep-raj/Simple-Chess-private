@@ -9,16 +9,21 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import java.util.HashSet;
 
 public class Pawn extends Piece {
-    final int direction;
+    public final int direction, lastRank;
 
     public Pawn(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.PAWN, resID);
         direction = this.isWhite() ? 1 : -1;
+
+        if (player == Player.BLACK) lastRank = 0;
+        else lastRank = 7;
+
         moved = false;
     }
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, @NonNull Piece capturingPiece) {
+        if (capturingPiece.getRank() == Rank.KING) return false;
         if (Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1) {
             moved = true;
             return true;
@@ -44,15 +49,14 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean hasMoved() {
-        return moved;
-    }
-
-    @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
         if (getCol() == col)
             if ((row - getRow()) * direction == 1 || (!moved && (row - getRow()) * direction == 2 && boardInterface.pieceAt(row - direction, col) == null))
                 return moved = true;
         return false;
+    }
+
+    public boolean canPromote() {
+        return row + direction == lastRank;
     }
 }

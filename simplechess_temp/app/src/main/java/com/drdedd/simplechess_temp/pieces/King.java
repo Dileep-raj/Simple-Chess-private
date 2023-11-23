@@ -24,6 +24,7 @@ public class King extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
+        if (capturingPiece.getRank() == Rank.KING) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 
@@ -49,40 +50,36 @@ public class King extends Piece {
     }
 
     public boolean canShortCastle(BoardInterface boardInterface) {
-        if (!hasMoved()) {
+        if (hasNotMoved() && !castled) {
             for (int i = getCol() + 1; i < 7; i++)
                 if (boardInterface.pieceAt(getRow(), i) != null) return false;
             Piece rook = boardInterface.pieceAt(getRow(), 7);
-            if (rook != null) if (rook.getRank() == Rank.ROOK) return !rook.hasMoved();
+            if (rook != null) if (rook.getRank() == Rank.ROOK) return rook.hasNotMoved();
         }
         return false;
     }
 
     public boolean canLongCastle(BoardInterface boardInterface) {
-        if (!hasMoved()) {
+        if (hasNotMoved() && !castled) {
             for (int i = getCol() - 1; i > 0; i--)
                 if (boardInterface.pieceAt(getRow(), i) != null) return false;
             Piece rook = boardInterface.pieceAt(getRow(), 0);
-            if (rook != null) if (rook.getRank() == Rank.ROOK) return !rook.hasMoved();
+            if (rook != null) if (rook.getRank() == Rank.ROOK) return rook.hasNotMoved();
         }
         return false;
     }
 
     public void longCastle(BoardInterface boardInterface) {
         Piece rook = boardInterface.pieceAt(getRow(), 0);
-        if (rook.getRank() == Rank.ROOK) {
-            rook.moveTo(getRow(), 3);
-            this.moveTo(getRow(), getCol() - 2);
-        }
+        rook.moveTo(getRow(), 3);
+        this.moveTo(getRow(), getCol() - 2);
         castled = true;
     }
 
     public void shortCastle(BoardInterface boardInterface) {
         Piece rook = boardInterface.pieceAt(getRow(), 7);
-        if (rook.getRank() == Rank.ROOK) {
-            rook.moveTo(getRow(), 5);
-            this.moveTo(getRow(), getCol() + 2);
-        }
+        rook.moveTo(getRow(), 5);
+        this.moveTo(getRow(), getCol() + 2);
         castled = true;
     }
 
@@ -90,8 +87,8 @@ public class King extends Piece {
         return castled;
     }
 
-    @Override
-    public boolean hasMoved() {
-        return moved;
+    public boolean isChecked(BoardInterface boardInterface) {
+
+        return false;
     }
 }

@@ -9,7 +9,7 @@ import java.util.HashSet;
 public class Rook extends Piece {
 
 
-    public Rook(Player player, int row, int col,int resID) {
+    public Rook(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.ROOK, resID);
         moved = false;
     }
@@ -22,6 +22,7 @@ public class Rook extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
+        if (capturingPiece.getRank() == Rank.KING) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 
@@ -73,9 +74,5 @@ public class Rook extends Piece {
             } else if (tempPiece.getPlayerType() == getPlayerType()) break;
         }
         return legalMoves;
-    }
-
-    public boolean hasMoved() {
-        return moved;
     }
 }

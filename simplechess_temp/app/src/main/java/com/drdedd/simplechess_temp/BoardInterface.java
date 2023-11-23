@@ -2,6 +2,7 @@ package com.drdedd.simplechess_temp;
 
 import androidx.annotation.NonNull;
 
+import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 public interface BoardInterface {
@@ -23,4 +24,6 @@ public interface BoardInterface {
     void addToPGN(Piece piece, String move);
 
     void removePiece(Piece piece);
+
+    void promote(Pawn pawn, int row, int col);
 }

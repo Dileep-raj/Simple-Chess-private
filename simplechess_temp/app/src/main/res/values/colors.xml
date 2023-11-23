@@ -10,4 +10,6 @@
     <color name="dark_bg">#222222</color>
     <color name="light_bg">#DDDDDD</color>
     <color name="light_grey_text">#CCCCCC</color>
+    <color name="pieceSelection">#228B22</color>
+    <color name="checkedSquare">#FF2222</color>
 </resources>

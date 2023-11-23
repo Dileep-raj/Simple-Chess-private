@@ -8,7 +8,7 @@ import java.util.HashSet;
 
 public class Queen extends Piece {
     public Queen(Player player, int row, int col, int resID) {
-        super(player, row, col,  Rank.QUEEN, resID);
+        super(player, row, col, Rank.QUEEN, resID);
     }
 
     @Override
@@ -19,6 +19,7 @@ public class Queen extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
+        if (capturingPiece.getRank() == Rank.KING) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 
@@ -117,10 +118,5 @@ public class Queen extends Piece {
             } else if (tempPiece.getPlayerType() == getPlayerType()) break;
         }
         return legalMoves;
-    }
-
-    @Override
-    public boolean hasMoved() {
-        return moved;
     }
 }

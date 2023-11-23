@@ -9,7 +9,7 @@ import java.util.Set;
 
 public abstract class Piece implements Serializable {
     private final Player player;
-    private int col, row;
+    protected int col, row;
     private final int resID;
     private final Rank rank;
     protected boolean moved;
@@ -88,6 +88,12 @@ public abstract class Piece implements Serializable {
      */
     public abstract Set<Integer> getLegalMoves(BoardInterface boardInterface);
 
-    public abstract boolean hasMoved();
+    public boolean hasNotMoved() {
+        return !moved;
+    }
 
+    public Player opponentPlayer() {
+        if (this.player == Player.WHITE) return Player.BLACK;
+        return Player.WHITE;
+    }
 }
