@@ -24,7 +24,7 @@ public class King extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
-        if (capturingPiece.getRank() == Rank.KING) return false;
+        if (capturingPiece.isKing()) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 

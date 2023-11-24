@@ -18,6 +18,7 @@ public class Knight extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
+        if (capturingPiece.isKing()) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 

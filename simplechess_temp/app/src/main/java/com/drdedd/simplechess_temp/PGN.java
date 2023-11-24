@@ -22,15 +22,15 @@ import java.util.Date;
 public class PGN implements Serializable {
     private StringBuilder pgn;
     private int moveCount;
-    private final String event, date;
+    private final String app, date;
     private String white, black;
     private String result;
     private ChessState gameState;
 
-    PGN(StringBuilder pgn, String event, String white, String black, String date, ChessState gameState) {
+    PGN(StringBuilder pgn, String app, String white, String black, String date, ChessState gameState) {
         this.pgn = pgn;
         this.moveCount = 0;
-        this.event = event;
+        this.app = app;
         this.white = white;
         this.black = black;
         this.date = date;
@@ -115,7 +115,7 @@ public class PGN implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "[Event \"" + event + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
+        return "[App \"" + app + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
     }
 
     public String toFEN(String boardFEN) {

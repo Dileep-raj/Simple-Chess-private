@@ -23,7 +23,7 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, @NonNull Piece capturingPiece) {
-        if (capturingPiece.getRank() == Rank.KING) return false;
+        if (capturingPiece.isKing()) return false;
         if (Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1) {
             moved = true;
             return true;
@@ -57,6 +57,6 @@ public class Pawn extends Piece {
     }
 
     public boolean canPromote() {
-        return row + direction == lastRank;
+        return row == lastRank;
     }
 }

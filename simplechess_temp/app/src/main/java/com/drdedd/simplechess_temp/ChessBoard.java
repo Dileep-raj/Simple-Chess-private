@@ -223,17 +223,15 @@ public class ChessBoard extends View {
         Log.d(TAG, "Piece: Type: " + movingPiece.getPlayer() + " Rank: " + movingPiece.getRank());
         if (toPiece != null)
             if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
+                movingPiece.moveTo(toRow, toCol);
+                boardInterface.removePiece(toPiece);
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canPromote()) {
                         boardInterface.promote(pawn, toRow, toCol);
-                        boardInterface.removePiece(toPiece);
-                        boardInterface.addToPGN(movingPiece, "Promotion");
                         return true;
                     }
                 }
-                movingPiece.moveTo(toRow, toCol);
-                boardInterface.removePiece(toPiece);
                 Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
                 boardInterface.addToPGN(movingPiece, "");
                 return true;
@@ -258,20 +256,20 @@ public class ChessBoard extends View {
             }
             if (movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
                 Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+                movingPiece.moveTo(toRow, toCol);
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canPromote()) {
                         boardInterface.promote(pawn, toRow, toCol);
-                        boardInterface.addToPGN(movingPiece, "Promotion");
                         return true;
                     }
                 }
-                movingPiece.moveTo(toRow, toCol);
                 boardInterface.addToPGN(movingPiece, "");
                 return true;
             }
         }
         Log.d(TAG, "Move invalid: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+        previousSelectedPiece = null;
         return false;   //Default return false
     }
 

@@ -105,4 +105,8 @@ public abstract class Piece implements Serializable {
         } else if (piece.getPlayer() != getPlayer()) legalMoves.add(row * 8 + col);
         return false;
     }
+
+    public boolean isKing() {
+        return rank == Rank.KING;
+    }
 }

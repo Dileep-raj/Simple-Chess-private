@@ -97,7 +97,7 @@ public class BoardModel implements Serializable {
         pieces.add(piece);
     }
 
-    public void promote(Piece pawn, Rank rank, int row, int col) {
+    public Piece promote(Piece pawn, Rank rank, int row, int col) {
         Piece piece = null;
         if (rank == Rank.QUEEN)
             piece = new Queen(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()));
@@ -113,6 +113,7 @@ public class BoardModel implements Serializable {
 //            Log.d(TAG, "promote: Promoted " + pawn.getPosition().charAt(1) + " file pawn to " + piece.getRank());
         }
         removePiece(pawn);
+        return piece;
     }
 
     @NonNull

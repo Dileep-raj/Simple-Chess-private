@@ -82,7 +82,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         white = dataManager.getWhite();
         black = dataManager.getBlack();
 
-        pgnDate = new SimpleDateFormat("dd/MM/yyyy");
+        pgnDate = new SimpleDateFormat("yyyy.MM.dd");
 
         if (!newGame) {
             boardModel = (BoardModel) dataManager.readObject(boardFile);
@@ -203,7 +203,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         PromoteDialog promoteDialog = new PromoteDialog(this);
         promoteDialog.show();
 
-
 //        Set image buttons as respective color pieces
         promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()));
         promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.ROOK.toString()));
@@ -212,7 +211,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
 //        Invalidate chess board to show new promoted piece
         promoteDialog.setOnDismissListener(dialogInterface -> {
-            boardModel.promote(pawn, promoteDialog.getRank(), row, col);
+            Piece piece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
+//            addToPGN(pawn, pawn.getPosition().charAt(1) + "=" + piece.getPosition().substring(1) + piece.getPosition().charAt(0));
+            addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0));
             chessBoard.invalidate();
         });
     }
