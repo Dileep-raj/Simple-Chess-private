@@ -79,11 +79,11 @@ public class ChessBoard extends View {
         if (!cheatMode) drawGuides(canvas);
 
         if (previousSelectedPiece != null)
-            highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.color.pieceSelection);
+            highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.color.piece_selection);
 //        if (whiteKing.isChecked(boardInterface))
-//            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.color.checkedSquare);
+//            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.color.checked_square);
 //        if (blackKing.isChecked(boardInterface))
-//            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.color.checkedSquare);
+//            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.color.checked_square);
     }
 
     private void highlightSquare(Canvas canvas, int row, int col, int color) {
@@ -105,8 +105,8 @@ public class ChessBoard extends View {
     }
 
     public void setTheme(BoardTheme theme) {
-        lightColor = theme.getLightColor();
-        darkColor = theme.getDarkColor();
+        lightColor = res.getColor(theme.getLightColor());
+        darkColor = res.getColor(theme.getDarkColor());
     }
 
     private void drawBoard(Canvas canvas) {

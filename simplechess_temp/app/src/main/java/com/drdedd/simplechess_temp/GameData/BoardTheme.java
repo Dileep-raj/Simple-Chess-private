@@ -1,12 +1,15 @@
 package com.drdedd.simplechess_temp.GameData;
 
-import android.graphics.Color;
+import com.drdedd.simplechess_temp.R;
 
 /**
  * Board color for light and dark squares
  */
 public enum BoardTheme {
-    GREY(Color.rgb(233, 233, 233), Color.rgb(102, 102, 102)), GREEN(Color.rgb(238, 238, 210), Color.rgb(118, 150, 86)), BROWN(Color.rgb(241, 204, 162), Color.rgb(170, 107, 64));
+    GREY(R.color.theme_grey_light, R.color.theme_grey_dark),
+    GREEN(R.color.theme_green_light, R.color.theme_green_dark),
+    BROWN(R.color.theme_brown_light, R.color.theme_brown_dark),
+    BLUE(R.color.theme_blue_light, R.color.theme_blue_dark);
     final int lightColor, darkColor;
     public static final BoardTheme[] values = values();
 
