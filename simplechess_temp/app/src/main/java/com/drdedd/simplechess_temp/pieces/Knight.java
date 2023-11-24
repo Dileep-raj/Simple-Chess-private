@@ -24,26 +24,18 @@ public class Knight extends Piece {
     @Override
     public HashSet<Integer> getLegalMoves(BoardInterface boardInterface) {
         HashSet<Integer> legalMoves = new HashSet<>();
-        Piece tempPiece;
         int row = getRow(), col = getCol(), i, j, newRow, newCol;
         for (i = -1; i <= 1; i += 2)
             for (j = -2; j <= 2; j += 4) {
                 newRow = row + i;
                 newCol = col + j;
-                if (newCol >= 0 && newCol <= 7 && newRow >= 0 && newRow <= 7) {
-                    tempPiece = boardInterface.pieceAt(newRow, newCol);
-                    if (tempPiece == null) legalMoves.add(newRow * 8 + newCol);
-                    else if (tempPiece.getPlayerType() != getPlayerType())
-                        legalMoves.add(newRow * 8 + newCol);
-                }
+                if (newCol >= 0 && newCol <= 7 && newRow >= 0 && newRow <= 7)
+                    addMove(legalMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
+
                 newRow = row + j;
                 newCol = col + i;
-                if (newCol >= 0 && newCol <= 7 && newRow >= 0 && newRow <= 7) {
-                    tempPiece = boardInterface.pieceAt(newRow, newCol);
-                    if (tempPiece == null) legalMoves.add(newRow * 8 + newCol);
-                    else if (tempPiece.getPlayerType() != getPlayerType())
-                        legalMoves.add(newRow * 8 + newCol);
-                }
+                if (newCol >= 0 && newCol <= 7 && newRow >= 0 && newRow <= 7)
+                    addMove(legalMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
             }
         return legalMoves;
     }

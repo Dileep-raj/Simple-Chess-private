@@ -128,7 +128,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             if (movingPiece != null) {
                 Piece toPiece = boardModel.pieceAt(toRow, toCol);
                 if (toPiece != null) {
-                    if (toPiece.getPlayerType() == movingPiece.getPlayerType()) return false;
+                    if (toPiece.getPlayer() == movingPiece.getPlayer()) return false;
                     else boardModel.removePiece(toPiece);
                 }
                 movingPiece.moveTo(toRow, toCol);
@@ -140,6 +140,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
             if (result) {
                 toggleGameState();
+                pgn.setGameState(gameState);
                 chessBoard.invalidate();
                 horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
             }
@@ -156,7 +157,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     public void addToPGN(Piece piece, String move) {
         pgn.addToPGN(piece, move);
-        pgn.setGameState(gameState);
+//        pgn.setGameState(gameState);
         PGN_textView.setText(pgn.getPGN());
     }
 
@@ -204,10 +205,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
 
 //        Set image buttons as respective color pieces
-        promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.QUEEN.toString()));
-        promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.ROOK.toString()));
-        promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.BISHOP.toString()));
-        promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayerType() + Rank.KNIGHT.toString()));
+        promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()));
+        promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.ROOK.toString()));
+        promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString()));
+        promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString()));
 
 //        Invalidate chess board to show new promoted piece
         promoteDialog.setOnDismissListener(dialogInterface -> {

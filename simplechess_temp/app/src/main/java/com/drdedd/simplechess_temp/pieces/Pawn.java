@@ -42,7 +42,7 @@ public class Pawn extends Piece {
         }
         for (i = -1; i <= 1; i += 2) {
             Piece tempPiece = boardInterface.pieceAt(row + direction, col + i);
-            if (tempPiece != null) if (tempPiece.getPlayerType() != getPlayerType())
+            if (tempPiece != null) if (tempPiece.getPlayer() != getPlayer())
                 legalMoves.add((row + direction) * 8 + col + i);
         }
         return legalMoves;

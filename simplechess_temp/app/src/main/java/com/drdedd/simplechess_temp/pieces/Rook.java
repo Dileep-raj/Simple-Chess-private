@@ -22,7 +22,7 @@ public class Rook extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
-        if (capturingPiece.getRank() == Rank.KING) return false;
+//        if (capturingPiece.getRank() == Rank.KING) return false;
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 
@@ -30,49 +30,18 @@ public class Rook extends Piece {
     public HashSet<Integer> getLegalMoves(BoardInterface boardInterface) {
         HashSet<Integer> legalMoves = new HashSet<>();
         int i, j;
-        Piece tempPiece;
 //        Column top
-        for (i = getRow() + 1, j = getCol(); i < 8; i++) {
-            tempPiece = boardInterface.pieceAt(i, j);
-            if (tempPiece == null) {
-                legalMoves.add(i * 8 + j);
-            } else if (tempPiece.getPlayerType() != getPlayerType()) {
-                legalMoves.add(i * 8 + j);
-                break;
-            } else if (tempPiece.getPlayerType() == getPlayerType()) {
-                break;
-            }
-        }
+        for (i = getRow() + 1, j = getCol(); i < 8; i++)
+            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Column bottom
-        for (i = getRow() - 1, j = getCol(); i >= 0; i--) {
-            tempPiece = boardInterface.pieceAt(i, j);
-            if (tempPiece == null) {
-                legalMoves.add(i * 8 + j);
-            } else if (tempPiece.getPlayerType() != getPlayerType()) {
-                legalMoves.add(i * 8 + j);
-                break;
-            } else if (tempPiece.getPlayerType() == getPlayerType()) break;
-        }
+        for (i = getRow() - 1, j = getCol(); i >= 0; i--)
+            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Row right
-        for (i = getRow(), j = getCol() + 1; j < 8; j++) {
-            tempPiece = boardInterface.pieceAt(i, j);
-            if (tempPiece == null) {
-                legalMoves.add(i * 8 + j);
-            } else if (tempPiece.getPlayerType() != getPlayerType()) {
-                legalMoves.add(i * 8 + j);
-                break;
-            } else if (tempPiece.getPlayerType() == getPlayerType()) break;
-        }
+        for (i = getRow(), j = getCol() + 1; j < 8; j++)
+            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Row left
-        for (i = getRow(), j = getCol() - 1; j >= 0; j--) {
-            tempPiece = boardInterface.pieceAt(i, j);
-            if (tempPiece == null) {
-                legalMoves.add(i * 8 + j);
-            } else if (tempPiece.getPlayerType() != getPlayerType()) {
-                legalMoves.add(i * 8 + j);
-                break;
-            } else if (tempPiece.getPlayerType() == getPlayerType()) break;
-        }
+        for (i = getRow(), j = getCol() - 1; j >= 0; j--)
+            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
         return legalMoves;
     }
 }

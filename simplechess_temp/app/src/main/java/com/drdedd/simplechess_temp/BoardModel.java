@@ -100,13 +100,13 @@ public class BoardModel implements Serializable {
     public void promote(Piece pawn, Rank rank, int row, int col) {
         Piece piece = null;
         if (rank == Rank.QUEEN)
-            piece = new Queen(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.QUEEN.toString()));
+            piece = new Queen(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()));
         if (rank == Rank.ROOK)
-            piece = new Rook(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.ROOK.toString()));
+            piece = new Rook(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.ROOK.toString()));
         if (rank == Rank.BISHOP)
-            piece = new Bishop(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.BISHOP.toString()));
+            piece = new Bishop(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString()));
         if (rank == Rank.KNIGHT)
-            piece = new Knight(pawn.getPlayerType(), row, col, resIDs.get(pawn.getPlayerType() + Rank.KNIGHT.toString()));
+            piece = new Knight(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString()));
 
         if (piece != null) {
             addPiece(piece);

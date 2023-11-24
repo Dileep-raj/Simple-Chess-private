@@ -5,6 +5,7 @@ import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 public abstract class Piece implements Serializable {
@@ -22,7 +23,7 @@ public abstract class Piece implements Serializable {
         this.resID = resID;
     }
 
-    public Player getPlayerType() {
+    public Player getPlayer() {
         return player;
     }
 
@@ -92,8 +93,16 @@ public abstract class Piece implements Serializable {
         return !moved;
     }
 
-    public Player opponentPlayer() {
+    public Player getOpponentPlayer() {
         if (this.player == Player.WHITE) return Player.BLACK;
         return Player.WHITE;
+    }
+
+    public boolean addMove(HashSet<Integer> legalMoves, Piece piece, int row, int col) {
+        if (piece == null) {
+            legalMoves.add(row * 8 + col);
+            return true;
+        } else if (piece.getPlayer() != getPlayer()) legalMoves.add(row * 8 + col);
+        return false;
     }
 }
