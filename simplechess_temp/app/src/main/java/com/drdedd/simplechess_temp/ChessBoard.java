@@ -256,6 +256,17 @@ public class ChessBoard extends View {
             }
             if (movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
                 Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+                if (movingPiece.getRank() == Rank.PAWN) {
+                    Pawn pawn = (Pawn) movingPiece;
+                    if (pawn.canCaptureEnPassant()) {
+                        boardInterface.removePiece(BoardModel.enPassantPawn);
+                        movingPiece.moveTo(toRow, toCol);
+                        Log.d(TAG, "movePiece: enPassant Capture " + BoardModel.enPassantPawn.getPosition());
+                        boardInterface.addToPGN(pawn, "");
+                        return true;
+                    }
+                }
+
                 movingPiece.moveTo(toRow, toCol);
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;

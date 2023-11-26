@@ -23,6 +23,7 @@ public class BoardModel implements Serializable {
     private final HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private static King whiteKing, blackKing;
+    public static Pawn enPassantPawn = null;
 //    private final String TAG = "BoardModel";
 
     BoardModel() {

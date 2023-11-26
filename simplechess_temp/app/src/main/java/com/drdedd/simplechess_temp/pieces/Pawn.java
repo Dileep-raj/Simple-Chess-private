@@ -3,6 +3,7 @@ package com.drdedd.simplechess_temp.pieces;
 import androidx.annotation.NonNull;
 
 import com.drdedd.simplechess_temp.BoardInterface;
+import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
@@ -31,6 +32,13 @@ public class Pawn extends Piece {
         return false;
     }
 
+    public boolean canCaptureEnPassant() {
+        Pawn enPassantPawn = BoardModel.enPassantPawn;
+        if (enPassantPawn != null)
+            return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
+        return false;
+    }
+
     @Override
     public HashSet<Integer> getLegalMoves(BoardInterface boardInterface) {
         HashSet<Integer> legalMoves = new HashSet<>();
@@ -45,11 +53,14 @@ public class Pawn extends Piece {
             if (tempPiece != null) if (tempPiece.getPlayer() != getPlayer())
                 legalMoves.add((row + direction) * 8 + col + i);
         }
+        if (canCaptureEnPassant())
+            legalMoves.add(BoardModel.enPassantPawn.getCol() + (BoardModel.enPassantPawn.getRow() + direction) * 8);
         return legalMoves;
     }
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
+        if (Math.abs(col - getCol()) == 1) return canCaptureEnPassant();
         if (getCol() == col)
             if ((row - getRow()) * direction == 1 || (!moved && (row - getRow()) * direction == 2 && boardInterface.pieceAt(row - direction, col) == null))
                 return moved = true;

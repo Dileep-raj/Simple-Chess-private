@@ -142,7 +142,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 toggleGameState();
                 pgn.setGameState(gameState);
                 chessBoard.invalidate();
-                horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+                Piece movingPiece = pieceAt(toRow, toCol);
+                if (movingPiece != null)
+                    if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2) {
+                        BoardModel.enPassantPawn = (Pawn) movingPiece;
+                        Log.d(TAG, "movePiece: En-passant Pawn: " + movingPiece.getPosition());
+                    } else BoardModel.enPassantPawn = null;
             }
             return result;
         }
@@ -159,6 +164,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         pgn.addToPGN(piece, move);
 //        pgn.setGameState(gameState);
         PGN_textView.setText(pgn.getPGN());
+        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
     }
 
     public void reset() {
