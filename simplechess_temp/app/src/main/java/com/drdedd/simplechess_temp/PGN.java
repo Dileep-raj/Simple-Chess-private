@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class PGN implements Serializable {
     private StringBuilder pgn;
@@ -26,6 +27,8 @@ public class PGN implements Serializable {
     private String white, black;
     private String result;
     private ChessState gameState;
+    private final LinkedList<String> moves = new LinkedList<>();
+    private final String TAG = "PGN";
 
     PGN(StringBuilder pgn, String app, String white, String black, String date, ChessState gameState) {
         this.pgn = pgn;
@@ -35,6 +38,7 @@ public class PGN implements Serializable {
         this.black = black;
         this.date = date;
         this.gameState = gameState;
+        moves.clear();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -60,10 +64,17 @@ public class PGN implements Serializable {
 
     public void addToPGN(Piece piece, String move) {
         moveCount++;
-        if (moveCount % 2 == 1) pgn.append(moveCount / 2 + 1).append(". ");
+        if (moveCount % 2 == 1) {
+            pgn.append(moveCount / 2 + 1).append(". ");
+        }
 
-        if (move.equals("")) pgn.append(piece.getPosition()).append(" ");
-        else pgn.append(move).append(" ");
+        if (move.equals("")) {
+            pgn.append(piece.getPosition()).append(" ");
+            moves.addLast(piece.getPosition() + " ");
+        } else {
+            pgn.append(move).append(" ");
+            moves.addLast(move + " ");
+        }
 
         switch (GameActivity.getGameState()) {
             case WHITETOPLAY:
@@ -85,6 +96,15 @@ public class PGN implements Serializable {
         moveCount = 0;
         pgn = new StringBuilder();
         result = "*";
+    }
+
+    public String lastMove(){
+        return moves.peekLast();
+    }
+
+    public String removeLast() {
+        if (!moves.isEmpty()) return moves.removeLast();
+        return "";
     }
 
     public String getPGN() {
@@ -115,6 +135,12 @@ public class PGN implements Serializable {
     @NonNull
     @Override
     public String toString() {
+        StringBuilder finalPGN = new StringBuilder();
+        for (int i = 0; i < moves.size(); i++) {
+            if (i % 2 == 0) finalPGN.append(i / 2 + 1).append(". ");
+            finalPGN.append(moves.get(i)).append(" ");
+        }
+        Log.d(TAG, "toString: Final PGN: " + finalPGN);
         return "[App \"" + app + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
     }
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
  * A class to store and retrieve the game data using files or SharedPreferences
  */
 public class DataManager {
-    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile";
+    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -61,7 +61,7 @@ public class DataManager {
             FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
             objectOutputStream.writeObject(obj);
-            Log.d(TAG, fileName + " saved successfully");
+//            Log.d(TAG, fileName + " saved successfully");
             objectOutputStream.close();
             fileOutputStream.close();
         } catch (FileNotFoundException e) {

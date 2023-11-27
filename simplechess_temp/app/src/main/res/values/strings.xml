@@ -7,7 +7,7 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="reset_board">Reset Board</string>
-    <string name="save_amp_exit"><![CDATA[Save & Exit]]></string>
+    <string name="exit">Exit</string>
     <string name="save_pgn">Save PGN</string>
     <string name="copy_pgn">Copy PGN</string>
     <string name="export_pgn">Export PGN</string>

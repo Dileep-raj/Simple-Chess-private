@@ -1,5 +1,7 @@
 package com.drdedd.simplechess_temp.pieces;
 
+import androidx.annotation.NonNull;
+
 import com.drdedd.simplechess_temp.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
@@ -8,7 +10,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class Piece implements Serializable {
+public abstract class Piece implements Serializable, Cloneable {
     private final Player player;
     protected int col, row;
     private final int resID;
@@ -108,5 +110,15 @@ public abstract class Piece implements Serializable {
 
     public boolean isKing() {
         return rank == Rank.KING;
+    }
+
+    @NonNull
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

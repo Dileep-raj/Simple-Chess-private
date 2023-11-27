@@ -16,11 +16,11 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class BoardModel implements Serializable {
+public class BoardModel implements Serializable, Cloneable {
     /**
      * Set of all the pieces on the board
      */
-    private final HashSet<Piece> pieces = new HashSet<>();
+    private HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private static King whiteKing, blackKing;
     public static Pawn enPassantPawn = null;
@@ -126,7 +126,7 @@ public class BoardModel implements Serializable {
             for (j = 0; j < 8; j++) {
                 Piece tempPiece = pieceAt(7 - i, j);
                 char ch = 0;
-                if (tempPiece == null) board.append(". ");
+                if (tempPiece == null) board.append("- ");
                 else {
                     Rank r = tempPiece.getRank();
                     if (r == Rank.PAWN) ch = 'p';
@@ -175,5 +175,18 @@ public class BoardModel implements Serializable {
             FEN.append("/");
         }
         return String.valueOf(FEN);
+    }
+
+    @NonNull
+    @Override
+    public BoardModel clone() {
+        try {
+            BoardModel clone = (BoardModel) super.clone();
+            clone.pieces = new HashSet<>();
+            for (Piece piece : pieces) clone.pieces.add(piece.clone());
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

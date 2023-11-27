@@ -220,7 +220,7 @@ public class ChessBoard extends View {
         if (!isPieceToPlay(movingPiece)) return false;
 
         Piece toPiece = boardInterface.pieceAt(toRow, toCol);
-        Log.d(TAG, "Piece: Type: " + movingPiece.getPlayer() + " Rank: " + movingPiece.getRank());
+//        Log.d(TAG, "Piece: Type: " + movingPiece.getPlayer() + " Rank: " + movingPiece.getRank());
         if (toPiece != null)
             if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
                 movingPiece.moveTo(toRow, toCol);
