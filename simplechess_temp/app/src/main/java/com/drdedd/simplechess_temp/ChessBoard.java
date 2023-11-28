@@ -49,7 +49,6 @@ public class ChessBoard extends View {
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
     private final Paint p = new Paint(), highlightPaint = new Paint();
     private Piece previousSelectedPiece = null;
-    private final King whiteKing = BoardModel.getWhiteKing(), blackKing = BoardModel.getBlackKing();
     private Set<Integer> legalMoves = new HashSet<>();
     private final boolean cheatMode;
     private final Resources res = getResources();
@@ -238,7 +237,7 @@ public class ChessBoard extends View {
                         return true;
                     }
                 }
-                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+//                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
                 boardInterface.addToPGN(movingPiece, "");
                 return true;
             }
@@ -248,26 +247,26 @@ public class ChessBoard extends View {
                 if (!king.isCastled() && king.canMoveTo(boardInterface, toRow, toCol)) {
                     if (toCol - fromCol == -2 && king.canLongCastle(boardInterface)) {
                         king.longCastle(boardInterface);
-                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O-O");
+//                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O-O");
                         boardInterface.addToPGN(movingPiece, "O-O-O");
                         return true;
                     }
                     if (toCol - fromCol == 2 && king.canShortCastle(boardInterface)) {
                         king.shortCastle(boardInterface);
-                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O");
+//                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O");
                         boardInterface.addToPGN(movingPiece, "O-O");
                         return true;
                     }
                 }
             }
             if (movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
-                Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+//                Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canCaptureEnPassant()) {
                         boardInterface.removePiece(BoardModel.enPassantPawn);
                         movingPiece.moveTo(toRow, toCol);
-                        Log.d(TAG, "movePiece: enPassant Capture " + BoardModel.enPassantPawn.getPosition());
+//                        Log.d(TAG, "movePiece: enPassant Capture " + BoardModel.enPassantPawn.getPosition());
                         boardInterface.addToPGN(pawn, "");
                         return true;
                     }
@@ -285,19 +284,19 @@ public class ChessBoard extends View {
                 return true;
             }
         }
-        Log.d(TAG, "Move invalid: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+//        Log.d(TAG, "Move invalid: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
         previousSelectedPiece = null;
         return false;   //Default return false
     }
 
-    public boolean isChecked() {
-        if (GameActivity.getGameState() == ChessState.WHITETOPLAY)
-            return whiteKing.isChecked(boardInterface);
-        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY)
-            return blackKing.isChecked(boardInterface);
-
-        return false;
-    }
+//    public boolean isChecked() {
+//        if (GameActivity.getGameState() == ChessState.WHITETOPLAY)
+//            return whiteKing.isChecked(boardInterface);
+//        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY)
+//            return blackKing.isChecked(boardInterface);
+//
+//        return false;
+//    }
 
     public String toNotation(int row, int col) {
         return "" + (char) ('a' + col) + (row + 1);
@@ -307,7 +306,6 @@ public class ChessBoard extends View {
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        Log.d(TAG, "getBitmap: Width: " + canvas.getWidth() + " Height: " + canvas.getHeight());
         vectorDrawable.draw(canvas);
         return bitmap;
     }

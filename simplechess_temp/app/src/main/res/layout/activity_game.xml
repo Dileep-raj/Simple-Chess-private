@@ -17,21 +17,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_copy_pgn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:drawable/ic_menu_share"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_copy"
             android:contentDescription="@string/copy_pgn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_export_pgn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:drawable/ic_menu_save"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_save"
             android:contentDescription="@string/export_pgn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,33 +104,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardNameLayout">
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_reset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/ic_menu_rotate"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/ic_restart"
+            android:contentDescription="@string/reset_board"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_previous_move"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_previous_move"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/ic_menu_revert"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/ic_undo"
+            android:contentDescription="@string/undo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_save_exit"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.5" />
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_save_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:drawable/stat_sys_upload"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/ic_exit"
+            android:contentDescription="@string/exit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_previous_move"

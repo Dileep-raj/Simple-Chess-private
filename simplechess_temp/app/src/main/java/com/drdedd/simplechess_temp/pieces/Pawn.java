@@ -68,6 +68,6 @@ public class Pawn extends Piece {
     }
 
     public boolean canPromote() {
-        return row == lastRank;
+        return getRow() == lastRank;
     }
 }

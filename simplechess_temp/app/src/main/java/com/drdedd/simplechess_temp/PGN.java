@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
+import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.File;
@@ -98,11 +99,12 @@ public class PGN implements Serializable {
         result = "*";
     }
 
-    public String lastMove(){
+    public String lastMove() {
         return moves.peekLast();
     }
 
     public String removeLast() {
+//        Log.d(TAG, "removeLast: rem");
         if (!moves.isEmpty()) return moves.removeLast();
         return "";
     }
@@ -135,13 +137,17 @@ public class PGN implements Serializable {
     @NonNull
     @Override
     public String toString() {
+
+        return "[App \"" + app + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + getFinalPGN();
+    }
+
+    public String getFinalPGN() {
         StringBuilder finalPGN = new StringBuilder();
         for (int i = 0; i < moves.size(); i++) {
             if (i % 2 == 0) finalPGN.append(i / 2 + 1).append(". ");
             finalPGN.append(moves.get(i)).append(" ");
         }
-        Log.d(TAG, "toString: Final PGN: " + finalPGN);
-        return "[App \"" + app + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + pgn;
+        return finalPGN.toString();
     }
 
     public String toFEN(String boardFEN) {

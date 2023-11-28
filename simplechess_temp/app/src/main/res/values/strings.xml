@@ -12,4 +12,5 @@
     <string name="copy_pgn">Copy PGN</string>
     <string name="export_pgn">Export PGN</string>
     <string name="full_screen">Full Screen</string>
+    <string name="undo">Undo</string>
 </resources>

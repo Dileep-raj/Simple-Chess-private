@@ -13,6 +13,8 @@
     <color name="piece_selection">#228B22</color>
     <color name="checked_square">#FF2222</color>
 
+    <color name="icon_tint">#FFFFFFFF</color>
+
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>
 

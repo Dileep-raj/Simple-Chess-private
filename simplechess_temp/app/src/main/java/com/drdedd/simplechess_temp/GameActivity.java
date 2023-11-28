@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +22,7 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
@@ -39,7 +40,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private PGN pgn;
     private BoardModel boardModel = null;
     private ChessBoard chessBoard;
-    private ImageButton btn_previous_move;
+    private Button btn_previous_move;
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
@@ -96,20 +97,19 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             boardModel = (BoardModel) dataManager.readObject(boardFile);
             pgn = (PGN) dataManager.readObject(PGNFile);
             boardModelStack = (Stack<BoardModel>) dataManager.readObject(stackFile);
-
         }
 
         if (boardModel == null || pgn == null) {
-//            boardModel = new BoardModel();
-//            boardModelStack = new Stack<>();
-//            boardModelStack.push(boardModel);
-//            pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
-            reset();
+            boardModel = new BoardModel();
+            boardModelStack = new Stack<>();
+            boardModelStack.push(boardModel);
+            pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
+//            reset();
         }
 
         gameState = pgn.getGameState();         //Get previous state from PGN
         pgn.setWhiteBlack(white, black);        //Set the white and the black players' names
-        PGN_textView.setText(pgn.getPGN());     //Update PGN in TextView
+        PGN_textView.setText(pgn.getFinalPGN());     //Update PGN in TextView
         theme = dataManager.getBoardTheme();    //Get theme from DataManager
 
         whiteName.setText(white);
@@ -158,13 +158,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 if (movingPiece != null)
                     if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2) {
                         BoardModel.enPassantPawn = (Pawn) movingPiece;
-                        Log.d(TAG, "movePiece: En-passant Pawn: " + movingPiece.getPosition());
+//                        Log.d(TAG, "movePiece: En-passant Pawn: " + movingPiece.getPosition());
                     } else BoardModel.enPassantPawn = null;
+
                 saveGame();
                 pushToStack();
-                Log.d(TAG, "movePiece: Stack count: " + boardModelStack.size());
+//                Log.d(TAG, "movePiece: Current FEN: " + toFEN());
+//                Log.d(TAG, "movePiece: Stack count: " + boardModelStack.size());
             }
             btn_previous_move.setEnabled(pgn.lastMove() != null);
+            updatePGNView();
             return result;
         }
     }
@@ -178,20 +181,19 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     public void addToPGN(Piece piece, String move) {
         pgn.addToPGN(piece, move);
-        PGN_textView.setText(pgn.getPGN());
-        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+        updatePGNView();
     }
 
     public void reset() {
         boardModel = new BoardModel();
         pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
-        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         boardModelStack = new Stack<>();
         pushToStack();
+        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
 //        pgn.resetPGN();
         gameState = pgn.getGameState();
-        PGN_textView.setText(pgn.getPGN());
+        PGN_textView.setText(pgn.getFinalPGN());
         btn_previous_move.setEnabled(pgn.lastMove() != null);
         showGameStateView();
         chessBoard.invalidate();
@@ -252,6 +254,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     public void toggleGameState() {
         if (gameState == ChessState.WHITETOPLAY) gameState = ChessState.BLACKTOPLAY;
         else if (gameState == ChessState.BLACKTOPLAY) gameState = ChessState.WHITETOPLAY;
+        Log.d(TAG, "toggleGameState: GameState toggled");
         pgn.setGameState(gameState);
         showGameStateView();
     }
@@ -265,16 +268,58 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private void previousMove() {
         String move = pgn.removeLast();
         Log.d(TAG, "previousMove: BoardModel current : " + boardModel);
-        if (boardModelStack.size() >= 2) boardModelStack.pop();
+        if (boardModelStack.size() >= 2) {
+            boardModelStack.pop();
+            Log.d(TAG, "previousMove: popped previous model");
+            toggleGameState();
+            updatePGNView();
+        }
         boardModel = boardModelStack.peek();
         Log.d(TAG, "previousMove: BoardModel previous : " + boardModel + " \n count: " + boardModelStack.size());
         btn_previous_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
         saveGame();
         Log.d(TAG, "lastMove: " + move);
+        Log.d(TAG, "Current last move: " + pgn.lastMove());
     }
 
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
+        Log.d(TAG, "pushToStack: pushed current BoardModel to stack");
+    }
+
+    private String toFEN() {
+        StringBuilder FEN = new StringBuilder(boardModel.toFEN());
+        if (getGameState() == ChessState.WHITETOPLAY) FEN.append(" w");
+        else if (getGameState() == ChessState.BLACKTOPLAY) FEN.append(" b");
+
+        FEN.append(" ");
+
+        King whiteKing = boardModel.getWhiteKing();
+        King blackKing = boardModel.getBlackKing();
+
+        if (whiteKing != null) {
+            if (whiteKing.canShortCastle(this)) FEN.append('K');
+            if (whiteKing.canLongCastle(this)) FEN.append('Q');
+        }
+        if (blackKing != null) {
+            if (blackKing.canShortCastle(this)) FEN.append('k');
+            if (blackKing.canLongCastle(this)) FEN.append('q');
+        }
+
+        FEN.append(" ");
+
+        if (BoardModel.enPassantPawn != null) {
+            Pawn enPassantPawn = BoardModel.enPassantPawn;
+            FEN.append((char) (enPassantPawn.getPosition().charAt(1))).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+        }
+
+//        FEN.append(" - - ");
+        return String.valueOf(FEN);
+    }
+
+    private void updatePGNView() {
+        PGN_textView.setText(pgn.getFinalPGN());
+        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
     }
 }

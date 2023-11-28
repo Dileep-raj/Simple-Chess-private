@@ -22,7 +22,8 @@ public class BoardModel implements Serializable, Cloneable {
      */
     private HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
-    private static King whiteKing, blackKing;
+
+    private King whiteKing = null, blackKing = null;
     public static Pawn enPassantPawn = null;
 //    private final String TAG = "BoardModel";
 
@@ -59,12 +60,14 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb));
         }
 
+
 //        King and Queen pieces
         whiteKing = new King(Player.WHITE, 0, 4, R.drawable.kw);
         blackKing = new King(Player.BLACK, 7, 4, R.drawable.kb);
 
         addPiece(whiteKing);
         addPiece(new Queen(Player.WHITE, 0, 3, R.drawable.qw));
+
         addPiece(blackKing);
         addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb));
 
@@ -75,11 +78,15 @@ public class BoardModel implements Serializable, Cloneable {
         }
     }
 
-    public static King getBlackKing() {
+    public King getBlackKing() {
+        if (blackKing == null)
+            for (Piece piece : pieces) if (piece.isKing() && !piece.isWhite()) return (King) piece;
         return blackKing;
     }
 
-    public static King getWhiteKing() {
+    public King getWhiteKing() {
+        if (whiteKing == null)
+            for (Piece piece : pieces) if (piece.isKing() && piece.isWhite()) return (King) piece;
         return whiteKing;
     }
 
@@ -181,10 +188,15 @@ public class BoardModel implements Serializable, Cloneable {
     @Override
     public BoardModel clone() {
         try {
-            BoardModel clone = (BoardModel) super.clone();
-            clone.pieces = new HashSet<>();
-            for (Piece piece : pieces) clone.pieces.add(piece.clone());
-            return clone;
+            BoardModel boardModelClone = (BoardModel) super.clone();
+
+            boardModelClone.pieces = new HashSet<>();
+            for (Piece piece : pieces) boardModelClone.pieces.add(piece.clone());
+
+            boardModelClone.whiteKing = (King) whiteKing.clone();
+            boardModelClone.blackKing = (King) blackKing.clone();
+
+            return boardModelClone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

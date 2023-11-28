@@ -12,7 +12,7 @@ import java.util.Set;
 
 public abstract class Piece implements Serializable, Cloneable {
     private final Player player;
-    protected int col, row;
+    private int col, row;
     private final int resID;
     private final Rank rank;
     protected boolean moved;
