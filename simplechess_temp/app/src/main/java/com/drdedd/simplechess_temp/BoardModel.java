@@ -2,6 +2,7 @@ package com.drdedd.simplechess_temp;
 
 import androidx.annotation.NonNull;
 
+import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.pieces.Bishop;
@@ -151,6 +152,29 @@ public class BoardModel implements Serializable, Cloneable {
         return String.valueOf(board);
     }
 
+//    public String toFEN() {
+//
+//        return String.valueOf(FEN);
+//    }
+
+    @NonNull
+    @Override
+    public BoardModel clone() {
+        try {
+            BoardModel boardModelClone = (BoardModel) super.clone();
+
+            boardModelClone.pieces = new HashSet<>();
+            for (Piece piece : pieces) boardModelClone.pieces.add(piece.clone());
+
+            boardModelClone.whiteKing = (King) whiteKing.clone();
+            boardModelClone.blackKing = (King) blackKing.clone();
+
+            return boardModelClone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
+
     public String toFEN() {
         StringBuilder FEN = new StringBuilder();
         int i, j, c = 0;
@@ -181,24 +205,29 @@ public class BoardModel implements Serializable, Cloneable {
             }
             FEN.append("/");
         }
+
+        if (GameActivity.getGameState() == ChessState.WHITETOPLAY) FEN.append(" w");
+        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY) FEN.append(" b");
+
+        FEN.append(" ");
+//        King whiteKing = boardModel.getWhiteKing();
+//        King blackKing = boardModel.getBlackKing();
+//        if (whiteKing != null) {
+//            if (whiteKing.canShortCastle(this)) FEN.append('K');
+//            if (whiteKing.canLongCastle(this)) FEN.append('Q');
+//        }
+//        if (blackKing != null) {
+//            if (blackKing.canShortCastle(this)) FEN.append('k');
+//            if (blackKing.canLongCastle(this)) FEN.append('q');
+//        }
+//        FEN.append(" ");
+        FEN.append(" - - ");
+
+//        if (BoardModel.enPassantPawn != null) {
+//            Pawn enPassantPawn = BoardModel.enPassantPawn;
+//            FEN.append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+//        }
+
         return String.valueOf(FEN);
-    }
-
-    @NonNull
-    @Override
-    public BoardModel clone() {
-        try {
-            BoardModel boardModelClone = (BoardModel) super.clone();
-
-            boardModelClone.pieces = new HashSet<>();
-            for (Piece piece : pieces) boardModelClone.pieces.add(piece.clone());
-
-            boardModelClone.whiteKing = (King) whiteKing.clone();
-            boardModelClone.blackKing = (King) blackKing.clone();
-
-            return boardModelClone;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
     }
 }

@@ -22,7 +22,6 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Rank;
-import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
@@ -245,7 +244,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         });
     }
 
-    //    public void setGameState(ChessState gameState) { GameActivity.gameState = gameState; }
+    public void setGameState(ChessState gameState) {
+        GameActivity.gameState = gameState;
+    }
 
     public static ChessState getGameState() {
         return gameState;
@@ -267,15 +268,22 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     private void previousMove() {
         String move = pgn.removeLast();
-        Log.d(TAG, "previousMove: BoardModel current : " + boardModel);
+//        Log.d(TAG, "previousMove: BoardModel current : " + boardModel);
+
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
-            Log.d(TAG, "previousMove: popped previous model");
+//            Log.d(TAG, "previousMove: popped previous model");
             toggleGameState();
             updatePGNView();
         }
+
+        for (BoardModel boardModel : boardModelStack) {
+//            Log.d(TAG, "previousMove: " + boardModel.hashCode() + " " + boardModel.toFEN());
+            Log.d(TAG, "previousMove: " + boardModel);
+        }
+
         boardModel = boardModelStack.peek();
-        Log.d(TAG, "previousMove: BoardModel previous : " + boardModel + " \n count: " + boardModelStack.size());
+//        Log.d(TAG, "previousMove: BoardModel previous : " + boardModel + " \n count: " + boardModelStack.size());
         btn_previous_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
         saveGame();
@@ -286,36 +294,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
         Log.d(TAG, "pushToStack: pushed current BoardModel to stack");
-    }
-
-    private String toFEN() {
-        StringBuilder FEN = new StringBuilder(boardModel.toFEN());
-        if (getGameState() == ChessState.WHITETOPLAY) FEN.append(" w");
-        else if (getGameState() == ChessState.BLACKTOPLAY) FEN.append(" b");
-
-        FEN.append(" ");
-
-        King whiteKing = boardModel.getWhiteKing();
-        King blackKing = boardModel.getBlackKing();
-
-        if (whiteKing != null) {
-            if (whiteKing.canShortCastle(this)) FEN.append('K');
-            if (whiteKing.canLongCastle(this)) FEN.append('Q');
-        }
-        if (blackKing != null) {
-            if (blackKing.canShortCastle(this)) FEN.append('k');
-            if (blackKing.canLongCastle(this)) FEN.append('q');
-        }
-
-        FEN.append(" ");
-
-        if (BoardModel.enPassantPawn != null) {
-            Pawn enPassantPawn = BoardModel.enPassantPawn;
-            FEN.append((char) (enPassantPawn.getPosition().charAt(1))).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
-        }
-
-//        FEN.append(" - - ");
-        return String.valueOf(FEN);
     }
 
     private void updatePGNView() {
