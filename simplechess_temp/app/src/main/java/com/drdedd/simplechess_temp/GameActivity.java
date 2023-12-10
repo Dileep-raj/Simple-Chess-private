@@ -190,7 +190,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         pushToStack();
         Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
-//        pgn.resetPGN();
         gameState = pgn.getGameState();
         PGN_textView.setText(pgn.getFinalPGN());
         btn_previous_move.setEnabled(pgn.lastMove() != null);
@@ -268,22 +267,18 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     private void previousMove() {
         String move = pgn.removeLast();
-//        Log.d(TAG, "previousMove: BoardModel current : " + boardModel);
-
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
-//            Log.d(TAG, "previousMove: popped previous model");
             toggleGameState();
             updatePGNView();
         }
 
         for (BoardModel boardModel : boardModelStack) {
 //            Log.d(TAG, "previousMove: " + boardModel.hashCode() + " " + boardModel.toFEN());
-            Log.d(TAG, "previousMove: " + boardModel);
+            Log.d(TAG, "previousMove: " + boardModel.hashCode() + boardModel);
         }
 
         boardModel = boardModelStack.peek();
-//        Log.d(TAG, "previousMove: BoardModel previous : " + boardModel + " \n count: " + boardModelStack.size());
         btn_previous_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
         saveGame();
