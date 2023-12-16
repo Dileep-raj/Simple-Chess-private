@@ -24,7 +24,6 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, @NonNull Piece capturingPiece) {
-        if (capturingPiece.isKing()) return false;
         if (Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1) {
             moved = true;
             return true;

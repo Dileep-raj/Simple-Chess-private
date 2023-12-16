@@ -1,5 +1,7 @@
 package com.drdedd.simplechess_temp.pieces;
 
+import android.util.Log;
+
 import com.drdedd.simplechess_temp.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
@@ -8,12 +10,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class King extends Piece {
-    private boolean castled;
+    private boolean castled, longCastled, shortCastled;
+    private String TAG = "King";
 
     public King(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.KING, resID);
         moved = false;
-        castled = false;
+        castled = shortCastled = longCastled = false;
     }
 
     @Override
@@ -69,22 +72,39 @@ public class King extends Piece {
         Piece rook = boardInterface.pieceAt(getRow(), 0);
         rook.moveTo(getRow(), 3);
         this.moveTo(getRow(), getCol() - 2);
-        castled = true;
+        castled = longCastled = true;
     }
 
     public void shortCastle(BoardInterface boardInterface) {
         Piece rook = boardInterface.pieceAt(getRow(), 7);
         rook.moveTo(getRow(), 5);
         this.moveTo(getRow(), getCol() + 2);
-        castled = true;
+        castled = shortCastled = true;
     }
 
     public boolean isCastled() {
         return castled;
     }
 
-    public boolean isChecked(BoardInterface boardInterface) {
+    public boolean isShortCastled() {
+        return shortCastled;
+    }
 
+    public boolean isLongCastled() {
+        return longCastled;
+    }
+
+    public boolean isChecked(BoardInterface boardInterface) {
+        HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
+        Log.d(TAG, "isChecked: Method called");
+        for (Piece piece : pieces)
+            if (piece.getPlayer() != getPlayer()) {
+                if (piece.canCapture(boardInterface, this)) {
+                    Log.d(TAG, "isChecked: In Check from " + piece.getPosition());
+                    return true;
+                }
+                Log.d(TAG, piece.getPlayer() + " " + piece.getRank() + "  " + piece.getPosition().substring(1));
+            }
         return false;
     }
 }

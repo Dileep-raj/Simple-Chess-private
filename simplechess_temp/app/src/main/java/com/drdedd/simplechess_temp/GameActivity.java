@@ -115,7 +115,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         blackName.setText(black);
 
         chessBoard.boardInterface = this;
-        chessBoard.boardModel = boardModel;
         chessBoard.setTheme(theme);
 
         showGameStateView();
@@ -162,8 +161,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
                 saveGame();
                 pushToStack();
-//                Log.d(TAG, "movePiece: Current FEN: " + toFEN());
-//                Log.d(TAG, "movePiece: Stack count: " + boardModelStack.size());
+                chessBoard.isChecked();
             }
             btn_previous_move.setEnabled(pgn.lastMove() != null);
             updatePGNView();
@@ -239,6 +237,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             Piece piece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
 //            addToPGN(pawn, pawn.getPosition().charAt(1) + "=" + piece.getPosition().substring(1) + piece.getPosition().charAt(0));
             addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0));
+            chessBoard.isChecked();
             chessBoard.invalidate();
         });
     }
@@ -273,10 +272,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             updatePGNView();
         }
 
-        for (BoardModel boardModel : boardModelStack) {
+        for (BoardModel boardModel : boardModelStack)
 //            Log.d(TAG, "previousMove: " + boardModel.hashCode() + " " + boardModel.toFEN());
             Log.d(TAG, "previousMove: " + boardModel.hashCode() + boardModel);
-        }
 
         boardModel = boardModelStack.peek();
         btn_previous_move.setEnabled(pgn.lastMove() != null);
@@ -294,5 +292,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private void updatePGNView() {
         PGN_textView.setText(pgn.getFinalPGN());
         horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+    }
+
+    public BoardModel getBoardModel() {
+        return boardModel;
     }
 }

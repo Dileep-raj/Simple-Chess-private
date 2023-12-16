@@ -26,4 +26,6 @@ public interface BoardInterface {
     void removePiece(Piece piece);
 
     void promote(Pawn pawn, int row, int col);
+
+    BoardModel getBoardModel();
 }

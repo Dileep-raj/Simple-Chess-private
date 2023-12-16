@@ -42,7 +42,6 @@ public class ChessBoard extends View {
 
     private static final String TAG = "ChessBoard";
     public BoardInterface boardInterface;
-    public BoardModel boardModel;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
     private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue);
@@ -52,7 +51,7 @@ public class ChessBoard extends View {
     private Set<Integer> legalMoves = new HashSet<>();
     private final boolean cheatMode;
     private final Resources res = getResources();
-
+    public King whiteKing, blackKing;
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -82,12 +81,14 @@ public class ChessBoard extends View {
         drawCoordinates(canvas);
         if (!cheatMode) drawGuides(canvas);
 
+        whiteKing = boardInterface.getBoardModel().getWhiteKing();
+        blackKing = boardInterface.getBoardModel().getBlackKing();
         if (previousSelectedPiece != null)
             highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.color.piece_selection);
-//        if (whiteKing.isChecked(boardInterface))
-//            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.color.checked_square);
-//        if (blackKing.isChecked(boardInterface))
-//            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.color.checked_square);
+        if (Player.WHITE.isInCheck())
+            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.color.checked_square);
+        if (Player.BLACK.isInCheck())
+            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.color.checked_square);
     }
 
     private void highlightSquare(Canvas canvas, int row, int col, int color) {
@@ -226,21 +227,21 @@ public class ChessBoard extends View {
 
         Piece toPiece = boardInterface.pieceAt(toRow, toCol);
 //        Log.d(TAG, "Piece: Type: " + movingPiece.getPlayer() + " Rank: " + movingPiece.getRank());
-        if (toPiece != null)
-            if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
-                movingPiece.moveTo(toRow, toCol);
-                boardInterface.removePiece(toPiece);
-                if (movingPiece.getRank() == Rank.PAWN) {
-                    Pawn pawn = (Pawn) movingPiece;
-                    if (pawn.canPromote()) {
-                        boardInterface.promote(pawn, toRow, toCol);
-                        return true;
-                    }
+        if (toPiece != null) if (toPiece.isKing()) return false;
+        else if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
+            movingPiece.moveTo(toRow, toCol);
+            boardInterface.removePiece(toPiece);
+            if (movingPiece.getRank() == Rank.PAWN) {
+                Pawn pawn = (Pawn) movingPiece;
+                if (pawn.canPromote()) {
+                    boardInterface.promote(pawn, toRow, toCol);
+                    return true;
                 }
-//                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
-                boardInterface.addToPGN(movingPiece, "");
-                return true;
             }
+//                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
+            boardInterface.addToPGN(movingPiece, "");
+            return true;
+        }
         if (toPiece == null) {
             if (movingPiece.getRank() == Rank.KING) {
                 King king = (King) movingPiece;
@@ -289,14 +290,20 @@ public class ChessBoard extends View {
         return false;   //Default return false
     }
 
-//    public boolean isChecked() {
-//        if (GameActivity.getGameState() == ChessState.WHITETOPLAY)
-//            return whiteKing.isChecked(boardInterface);
-//        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY)
-//            return blackKing.isChecked(boardInterface);
-//
-//        return false;
-//    }
+    public void isChecked() {
+        whiteKing = boardInterface.getBoardModel().getWhiteKing();
+        blackKing = boardInterface.getBoardModel().getBlackKing();
+        Player.WHITE.setInCheck(false);
+        Player.BLACK.setInCheck(false);
+        if (whiteKing.isChecked(boardInterface)) {
+            Player.WHITE.setInCheck(true);
+            Log.d(TAG, "isChecked: White King checked");
+        }
+        if (blackKing.isChecked(boardInterface)) {
+            Player.BLACK.setInCheck(true);
+            Log.d(TAG, "isChecked: Black King checked");
+        }
+    }
 
     public String toNotation(int row, int col) {
         return "" + (char) ('a' + col) + (row + 1);

@@ -21,7 +21,7 @@ public class BoardModel implements Serializable, Cloneable {
     /**
      * Set of all the pieces on the board
      */
-    private HashSet<Piece> pieces = new HashSet<>();
+    public HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
 
     private King whiteKing = null, blackKing = null;
