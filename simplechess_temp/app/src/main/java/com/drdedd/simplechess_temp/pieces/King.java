@@ -1,7 +1,5 @@
 package com.drdedd.simplechess_temp.pieces;
 
-import android.util.Log;
-
 import com.drdedd.simplechess_temp.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
@@ -11,7 +9,6 @@ import java.util.Set;
 
 public class King extends Piece {
     private boolean castled, longCastled, shortCastled;
-    private String TAG = "King";
 
     public King(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.KING, resID);
@@ -96,15 +93,9 @@ public class King extends Piece {
 
     public boolean isChecked(BoardInterface boardInterface) {
         HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
-        Log.d(TAG, "isChecked: Method called");
         for (Piece piece : pieces)
-            if (piece.getPlayer() != getPlayer()) {
-                if (piece.canCapture(boardInterface, this)) {
-                    Log.d(TAG, "isChecked: In Check from " + piece.getPosition());
-                    return true;
-                }
-                Log.d(TAG, piece.getPlayer() + " " + piece.getRank() + "  " + piece.getPosition().substring(1));
-            }
+            if (piece.getPlayer() != getPlayer())
+                if (piece.canCapture(boardInterface, this)) return true;
         return false;
     }
 }

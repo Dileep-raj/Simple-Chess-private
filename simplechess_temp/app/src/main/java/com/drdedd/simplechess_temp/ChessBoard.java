@@ -44,9 +44,9 @@ public class ChessBoard extends View {
     public BoardInterface boardInterface;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
-    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue);
+    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight,R.drawable.check);
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
-    private final Paint p = new Paint(), highlightPaint = new Paint();
+    private final Paint p = new Paint();
     private Piece previousSelectedPiece = null;
     private Set<Integer> legalMoves = new HashSet<>();
     private final boolean cheatMode;
@@ -55,6 +55,7 @@ public class ChessBoard extends View {
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        loadBitmaps();
         DataManager dataManager = new DataManager(this.getContext());
         cheatMode = dataManager.cheatModeEnabled();
     }
@@ -69,7 +70,6 @@ public class ChessBoard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        loadBitmaps();
         int width = getWidth(), height = getHeight();
         float scaleFactor = 0.95f;
         float boardSize = Math.min(width, height) * scaleFactor;
@@ -84,24 +84,16 @@ public class ChessBoard extends View {
         whiteKing = boardInterface.getBoardModel().getWhiteKing();
         blackKing = boardInterface.getBoardModel().getBlackKing();
         if (previousSelectedPiece != null)
-            highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.color.piece_selection);
+            highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.drawable.highlight);
         if (Player.WHITE.isInCheck())
-            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.color.checked_square);
+            highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
         if (Player.BLACK.isInCheck())
-            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.color.checked_square);
+            highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.drawable.check);
     }
 
-    private void highlightSquare(Canvas canvas, int row, int col, int color) {
-        highlightPaint.setColor(res.getColor(color));
-        float outlineWidth = 0.075f;
-//        Top line
-        canvas.drawRect(new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + outlineWidth)), highlightPaint);
-//        Bottom line
-        canvas.drawRect(new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row + 1 - outlineWidth), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), highlightPaint);
-//        Right line
-        canvas.drawRect(new RectF(offsetX + sideLength * (col + 1 - outlineWidth), offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), highlightPaint);
-//        Left line
-        canvas.drawRect(new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + outlineWidth), offsetY + sideLength * (7 - row + 1)), highlightPaint);
+    private void highlightSquare(Canvas canvas, int row, int col, int resID) {
+        Bitmap b = bitmaps.get(resID);
+        canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
     private void loadBitmaps() {
@@ -216,7 +208,7 @@ public class ChessBoard extends View {
     }
 
     private boolean isPieceToPlay(@NonNull Piece piece) {
-        return piece.getPlayer() == Player.WHITE && GameActivity.getGameState() == ChessState.WHITETOPLAY || piece.getPlayer() == Player.BLACK && GameActivity.getGameState() == ChessState.BLACKTOPLAY;
+        return piece.getPlayer() == Player.WHITE && GameActivity.getGameState() == ChessState.WHITE_TO_PLAY || piece.getPlayer() == Player.BLACK && GameActivity.getGameState() == ChessState.BLACK_TO_PLAY;
     }
 
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {

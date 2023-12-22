@@ -34,12 +34,11 @@ import java.util.Stack;
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
-    public final String boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile";
     private String white = "White", black = "Black";
     private PGN pgn;
     private BoardModel boardModel = null;
     private ChessBoard chessBoard;
-    private Button btn_previous_move;
+    private Button btn_undo_move;
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
@@ -69,7 +68,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         gameStateView = findViewById(R.id.gameStateView);
         whiteName = findViewById(R.id.whiteNameTV);
         blackName = findViewById(R.id.blackNameTV);
-        btn_previous_move = findViewById(R.id.btn_previous_move);
+        btn_undo_move = findViewById(R.id.btn_undo_move);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) newGame = extras.getBoolean("newGame");
@@ -79,9 +78,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
         findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
-        btn_previous_move.setOnClickListener(view -> previousMove());
+        btn_undo_move.setOnClickListener(view -> undoLastMove());
 
-        btn_previous_move.setEnabled(pgn.lastMove() != null);
+        btn_undo_move.setEnabled(pgn.lastMove() != null);
 
         if (newGame) reset();
     }
@@ -93,22 +92,22 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         pgnDate = new SimpleDateFormat("yyyy.MM.dd");
 
         if (!newGame) {
-            boardModel = (BoardModel) dataManager.readObject(boardFile);
-            pgn = (PGN) dataManager.readObject(PGNFile);
-            boardModelStack = (Stack<BoardModel>) dataManager.readObject(stackFile);
+            boardModel = (BoardModel) dataManager.readObject(DataManager.boardFile);
+            pgn = (PGN) dataManager.readObject(DataManager.PGNFile);
+            boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.stackFile);
         }
 
         if (boardModel == null || pgn == null) {
             boardModel = new BoardModel();
             boardModelStack = new Stack<>();
             boardModelStack.push(boardModel);
-            pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
+            pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
 //            reset();
         }
 
         gameState = pgn.getGameState();         //Get previous state from PGN
         pgn.setWhiteBlack(white, black);        //Set the white and the black players' names
-        PGN_textView.setText(pgn.getFinalPGN());     //Update PGN in TextView
+        PGN_textView.setText(pgn.getPGN());     //Update PGN in TextView
         theme = dataManager.getBoardTheme();    //Get theme from DataManager
 
         whiteName.setText(white);
@@ -116,6 +115,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
         chessBoard.boardInterface = this;
         chessBoard.setTheme(theme);
+        chessBoard.isChecked();
 
         showGameStateView();
 
@@ -163,16 +163,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 pushToStack();
                 chessBoard.isChecked();
             }
-            btn_previous_move.setEnabled(pgn.lastMove() != null);
+            btn_undo_move.setEnabled(pgn.lastMove() != null);
             updatePGNView();
             return result;
         }
     }
 
     public void saveGame() {
-        dataManager.saveObject(boardFile, boardModel);
-        dataManager.saveObject(PGNFile, pgn);
-        dataManager.saveObject(stackFile, boardModelStack);
+        dataManager.saveObject(DataManager.boardFile, boardModel);
+        dataManager.saveObject(DataManager.PGNFile, pgn);
+        dataManager.saveObject(DataManager.stackFile, boardModelStack);
         dataManager.saveData(theme);
     }
 
@@ -183,14 +183,14 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     public void reset() {
         boardModel = new BoardModel();
-        pgn = new PGN(new StringBuilder(), "Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITETOPLAY);
+        pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
         boardModelStack = new Stack<>();
         pushToStack();
         Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
         gameState = pgn.getGameState();
-        PGN_textView.setText(pgn.getFinalPGN());
-        btn_previous_move.setEnabled(pgn.lastMove() != null);
+        PGN_textView.setText(pgn.getPGN());
+        btn_undo_move.setEnabled(pgn.lastMove() != null);
         showGameStateView();
         chessBoard.invalidate();
     }
@@ -251,8 +251,8 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     public void toggleGameState() {
-        if (gameState == ChessState.WHITETOPLAY) gameState = ChessState.BLACKTOPLAY;
-        else if (gameState == ChessState.BLACKTOPLAY) gameState = ChessState.WHITETOPLAY;
+        if (gameState == ChessState.WHITE_TO_PLAY) gameState = ChessState.BLACK_TO_PLAY;
+        else if (gameState == ChessState.BLACK_TO_PLAY) gameState = ChessState.WHITE_TO_PLAY;
         Log.d(TAG, "toggleGameState: GameState toggled");
         pgn.setGameState(gameState);
         showGameStateView();
@@ -260,11 +260,11 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     @SuppressLint("SetTextI18n")
     private void showGameStateView() {
-        if (gameState == ChessState.WHITETOPLAY) gameStateView.setText(white);
-        else if (gameState == ChessState.BLACKTOPLAY) gameStateView.setText(black);
+        if (gameState == ChessState.WHITE_TO_PLAY) gameStateView.setText(white);
+        else if (gameState == ChessState.BLACK_TO_PLAY) gameStateView.setText(black);
     }
 
-    private void previousMove() {
+    private void undoLastMove() {
         String move = pgn.removeLast();
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
@@ -276,9 +276,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 //            Log.d(TAG, "previousMove: " + boardModel.hashCode() + " " + boardModel.toFEN());
             Log.d(TAG, "previousMove: " + boardModel.hashCode() + boardModel);
 
-        boardModel = boardModelStack.peek();
-        btn_previous_move.setEnabled(pgn.lastMove() != null);
+        boardModel = boardModelStack.peek().clone();
+        btn_undo_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
+        chessBoard.isChecked();
         saveGame();
         Log.d(TAG, "lastMove: " + move);
         Log.d(TAG, "Current last move: " + pgn.lastMove());
@@ -290,7 +291,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     private void updatePGNView() {
-        PGN_textView.setText(pgn.getFinalPGN());
+        PGN_textView.setText(pgn.getPGN());
         horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
     }
 

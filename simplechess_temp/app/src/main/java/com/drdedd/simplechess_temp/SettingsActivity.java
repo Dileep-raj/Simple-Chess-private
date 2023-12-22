@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
         items = new String[themes.length];
         int i = 0;
         for (BoardTheme theme : themes)
-            items[i++] = theme.toString();
+            items[i++] = theme.getThemeName();
 
         themeSpinnerMenu = findViewById(R.id.themeSpinnerMenu);
         whiteName = findViewById(R.id.whiteName);
@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    public void initialize() {
+    private void initialize() {
         fullScreenToggle.setChecked(fullScreen);
         whiteName.setText(dataManager.getWhite());
         blackName.setText(dataManager.getBlack());

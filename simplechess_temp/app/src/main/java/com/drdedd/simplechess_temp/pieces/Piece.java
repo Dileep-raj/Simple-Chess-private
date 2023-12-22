@@ -55,12 +55,8 @@ public abstract class Piece implements Serializable, Cloneable {
      * @return Standard algebraic notation of the position
      */
     public String getPosition() {
-        char ch = 'P';
-        if (rank == Rank.BISHOP) ch = 'B';
-        else if (rank == Rank.KNIGHT) ch = 'N';
-        else if (rank == Rank.ROOK) ch = 'R';
-        else if (rank == Rank.QUEEN) ch = 'Q';
-        else if (rank == Rank.KING) ch = 'K';
+        char ch = rank.toString().charAt(0);
+        if (rank == Rank.KNIGHT) ch = 'N';
         return "" + ch + (char) ('a' + col) + (row + 1);
     }
 

@@ -74,7 +74,10 @@ public class DataManager {
     }
 
     public BoardTheme getBoardTheme() {
-        return themesMap.get(sharedPreferences.getString("BoardTheme", "GREY"));
+        BoardTheme boardTheme;
+        boardTheme = themesMap.get(sharedPreferences.getString("BoardTheme", "DEFAULT_BROWN"));
+        if (boardTheme == null) boardTheme = BoardTheme.DEFAULT_BROWN;
+        return boardTheme;
     }
 
     public void setBoardTheme(@NonNull BoardTheme boardTheme) {

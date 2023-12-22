@@ -23,7 +23,6 @@ public class BoardModel implements Serializable, Cloneable {
      */
     public HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
-
     private King whiteKing = null, blackKing = null;
     public static Pawn enPassantPawn = null;
 //    private final String TAG = "BoardModel";
@@ -61,7 +60,6 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb));
         }
 
-
 //        King and Queen pieces
         whiteKing = new King(Player.WHITE, 0, 4, R.drawable.kw);
         blackKing = new King(Player.BLACK, 7, 4, R.drawable.kb);
@@ -77,17 +75,19 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(new Pawn(Player.WHITE, 1, i, R.drawable.pw));
             addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb));
         }
+        Player.WHITE.setInCheck(false);
+        Player.BLACK.setInCheck(false);
     }
 
     public King getBlackKing() {
-        if (blackKing == null)
-            for (Piece piece : pieces) if (piece.isKing() && !piece.isWhite()) return (King) piece;
+        if (blackKing == null) for (Piece piece : pieces)
+            if (piece.isKing() && !piece.isWhite()) return (King) piece;
         return blackKing;
     }
 
     public King getWhiteKing() {
-        if (whiteKing == null)
-            for (Piece piece : pieces) if (piece.isKing() && piece.isWhite()) return (King) piece;
+        if (whiteKing == null) for (Piece piece : pieces)
+            if (piece.isKing() && piece.isWhite()) return (King) piece;
         return whiteKing;
     }
 
@@ -133,17 +133,11 @@ public class BoardModel implements Serializable, Cloneable {
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 Piece tempPiece = pieceAt(7 - i, j);
-                char ch = 0;
                 if (tempPiece == null) board.append("- ");
                 else {
-                    Rank r = tempPiece.getRank();
-                    if (r == Rank.PAWN) ch = 'p';
-                    else if (r == Rank.BISHOP) ch = 'b';
-                    else if (r == Rank.KNIGHT) ch = 'n';
-                    else if (r == Rank.ROOK) ch = 'r';
-                    else if (r == Rank.QUEEN) ch = 'q';
-                    else if (r == Rank.KING) ch = 'k';
-                    if (tempPiece.isWhite()) ch = Character.toUpperCase(ch);
+                    char ch = tempPiece.getRank().toString().charAt(0);
+                    if (tempPiece.getRank() == Rank.KNIGHT) ch = 'N';
+                    if (!tempPiece.isWhite()) ch = Character.toLowerCase(ch);
                     board.append(ch).append(" ");
                 }
             }
@@ -151,11 +145,6 @@ public class BoardModel implements Serializable, Cloneable {
         }
         return String.valueOf(board);
     }
-
-//    public String toFEN() {
-//
-//        return String.valueOf(FEN);
-//    }
 
     @NonNull
     @Override
@@ -181,21 +170,15 @@ public class BoardModel implements Serializable, Cloneable {
         for (i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 Piece tempPiece = pieceAt(7 - i, j);
-                char ch = 0;
                 if (tempPiece == null) c++;
                 else {
                     if (c > 0) {
                         FEN.append(c);
                         c = 0;
                     }
-                    Rank r = tempPiece.getRank();
-                    if (r == Rank.PAWN) ch = 'p';
-                    else if (r == Rank.BISHOP) ch = 'b';
-                    else if (r == Rank.KNIGHT) ch = 'n';
-                    else if (r == Rank.ROOK) ch = 'r';
-                    else if (r == Rank.QUEEN) ch = 'q';
-                    else if (r == Rank.KING) ch = 'k';
-                    if (tempPiece.isWhite()) ch = Character.toUpperCase(ch);
+                    char ch = tempPiece.getRank().toString().charAt(0);
+                    if (tempPiece.getRank() == Rank.KNIGHT) ch = 'N';
+                    if (!tempPiece.isWhite()) ch = Character.toLowerCase(ch);
                     FEN.append(ch);
                 }
             }
@@ -206,28 +189,25 @@ public class BoardModel implements Serializable, Cloneable {
             FEN.append("/");
         }
 
-        if (GameActivity.getGameState() == ChessState.WHITETOPLAY) FEN.append(" w");
-        else if (GameActivity.getGameState() == ChessState.BLACKTOPLAY) FEN.append(" b");
-
+        if (GameActivity.getGameState() == ChessState.WHITE_TO_PLAY) FEN.append(" w");
+        else if (GameActivity.getGameState() == ChessState.BLACK_TO_PLAY) FEN.append(" b");
         FEN.append(" ");
-//        King whiteKing = boardModel.getWhiteKing();
-//        King blackKing = boardModel.getBlackKing();
-//        if (whiteKing != null) {
-//            if (whiteKing.canShortCastle(this)) FEN.append('K');
-//            if (whiteKing.canLongCastle(this)) FEN.append('Q');
-//        }
-//        if (blackKing != null) {
-//            if (blackKing.canShortCastle(this)) FEN.append('k');
-//            if (blackKing.canLongCastle(this)) FEN.append('q');
-//        }
-//        FEN.append(" ");
-        FEN.append(" - - ");
 
-//        if (BoardModel.enPassantPawn != null) {
-//            Pawn enPassantPawn = BoardModel.enPassantPawn;
-//            FEN.append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
-//        }
+        if (whiteKing != null) {
+            if (whiteKing.isShortCastled()) FEN.append('K');
+            if (whiteKing.isLongCastled()) FEN.append('Q');
+        }
+        if (blackKing != null) {
+            if (blackKing.isShortCastled()) FEN.append('k');
+            if (blackKing.isLongCastled()) FEN.append('q');
+        }
+        FEN.append(" ");
+//        FEN.append(" - - ");
 
+        if (BoardModel.enPassantPawn != null) {
+            Pawn enPassantPawn = BoardModel.enPassantPawn;
+            FEN.append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+        }
         return String.valueOf(FEN);
     }
 }

@@ -1,7 +1,7 @@
 package com.drdedd.simplechess_temp.GameData;
 
 /**
- * Player type and state of check (White/Black)
+ * Player type (White/Black)
  */
 public enum Player {
     WHITE(false), BLACK(false);
