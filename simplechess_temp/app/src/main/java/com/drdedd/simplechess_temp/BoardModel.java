@@ -1,8 +1,11 @@
 package com.drdedd.simplechess_temp;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
+import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.pieces.Bishop;
@@ -16,6 +19,7 @@ import com.drdedd.simplechess_temp.pieces.Rook;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class BoardModel implements Serializable, Cloneable {
     /**
@@ -24,20 +28,37 @@ public class BoardModel implements Serializable, Cloneable {
     public HashSet<Piece> pieces = new HashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
-    public static Pawn enPassantPawn = null;
+    public Pawn enPassantPawn = null;
+    private final boolean invertBlackSVGs;
 //    private final String TAG = "BoardModel";
 
-    BoardModel() {
+    BoardModel(Context context) {
+        DataManager dataManager = new DataManager(context);
+        invertBlackSVGs = dataManager.invertBlackSVGEnabled();
+
+//        whiteResIDs = new HashMap<>(Map.of("KING", R.drawable.kw, "QUEEN", R.drawable.qw, "ROOK", R.drawable.rw, "BISHOP", R.drawable.bw, "KNIGHT", R.drawable.nw, "PAWN", R.drawable.pw));
+//        if (invertBlackSVGs)
+//            blackResIDs = new HashMap<>(Map.of("KING", R.drawable.kb, "QUEEN", R.drawable.qb, "ROOK", R.drawable.rb, "BISHOP", R.drawable.bb, "KNIGHT", R.drawable.nb, "PAWN", R.drawable.pb));
+//        else
+//            blackResIDs = new HashMap<>(Map.of("KING", R.drawable.kbi, "QUEEN", R.drawable.qbi, "ROOK", R.drawable.rbi, "BISHOP", R.drawable.bbi, "KNIGHT", R.drawable.nbi, "PAWN", R.drawable.pbi));
+
         resetBoard();
         resIDs.put(Player.WHITE + Rank.QUEEN.toString(), R.drawable.qw);
         resIDs.put(Player.WHITE + Rank.ROOK.toString(), R.drawable.rw);
         resIDs.put(Player.WHITE + Rank.BISHOP.toString(), R.drawable.bw);
         resIDs.put(Player.WHITE + Rank.KNIGHT.toString(), R.drawable.nw);
 
-        resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qb);
-        resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rb);
-        resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bb);
-        resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nb);
+        if (invertBlackSVGs) {
+            resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qbi);
+            resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rbi);
+            resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bbi);
+            resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nbi);
+        } else {
+            resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qb);
+            resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rb);
+            resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bb);
+            resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nb);
+        }
     }
 
     /**
@@ -47,47 +68,59 @@ public class BoardModel implements Serializable, Cloneable {
         int i;
         pieces.clear();
         for (i = 0; i <= 1; i++) {
-//            Rook pieces
             addPiece(new Rook(Player.WHITE, 0, i * 7, R.drawable.rw));
-            addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rb));
-
-//            Bishop pieces
             addPiece(new Bishop(Player.WHITE, 0, 2 + i * 3, R.drawable.bw));
-            addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb));
-
-//            Knight pieces
             addPiece(new Knight(Player.WHITE, 0, 1 + i * 5, R.drawable.nw));
-            addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb));
+
+            if (invertBlackSVGs) {
+                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bbi));
+                addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rbi));
+                addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nbi));
+            } else {
+                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb));
+                addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rb));
+                addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb));
+            }
+
         }
 
 //        King and Queen pieces
-        whiteKing = new King(Player.WHITE, 0, 4, R.drawable.kw);
-        blackKing = new King(Player.BLACK, 7, 4, R.drawable.kb);
-
-        addPiece(whiteKing);
+        addPiece(new King(Player.WHITE, 0, 4, R.drawable.kw));
         addPiece(new Queen(Player.WHITE, 0, 3, R.drawable.qw));
 
-        addPiece(blackKing);
-        addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb));
+        if (invertBlackSVGs) {
+            addPiece(new King(Player.BLACK, 7, 4, R.drawable.kbi));
+            addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qbi));
+        } else {
+            addPiece(new King(Player.BLACK, 7, 4, R.drawable.kb));
+            addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb));
+        }
 
 //        Pawn pieces
         for (i = 0; i < 8; i++) {
             addPiece(new Pawn(Player.WHITE, 1, i, R.drawable.pw));
-            addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb));
+            if (invertBlackSVGs) addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pbi));
+            else addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb));
         }
         Player.WHITE.setInCheck(false);
         Player.BLACK.setInCheck(false);
     }
 
     public King getBlackKing() {
-        if (blackKing == null) for (Piece piece : pieces)
-            if (piece.isKing() && !piece.isWhite()) return (King) piece;
+        for (Piece piece : pieces)
+            if (piece.isKing() && !piece.isWhite()) {
+                blackKing = (King) piece;
+                break;
+            }
         return blackKing;
     }
 
     public King getWhiteKing() {
-        if (whiteKing == null) for (Piece piece : pieces)
-            if (piece.isKing() && piece.isWhite()) return (King) piece;
+        for (Piece piece : pieces)
+            if (piece.isKing() && piece.isWhite()) {
+                whiteKing = (King) piece;
+                break;
+            }
         return whiteKing;
     }
 
@@ -151,12 +184,11 @@ public class BoardModel implements Serializable, Cloneable {
     public BoardModel clone() {
         try {
             BoardModel boardModelClone = (BoardModel) super.clone();
-
             boardModelClone.pieces = new HashSet<>();
             for (Piece piece : pieces) boardModelClone.pieces.add(piece.clone());
 
-            boardModelClone.whiteKing = (King) whiteKing.clone();
-            boardModelClone.blackKing = (King) blackKing.clone();
+            if (enPassantPawn != null) boardModelClone.enPassantPawn = (Pawn) enPassantPawn.clone();
+            else boardModelClone.enPassantPawn = null;
 
             return boardModelClone;
         } catch (CloneNotSupportedException e) {
@@ -189,25 +221,26 @@ public class BoardModel implements Serializable, Cloneable {
             FEN.append("/");
         }
 
-        if (GameActivity.getGameState() == ChessState.WHITE_TO_PLAY) FEN.append(" w");
-        else if (GameActivity.getGameState() == ChessState.BLACK_TO_PLAY) FEN.append(" b");
-        FEN.append(" ");
+        if (GameActivity.getGameState() == ChessState.WHITE_TO_PLAY) FEN.append(" w ");
+        else if (GameActivity.getGameState() == ChessState.BLACK_TO_PLAY) FEN.append(" b ");
 
+        King whiteKing = getWhiteKing(), blackKing = getBlackKing();
+        StringBuilder castleRights = new StringBuilder();
         if (whiteKing != null) {
-            if (whiteKing.isShortCastled()) FEN.append('K');
-            if (whiteKing.isLongCastled()) FEN.append('Q');
+//            Log.d(TAG, "toFEN: White King Short Castled: " + whiteKing.isShortCastled() + " Long Castled: " + whiteKing.isLongCastled());
+            if (whiteKing.isNotShortCastled()) castleRights.append('K');
+            if (whiteKing.isNotLongCastled()) castleRights.append('Q');
         }
         if (blackKing != null) {
-            if (blackKing.isShortCastled()) FEN.append('k');
-            if (blackKing.isLongCastled()) FEN.append('q');
+//            Log.d(TAG, "toFEN: Black King Short Castled: " + blackKing.isShortCastled() + " Long Castled: " + blackKing.isLongCastled());
+            if (blackKing.isNotShortCastled()) castleRights.append('k');
+            if (blackKing.isNotLongCastled()) castleRights.append('q');
         }
-        FEN.append(" ");
-//        FEN.append(" - - ");
+        if (castleRights.length() == 0) FEN.append(" - ");
+        else FEN.append(castleRights);
 
-        if (BoardModel.enPassantPawn != null) {
-            Pawn enPassantPawn = BoardModel.enPassantPawn;
-            FEN.append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
-        }
+        if (enPassantPawn != null)
+            FEN.append(" ").append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
         return String.valueOf(FEN);
     }
 }

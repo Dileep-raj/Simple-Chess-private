@@ -13,4 +13,7 @@
     <string name="export_pgn">Export PGN</string>
     <string name="full_screen">Full Screen</string>
     <string name="undo">Undo</string>
+    <string name="copy_fen">Copy FEN</string>
+    <string name="fen">FEN</string>
+    <string name="pgn">PGN</string>
 </resources>

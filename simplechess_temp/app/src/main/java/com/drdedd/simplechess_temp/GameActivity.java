@@ -30,7 +30,6 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Stack;
 
-
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
@@ -48,6 +47,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private static ChessState gameState;
     private boolean newGame;
     private Stack<BoardModel> boardModelStack;
+    private ClipboardManager clipboard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         blackName = findViewById(R.id.blackNameTV);
         btn_undo_move = findViewById(R.id.btn_undo_move);
 
+        clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         Bundle extras = getIntent().getExtras();
         if (extras != null) newGame = extras.getBoolean("newGame");
         initializeData();
@@ -78,6 +79,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
         findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
+        findViewById(R.id.btn_copy_fen).setOnClickListener(view -> copyFEN());
         btn_undo_move.setOnClickListener(view -> undoLastMove());
 
         btn_undo_move.setEnabled(pgn.lastMove() != null);
@@ -98,7 +100,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
 
         if (boardModel == null || pgn == null) {
-            boardModel = new BoardModel();
+            boardModel = new BoardModel(getApplicationContext());
             boardModelStack = new Stack<>();
             boardModelStack.push(boardModel);
             pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
@@ -153,18 +155,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 toggleGameState();
                 chessBoard.invalidate();
                 Piece movingPiece = pieceAt(toRow, toCol);
-                if (movingPiece != null)
-                    if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2) {
-                        BoardModel.enPassantPawn = (Pawn) movingPiece;
-//                        Log.d(TAG, "movePiece: En-passant Pawn: " + movingPiece.getPosition());
-                    } else BoardModel.enPassantPawn = null;
+                if (movingPiece != null) if (movingPiece.getRank() == Rank.PAWN)
+                    if (Math.abs(fromRow - toRow) == 2)
+                        boardModel.enPassantPawn = (Pawn) movingPiece;
+                    else boardModel.enPassantPawn = null;
 
                 saveGame();
                 pushToStack();
                 chessBoard.isChecked();
             }
             btn_undo_move.setEnabled(pgn.lastMove() != null);
-            updatePGNView();
             return result;
         }
     }
@@ -182,12 +182,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     public void reset() {
-        boardModel = new BoardModel();
+        boardModel = new BoardModel(getApplicationContext());
         pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
         boardModelStack = new Stack<>();
         pushToStack();
         Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
-        Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
+//        Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
         gameState = pgn.getGameState();
         PGN_textView.setText(pgn.getPGN());
         btn_undo_move.setEnabled(pgn.lastMove() != null);
@@ -210,10 +210,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
     }
 
-    public void copyPGN() {
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("PGN", pgn.toString());
-        clipboard.setPrimaryClip(clip);
+    private void copyFEN() {
+        clipboard.setPrimaryClip(ClipData.newPlainText("FEN", boardModel.toFEN()));
+    }
+
+    private void copyPGN() {
+        clipboard.setPrimaryClip(ClipData.newPlainText("PGN", pgn.toString()));
     }
 
     @Override
@@ -250,10 +252,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return gameState;
     }
 
-    public void toggleGameState() {
+    private void toggleGameState() {
         if (gameState == ChessState.WHITE_TO_PLAY) gameState = ChessState.BLACK_TO_PLAY;
         else if (gameState == ChessState.BLACK_TO_PLAY) gameState = ChessState.WHITE_TO_PLAY;
-        Log.d(TAG, "toggleGameState: GameState toggled");
+//        Log.d(TAG, "toggleGameState: GameState toggled");
         pgn.setGameState(gameState);
         showGameStateView();
     }
@@ -265,29 +267,22 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     private void undoLastMove() {
-        String move = pgn.removeLast();
+        pgn.removeLast();
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
             toggleGameState();
             updatePGNView();
         }
 
-        for (BoardModel boardModel : boardModelStack)
-//            Log.d(TAG, "previousMove: " + boardModel.hashCode() + " " + boardModel.toFEN());
-            Log.d(TAG, "previousMove: " + boardModel.hashCode() + boardModel);
-
         boardModel = boardModelStack.peek().clone();
         btn_undo_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
         chessBoard.isChecked();
         saveGame();
-        Log.d(TAG, "lastMove: " + move);
-        Log.d(TAG, "Current last move: " + pgn.lastMove());
     }
 
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
-        Log.d(TAG, "pushToStack: pushed current BoardModel to stack");
     }
 
     private void updatePGNView() {

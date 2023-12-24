@@ -140,7 +140,6 @@
             android:id="@+id/SelectThemeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:text="@string/select_board_theme"
             android:textColor="@color/light_grey_text"
             android:textSize="18sp"
@@ -159,8 +158,20 @@
             app:layout_constraintStart_toEndOf="@+id/SelectThemeText"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/invertBlackSVGToggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_marginTop="73dp"
+        android:text="Invert Black Pieces"
+        android:textColor="@color/light_grey_text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ThemeMenuLayout" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider3"
@@ -169,7 +180,7 @@
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ThemeMenuLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/invertBlackSVGToggle" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/cheatToggle"
@@ -182,6 +193,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider3" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

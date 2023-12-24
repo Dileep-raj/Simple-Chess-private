@@ -8,7 +8,7 @@
     tools:context=".GameActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+        android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -18,23 +18,47 @@
 
         <Button
             android:id="@+id/btn_copy_pgn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/ic_copy"
-            android:contentDescription="@string/copy_pgn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/pgn"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:drawableLeftCompat="@drawable/ic_copy"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_copy_fen"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:id="@+id/btn_copy_fen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/fen"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:drawableLeftCompat="@drawable/ic_copy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_export_pgn"
+            app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
             android:id="@+id/btn_export_pgn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:background="@drawable/ic_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/export_pgn"
+            android:text="@string/pgn"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            app:drawableLeftCompat="@drawable/ic_save"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <HorizontalScrollView
@@ -110,8 +134,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_undo_move"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_undo_move"
@@ -122,8 +145,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_save_exit"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_save_exit"
@@ -134,8 +156,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_undo_move"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.5" />
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -21,16 +21,12 @@ import java.util.Date;
 import java.util.LinkedList;
 
 public class PGN implements Serializable {
-    //    private StringBuilder pgn;
-    //    private int moveCount;
-    private final String app, date, TAG = "PGN";
+    private final String app, date;
     private String white, black, result;
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
 
     PGN(String app, String white, String black, String date, ChessState gameState) {
-//        this.pgn = pgn;
-//        this.moveCount = 0;
         this.app = app;
         this.white = white;
         this.black = black;
@@ -61,18 +57,8 @@ public class PGN implements Serializable {
     }
 
     public void addToPGN(Piece piece, String move) {
-//        moveCount++;
-//        if (moveCount % 2 == 1) {
-//            pgn.append(moveCount / 2 + 1).append(". ");
-//        }
-
-        if (move.equals("")) {
-//            pgn.append(piece.getPosition()).append(" ");
-            moves.addLast(piece.getPosition() + " ");
-        } else {
-//            pgn.append(move).append(" ");
-            moves.addLast(move + " ");
-        }
+        if (move.equals("")) moves.addLast(piece.getPosition() + " ");
+        else moves.addLast(move + " ");
 
         switch (GameActivity.getGameState()) {
             case WHITE_TO_PLAY:
@@ -94,9 +80,8 @@ public class PGN implements Serializable {
         return moves.peekLast();
     }
 
-    public String removeLast() {
-        if (!moves.isEmpty()) return moves.removeLast();
-        return "";
+    public void removeLast() {
+        if (!moves.isEmpty()) moves.removeLast();
     }
 
     public ChessState getGameState() {

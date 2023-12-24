@@ -21,10 +21,10 @@ import java.util.Objects;
 public class SettingsActivity extends AppCompatActivity {
     private DataManager dataManager;
     private EditText whiteName, blackName;
-    private SwitchCompat fullScreenToggle, cheatToggle;
+    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle;
     private Spinner themeSpinnerMenu;
     private final BoardTheme[] themes = BoardTheme.getValues();
-    private boolean fullScreen, cheatMode;
+    private boolean fullScreen, cheatMode, invertBlackSVGs;
     private String[] items;
 
     @Override
@@ -37,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
         dataManager = new DataManager(this);
         fullScreen = dataManager.isFullScreen();
         cheatMode = dataManager.cheatModeEnabled();
+        invertBlackSVGs = dataManager.invertBlackSVGEnabled();
 
         if (fullScreen)
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -51,11 +52,13 @@ public class SettingsActivity extends AppCompatActivity {
         blackName = findViewById(R.id.blackName);
         fullScreenToggle = findViewById(R.id.fullScreenToggle);
         cheatToggle = findViewById(R.id.cheatToggle);
+        invertBlackSVGToggle = findViewById(R.id.invertBlackSVGToggle);
 
         initialize();
 
         fullScreenToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> fullScreen = isChecked);
         cheatToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> cheatMode = isChecked);
+        invertBlackSVGToggle.setOnCheckedChangeListener((compoundButton, isChecked) -> invertBlackSVGs = isChecked);
         themeSpinnerMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -76,6 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         themeSpinnerMenu.setAdapter(adapter);
         themeSpinnerMenu.setSelection(dataManager.getBoardTheme().ordinal());
         cheatToggle.setChecked(cheatMode);
+        invertBlackSVGToggle.setChecked(invertBlackSVGs);
     }
 
     @Override
@@ -88,6 +92,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (black.equals("")) black = "Black";
         dataManager.saveWhiteBlack(white, black);
         dataManager.setCheatMode(cheatMode);
+        dataManager.setInvertBlackSVG(invertBlackSVGs);
     }
 
     @Override

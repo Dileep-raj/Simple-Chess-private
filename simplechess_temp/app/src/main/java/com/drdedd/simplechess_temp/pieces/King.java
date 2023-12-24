@@ -83,12 +83,12 @@ public class King extends Piece {
         return castled;
     }
 
-    public boolean isShortCastled() {
-        return shortCastled;
+    public boolean isNotShortCastled() {
+        return !shortCastled && !castled;
     }
 
-    public boolean isLongCastled() {
-        return longCastled;
+    public boolean isNotLongCastled() {
+        return !longCastled && !castled;
     }
 
     public boolean isChecked(BoardInterface boardInterface) {

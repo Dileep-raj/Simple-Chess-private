@@ -10,7 +10,7 @@ public enum BoardTheme {
     GREEN("Green", R.color.theme_green_light, R.color.theme_green_dark),
     DEFAULT_BROWN("Default Brown", R.color.theme_default_brown_light, R.color.theme_default_brown_dark),
     LICHESS("Lichess", R.color.theme_lichess_light, R.color.theme_lichess_dark),
-    LICHESS2("Lichess 2", R.color.theme_lichess2_light, R.color.theme_lichess2_dark),
+    LICHESS_DARK("Lichess dark", R.color.theme_lichess2_light, R.color.theme_lichess2_dark),
     BLUE("Blue", R.color.theme_blue_light, R.color.theme_blue_dark);
     final int lightColor, darkColor;
     public static final BoardTheme[] values = values();

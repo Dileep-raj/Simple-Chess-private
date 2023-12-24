@@ -44,7 +44,7 @@ public class ChessBoard extends View {
     public BoardInterface boardInterface;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
-    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight,R.drawable.check);
+    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kbi, R.drawable.qbi, R.drawable.rbi, R.drawable.bbi, R.drawable.nbi, R.drawable.pbi, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight, R.drawable.check);
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
     private final Paint p = new Paint();
     private Piece previousSelectedPiece = null;
@@ -256,8 +256,8 @@ public class ChessBoard extends View {
 //                Log.d(TAG, "Move: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
-                    if (pawn.canCaptureEnPassant()) {
-                        boardInterface.removePiece(BoardModel.enPassantPawn);
+                    if (pawn.canCaptureEnPassant(boardInterface)) {
+                        boardInterface.removePiece(boardInterface.getBoardModel().enPassantPawn);
                         movingPiece.moveTo(toRow, toCol);
 //                        Log.d(TAG, "movePiece: enPassant Capture " + BoardModel.enPassantPawn.getPosition());
                         boardInterface.addToPGN(pawn, "");

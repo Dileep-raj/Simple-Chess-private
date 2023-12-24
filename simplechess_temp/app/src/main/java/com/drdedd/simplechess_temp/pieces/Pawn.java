@@ -31,8 +31,8 @@ public class Pawn extends Piece {
         return false;
     }
 
-    public boolean canCaptureEnPassant() {
-        Pawn enPassantPawn = BoardModel.enPassantPawn;
+    public boolean canCaptureEnPassant(BoardInterface boardInterface) {
+        Pawn enPassantPawn = boardInterface.getBoardModel().enPassantPawn;
         if (enPassantPawn != null)
             return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
         return false;
@@ -52,14 +52,14 @@ public class Pawn extends Piece {
             if (tempPiece != null) if (tempPiece.getPlayer() != getPlayer())
                 legalMoves.add((row + direction) * 8 + col + i);
         }
-        if (canCaptureEnPassant())
-            legalMoves.add(BoardModel.enPassantPawn.getCol() + (BoardModel.enPassantPawn.getRow() + direction) * 8);
+        if (canCaptureEnPassant(boardInterface))
+            legalMoves.add(boardInterface.getBoardModel().enPassantPawn.getCol() + (boardInterface.getBoardModel().enPassantPawn.getRow() + direction) * 8);
         return legalMoves;
     }
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        if (Math.abs(col - getCol()) == 1) return canCaptureEnPassant();
+        if (Math.abs(col - getCol()) == 1) return canCaptureEnPassant(boardInterface);
         if (getCol() == col)
             if ((row - getRow()) * direction == 1 || (!moved && (row - getRow()) * direction == 2 && boardInterface.pieceAt(row - direction, col) == null))
                 return moved = true;
