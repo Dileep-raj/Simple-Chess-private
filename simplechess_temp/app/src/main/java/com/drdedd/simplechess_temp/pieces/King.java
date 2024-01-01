@@ -5,7 +5,6 @@ import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class King extends Piece {
     private boolean castled, longCastled, shortCastled;
@@ -19,7 +18,7 @@ public class King extends Piece {
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
 //        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
-        return getLegalMoves(boardInterface).contains(row * 8 + col);
+        return getPossibleMoves(boardInterface).contains(row * 8 + col);
     }
 
     @Override
@@ -29,8 +28,8 @@ public class King extends Piece {
     }
 
     @Override
-    public Set<Integer> getLegalMoves(BoardInterface boardInterface) {
-        HashSet<Integer> legalMoves = new HashSet<>();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int row = getRow(), col = getCol(), i, j, newRow, newCol;
         for (i = -1; i <= 1; i++)
             for (j = -1; j <= 1; j++) {
@@ -38,11 +37,11 @@ public class King extends Piece {
                 newCol = col + j;
                 if (newRow == row && newCol == col || newCol < 0 || newCol > 7 || newRow < 0 || newRow > 7)
                     continue;
-                addMove(legalMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
+                addMove(possibleMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
             }
-        if (canShortCastle(boardInterface)) legalMoves.add(getRow() * 8 + getCol() + 2);
-        if (canLongCastle(boardInterface)) legalMoves.add(getRow() * 8 + getCol() - 2);
-        return legalMoves;
+        if (canShortCastle(boardInterface)) possibleMoves.add(getRow() * 8 + getCol() + 2);
+        if (canLongCastle(boardInterface)) possibleMoves.add(getRow() * 8 + getCol() - 2);
+        return possibleMoves;
     }
 
     public boolean canShortCastle(BoardInterface boardInterface) {

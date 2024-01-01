@@ -21,7 +21,7 @@ import java.util.HashMap;
  */
 public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile";
-    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
+    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG", computeLegalMovesLabel = "computeLegalMoves";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -129,5 +129,14 @@ public class DataManager {
     public void setInvertBlackSVG(boolean invertBlackSVGs) {
         editor.putBoolean(invertBlackSVGLabel, invertBlackSVGs);
         editor.commit();
+    }
+
+    public void setComputeLegalMoves(boolean computeLegalMoves) {
+        editor.putBoolean(computeLegalMovesLabel, computeLegalMoves);
+        editor.commit();
+    }
+
+    public boolean computeLegalMovesEnabled() {
+        return sharedPreferences.getBoolean(computeLegalMovesLabel, false);
     }
 }

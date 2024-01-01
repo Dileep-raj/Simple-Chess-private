@@ -13,7 +13,7 @@ public class Bishop extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        HashSet<Integer> legalMoves = getLegalMoves(boardInterface);
+        HashSet<Integer> legalMoves = getPossibleMoves(boardInterface);
         return legalMoves.contains(row * 8 + col);
     }
 
@@ -23,21 +23,21 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public HashSet<Integer> getLegalMoves(BoardInterface boardInterface) {
-        HashSet<Integer> legalMoves = new HashSet<>();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int i, j;
         //        Top right diagonal
         for (i = getRow() + 1, j = getCol() + 1; i < 8 && j < 8; i++, j++)
-            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
+            if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Bottom left diagonal
         for (i = getRow() - 1, j = getCol() - 1; i >= 0 && j >= 0; i--, j--)
-            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
+            if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Bottom right diagonal
         for (i = getRow() - 1, j = getCol() + 1; i >= 0 && j < 8; i--, j++)
-            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
+            if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Top left diagonal
         for (i = getRow() + 1, j = getCol() - 1; i < 8 && j >= 0; i++, j--)
-            if (!addMove(legalMoves, boardInterface.pieceAt(i, j), i, j)) break;
-        return legalMoves;
+            if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
+        return possibleMoves;
     }
 }

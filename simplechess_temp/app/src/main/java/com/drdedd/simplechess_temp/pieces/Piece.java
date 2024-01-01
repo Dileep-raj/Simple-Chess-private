@@ -8,7 +8,6 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 
 public abstract class Piece implements Serializable, Cloneable {
     private final Player player;
@@ -85,15 +84,10 @@ public abstract class Piece implements Serializable, Cloneable {
      *
      * @return Set of legal positions of the piece
      */
-    public abstract Set<Integer> getLegalMoves(BoardInterface boardInterface);
+    public abstract HashSet<Integer> getPossibleMoves(BoardInterface boardInterface);
 
     public boolean hasNotMoved() {
         return !moved;
-    }
-
-    public Player getOpponentPlayer() {
-        if (this.player == Player.WHITE) return Player.BLACK;
-        return Player.WHITE;
     }
 
     public boolean addMove(HashSet<Integer> legalMoves, Piece piece, int row, int col) {

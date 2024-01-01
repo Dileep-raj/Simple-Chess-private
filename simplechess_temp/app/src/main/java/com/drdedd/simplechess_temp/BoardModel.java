@@ -19,7 +19,6 @@ import com.drdedd.simplechess_temp.pieces.Rook;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 public class BoardModel implements Serializable, Cloneable {
     /**
@@ -69,19 +68,18 @@ public class BoardModel implements Serializable, Cloneable {
         pieces.clear();
         for (i = 0; i <= 1; i++) {
             addPiece(new Rook(Player.WHITE, 0, i * 7, R.drawable.rw));
-            addPiece(new Bishop(Player.WHITE, 0, 2 + i * 3, R.drawable.bw));
             addPiece(new Knight(Player.WHITE, 0, 1 + i * 5, R.drawable.nw));
+            addPiece(new Bishop(Player.WHITE, 0, 2 + i * 3, R.drawable.bw));
 
             if (invertBlackSVGs) {
-                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bbi));
                 addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rbi));
                 addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nbi));
+                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bbi));
             } else {
-                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb));
                 addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rb));
                 addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb));
+                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb));
             }
-
         }
 
 //        King and Queen pieces
@@ -106,6 +104,11 @@ public class BoardModel implements Serializable, Cloneable {
         Player.BLACK.setInCheck(false);
     }
 
+    /**
+     * Returns Black king from <code>{@link BoardModel#pieces}</code> set
+     *
+     * @return <code>King</code>
+     */
     public King getBlackKing() {
         for (Piece piece : pieces)
             if (piece.isKing() && !piece.isWhite()) {
@@ -115,6 +118,11 @@ public class BoardModel implements Serializable, Cloneable {
         return blackKing;
     }
 
+    /**
+     * Returns White king from <code>{@link BoardModel#pieces}</code> set
+     *
+     * @return <code>King</code>
+     */
     public King getWhiteKing() {
         for (Piece piece : pieces)
             if (piece.isKing() && piece.isWhite()) {
@@ -124,6 +132,13 @@ public class BoardModel implements Serializable, Cloneable {
         return whiteKing;
     }
 
+    /**
+     * Returns piece at a given position
+     *
+     * @param row Row number
+     * @param col Column number
+     * @return <code>Piece|null</code>
+     */
     public Piece pieceAt(int row, int col) {
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
         for (Piece piece : pieces)
@@ -131,14 +146,33 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
+    /**
+     * Removes the piece from <code>{@link BoardModel#pieces}</code> set
+     *
+     * @param piece <code>Piece</code> to be removed
+     */
     public void removePiece(Piece piece) {
         pieces.remove(piece);
     }
 
+    /**
+     * Adds the given piece into <code>{@link BoardModel#pieces}</code> set
+     *
+     * @param piece <code>Piece</code> to be added
+     */
     public void addPiece(Piece piece) {
         pieces.add(piece);
     }
 
+    /**
+     * Promotes a pawn to higher rank on reaching last rank
+     *
+     * @param pawn <code>Pawn</code> to be promoted
+     * @param rank <code>Queen|Rook|Knight|Bishop</code>
+     * @param row  Row of the pawn
+     * @param col  Column of the pawn
+     * @return <code>Piece</code> - Promoted piece
+     */
     public Piece promote(Piece pawn, Rank rank, int row, int col) {
         Piece piece = null;
         if (rank == Rank.QUEEN)
@@ -158,24 +192,36 @@ public class BoardModel implements Serializable, Cloneable {
         return piece;
     }
 
+    /**
+     * Converts the <code>BoardModel</code> to <code>String</code> type <br>
+     * <ul>
+     * <li>UpperCase letter represents White Piece <br></li>
+     * <li>LowerCase letter Piece represents Black Piece <br></li>
+     * <li>Hyphen (-) represents empty square</li>
+     * </ul>
+     *
+     * @return <code>String</code>
+     */
     @NonNull
     @Override
     public String toString() {
         StringBuilder board = new StringBuilder("\n");
         int i, j;
-        for (i = 0; i < 8; i++) {
+        for (i = 7; i >= 0; i--) {
+            board.append(' ').append(i + 1).append(' ');
             for (j = 0; j < 8; j++) {
-                Piece tempPiece = pieceAt(7 - i, j);
+                Piece tempPiece = pieceAt(i, j);
                 if (tempPiece == null) board.append("- ");
                 else {
                     char ch = tempPiece.getRank().toString().charAt(0);
                     if (tempPiece.getRank() == Rank.KNIGHT) ch = 'N';
                     if (!tempPiece.isWhite()) ch = Character.toLowerCase(ch);
-                    board.append(ch).append(" ");
+                    board.append(ch).append(' ');
                 }
             }
             board.append("\n");
         }
+        board.append("   a b c d e f g h");
         return String.valueOf(board);
     }
 
@@ -196,12 +242,17 @@ public class BoardModel implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * Converts current position to FEN Notation <br>
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation">More about FEN</a>
+     */
     public String toFEN() {
         StringBuilder FEN = new StringBuilder();
         int i, j, c = 0;
-        for (i = 0; i < 8; i++) {
+        for (i = 7; i >= 0; i--) {
             for (j = 0; j < 8; j++) {
-                Piece tempPiece = pieceAt(7 - i, j);
+                Piece tempPiece = pieceAt(i, j);
                 if (tempPiece == null) c++;
                 else {
                     if (c > 0) {
@@ -240,7 +291,7 @@ public class BoardModel implements Serializable, Cloneable {
         else FEN.append(castleRights);
 
         if (enPassantPawn != null)
-            FEN.append(" ").append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+            FEN.append(' ').append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
         return String.valueOf(FEN);
     }
 }

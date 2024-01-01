@@ -39,22 +39,22 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public HashSet<Integer> getLegalMoves(BoardInterface boardInterface) {
-        HashSet<Integer> legalMoves = new HashSet<>();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int col = getCol(), row = getRow(), i;
         if (boardInterface.pieceAt(row + direction, col) == null)
-            legalMoves.add((row + direction) * 8 + col);
+            possibleMoves.add((row + direction) * 8 + col);
         if (!moved && boardInterface.pieceAt(row + 2 * direction, col) == null && boardInterface.pieceAt(row + direction, col) == null) {
-            legalMoves.add((row + 2 * direction) * 8 + col);
+            possibleMoves.add((row + 2 * direction) * 8 + col);
         }
         for (i = -1; i <= 1; i += 2) {
             Piece tempPiece = boardInterface.pieceAt(row + direction, col + i);
             if (tempPiece != null) if (tempPiece.getPlayer() != getPlayer())
-                legalMoves.add((row + direction) * 8 + col + i);
+                possibleMoves.add((row + direction) * 8 + col + i);
         }
         if (canCaptureEnPassant(boardInterface))
-            legalMoves.add(boardInterface.getBoardModel().enPassantPawn.getCol() + (boardInterface.getBoardModel().enPassantPawn.getRow() + direction) * 8);
-        return legalMoves;
+            possibleMoves.add(boardInterface.getBoardModel().enPassantPawn.getCol() + (boardInterface.getBoardModel().enPassantPawn.getRow() + direction) * 8);
+        return possibleMoves;
     }
 
     @Override

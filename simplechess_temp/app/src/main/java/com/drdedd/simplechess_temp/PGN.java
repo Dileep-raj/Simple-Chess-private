@@ -20,7 +20,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.LinkedList;
 
+/**
+ * <p>PGN (Portable Game Notation) is a standard text format used to record Chess game moves with standard notations</p>
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation"> More about PGN </a>
+ */
 public class PGN implements Serializable {
+    public static final String longCastle = "O-O-O", shortCastle = "O-O", capture = "Capture", promote = "promote";
     private final String app, date;
     private String white, black, result;
     private ChessState gameState;
@@ -35,6 +41,11 @@ public class PGN implements Serializable {
         moves.clear();
     }
 
+    /**
+     * Exports current PGN into a text file with <code>.pgn</code> extension
+     *
+     * @return <code>String</code> - Directory of the file
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("SimpleDateFormat")
     public String exportPGN() throws IOException {
@@ -57,8 +68,8 @@ public class PGN implements Serializable {
     }
 
     public void addToPGN(Piece piece, String move) {
-        if (move.equals("")) moves.addLast(piece.getPosition() + " ");
-        else moves.addLast(move + " ");
+        if (move.isEmpty()) moves.addLast(piece.getPosition());
+        else moves.addLast(move);
 
         switch (GameActivity.getGameState()) {
             case WHITE_TO_PLAY:
@@ -116,7 +127,7 @@ public class PGN implements Serializable {
         int length = moves.size();
         for (int i = 0; i < length; i++) {
             if (i % 2 == 0) pgn.append(i / 2 + 1).append(". ");
-            pgn.append(moves.get(i)).append(" ");
+            pgn.append(moves.get(i)).append(' ');
         }
         return pgn.toString();
     }
