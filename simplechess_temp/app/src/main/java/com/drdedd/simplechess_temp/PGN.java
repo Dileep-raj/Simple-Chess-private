@@ -28,7 +28,7 @@ import java.util.LinkedList;
 public class PGN implements Serializable {
     public static final String longCastle = "O-O-O", shortCastle = "O-O", capture = "Capture", promote = "promote";
     private final String app, date;
-    private String white, black, result;
+    private String white, black, result, termination = "";
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
 
@@ -119,7 +119,19 @@ public class PGN implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "[App \"" + app + "\"] [Date \"" + date + "\"] [White \"" + white + "\"] [Black \"" + black + "\"] [Result  \"" + result + "\"]" + getPGN();
+        return getTags() + getPGN();
+    }
+
+    private String getTags() {
+        StringBuilder tags = new StringBuilder();
+        tags.append("[App \"").append(app).append("\"] ");
+        tags.append("[Date \"").append(date).append("\"] ");
+        tags.append("[White \"").append(white).append("\"] ");
+        tags.append("[Black \"").append(black).append("\"] ");
+        tags.append("[Result  \"").append(result).append("\"] ");
+        if (!termination.isEmpty())
+            tags.append("[Termination \"").append(termination).append("\"] ");
+        return tags.toString();
     }
 
     public String getPGN() {
@@ -130,5 +142,13 @@ public class PGN implements Serializable {
             pgn.append(moves.get(i)).append(' ');
         }
         return pgn.toString();
+    }
+
+    public void setTermination(String termination) {
+        this.termination = termination;
+    }
+
+    public String getTermination() {
+        return termination;
     }
 }

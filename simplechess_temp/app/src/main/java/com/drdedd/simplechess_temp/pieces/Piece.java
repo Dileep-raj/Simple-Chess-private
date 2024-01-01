@@ -94,7 +94,7 @@ public abstract class Piece implements Serializable, Cloneable {
         if (piece == null) {
             legalMoves.add(row * 8 + col);
             return true;
-        } else if (isKing() && piece.isKing()) return false;
+        }
         else if (piece.getPlayer() != getPlayer()) legalMoves.add(row * 8 + col);
         return false;
     }

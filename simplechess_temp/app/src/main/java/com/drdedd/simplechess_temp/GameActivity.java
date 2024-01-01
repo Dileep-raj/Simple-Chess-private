@@ -24,6 +24,7 @@ import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -54,7 +56,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
-    protected boolean newGame;
+    protected boolean newGame, gameTerminated;
     protected Stack<BoardModel> boardModelStack;
     protected ClipboardManager clipboard;
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
@@ -107,9 +109,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     private void initializeData() {
+        gameTerminated = false;
 
         white = dataManager.getWhite();
+        Player.WHITE.setName(white);
         black = dataManager.getBlack();
+        Player.BLACK.setName(black);
 
         pgnDate = new SimpleDateFormat("yyyy.MM.dd");
 
@@ -138,7 +143,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 //        GameLogic.boardInterface = this;
         chessBoard.boardInterface = this;
         chessBoard.setTheme(theme);
-        chessBoard.isChecked();
+        isChecked();
 
         permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
@@ -194,7 +199,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 toggleGameState();
                 saveGame();
                 pushToStack();
-                chessBoard.isChecked();
+                isChecked();
                 if (Player.WHITE.isInCheck() || Player.BLACK.isInCheck()) printLegalMoves();
             }
             btn_undo_move.setEnabled(pgn.lastMove() != null);
@@ -273,7 +278,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 //            addToPGN(pawn, pawn.getPosition().charAt(1) + "=" + piece.getPosition().substring(1) + piece.getPosition().charAt(0));
             addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0));
             updateAll();
-            chessBoard.isChecked();
+            isChecked();
             chessBoard.invalidate();
 //            this.return true;
         });
@@ -303,8 +308,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     @SuppressLint("SetTextI18n")
     void updateGameStateView() {
-        if (gameState == ChessState.WHITE_TO_PLAY) gameStateView.setText(white);
-        else if (gameState == ChessState.BLACK_TO_PLAY) gameStateView.setText(black);
+        gameStateView.setText(playerToPlay().getName());
     }
 
     private void undoLastMove() {
@@ -318,7 +322,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         updateAll();
         btn_undo_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
-        chessBoard.isChecked();
+        isChecked();
         saveGame();
     }
 
@@ -326,6 +330,60 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         updateLegalMoves();
         updatePGNView();
         updateGameStateView();
+        checkGameTermination();
+    }
+
+    private void checkGameTermination() {
+        Log.d(TAG, "checkGameTermination: Checking for Termination");
+        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
+        Iterator<Map.Entry<Piece, HashSet<Integer>>> piecesIterator = pieces.iterator();
+        while (piecesIterator.hasNext()) {
+            Map.Entry<Piece, HashSet<Integer>> entry = piecesIterator.next();
+            if (!entry.getValue().isEmpty()) break;
+        }
+        if (!piecesIterator.hasNext()) {
+            gameTerminated = true;
+            String termination;
+            ChessState terminationState;
+            Log.d(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
+            isChecked();
+
+            if (!playerToPlay().isInCheck()) {
+                termination = "Draw by Stalemate";
+                terminationState = ChessState.STALEMATE;
+            } else {
+                termination = opponentPlayer(playerToPlay()).getName() + " wins by Checkmate ";
+                terminationState = ChessState.CHECKMATE;
+            }
+
+            pgn.setTermination(termination);
+            Log.d(TAG, "checkGameTermination: " + termination);
+            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            terminateGame(terminationState);
+        }
+    }
+
+    private void terminateGame(ChessState gameState) {
+        setGameState(gameState);
+        GameOverDialog gameOverDialog = new GameOverDialog(this, pgn);
+        gameOverDialog.show();
+
+        gameOverDialog.setOnDismissListener(dialogInterface -> finish());
+    }
+
+    public void isChecked() {
+        King whiteKing = boardModel.getWhiteKing();
+        King blackKing = boardModel.getBlackKing();
+        Player.WHITE.setInCheck(false);
+        Player.BLACK.setInCheck(false);
+        if (whiteKing.isChecked(this)) {
+            Player.WHITE.setInCheck(true);
+            Log.d(TAG, "isChecked: White King checked");
+        }
+        if (blackKing.isChecked(this)) {
+            Player.BLACK.setInCheck(true);
+            Log.d(TAG, "isChecked: Black King checked");
+        }
     }
 
     private void pushToStack() {
@@ -361,8 +419,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
     }
 
+    public static Player opponentPlayer(Player player) {
+        return player == Player.WHITE ? Player.BLACK : Player.WHITE;
+    }
+
+    public static Player playerToPlay() {
+        return gameState == ChessState.WHITE_TO_PLAY ? Player.WHITE : Player.BLACK;
+    }
+
     public static boolean isPieceToPlay(@NonNull Piece piece) {
-        return piece.getPlayer() == Player.WHITE && gameState == ChessState.WHITE_TO_PLAY || piece.getPlayer() == Player.BLACK && gameState == ChessState.BLACK_TO_PLAY;
+        return piece.getPlayer() == playerToPlay();
     }
 
 

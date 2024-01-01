@@ -282,21 +282,6 @@ public class ChessBoard extends View {
         return false;   //Default return false
     }
 
-    public void isChecked() {
-        whiteKing = boardInterface.getBoardModel().getWhiteKing();
-        blackKing = boardInterface.getBoardModel().getBlackKing();
-        Player.WHITE.setInCheck(false);
-        Player.BLACK.setInCheck(false);
-        if (whiteKing.isChecked(boardInterface)) {
-            Player.WHITE.setInCheck(true);
-            Log.d(TAG, "isChecked: White King checked");
-        }
-        if (blackKing.isChecked(boardInterface)) {
-            Player.BLACK.setInCheck(true);
-            Log.d(TAG, "isChecked: Black King checked");
-        }
-    }
-
     private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

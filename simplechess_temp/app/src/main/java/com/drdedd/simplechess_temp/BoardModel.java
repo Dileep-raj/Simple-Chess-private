@@ -35,12 +35,6 @@ public class BoardModel implements Serializable, Cloneable {
         DataManager dataManager = new DataManager(context);
         invertBlackSVGs = dataManager.invertBlackSVGEnabled();
 
-//        whiteResIDs = new HashMap<>(Map.of("KING", R.drawable.kw, "QUEEN", R.drawable.qw, "ROOK", R.drawable.rw, "BISHOP", R.drawable.bw, "KNIGHT", R.drawable.nw, "PAWN", R.drawable.pw));
-//        if (invertBlackSVGs)
-//            blackResIDs = new HashMap<>(Map.of("KING", R.drawable.kb, "QUEEN", R.drawable.qb, "ROOK", R.drawable.rb, "BISHOP", R.drawable.bb, "KNIGHT", R.drawable.nb, "PAWN", R.drawable.pb));
-//        else
-//            blackResIDs = new HashMap<>(Map.of("KING", R.drawable.kbi, "QUEEN", R.drawable.qbi, "ROOK", R.drawable.rbi, "BISHOP", R.drawable.bbi, "KNIGHT", R.drawable.nbi, "PAWN", R.drawable.pbi));
-
         resetBoard();
         resIDs.put(Player.WHITE + Rank.QUEEN.toString(), R.drawable.qw);
         resIDs.put(Player.WHITE + Rank.ROOK.toString(), R.drawable.rw);
