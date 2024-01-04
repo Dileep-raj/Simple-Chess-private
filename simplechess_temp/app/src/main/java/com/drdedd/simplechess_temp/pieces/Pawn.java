@@ -34,7 +34,8 @@ public class Pawn extends Piece {
     public boolean canCaptureEnPassant(BoardInterface boardInterface) {
         Pawn enPassantPawn = boardInterface.getBoardModel().enPassantPawn;
         if (enPassantPawn != null)
-            return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
+            if (enPassantPawn.getPlayer() != getPlayer())
+                return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
         return false;
     }
 

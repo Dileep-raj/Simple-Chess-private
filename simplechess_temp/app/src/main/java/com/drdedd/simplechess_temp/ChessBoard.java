@@ -227,12 +227,12 @@ public class ChessBoard extends View {
             if (movingPiece.getRank() == Rank.PAWN) {
                 Pawn pawn = (Pawn) movingPiece;
                 if (pawn.canPromote()) {
-                    boardInterface.promote(pawn, toRow, toCol);
+                    boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
                     return true;
                 }
             }
 //                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
-            boardInterface.addToPGN(movingPiece, "");
+            boardInterface.addToPGN(movingPiece, PGN.capture, fromRow, fromCol);
             return true;
         }
         if (toPiece == null) {
@@ -242,13 +242,13 @@ public class ChessBoard extends View {
                     if (toCol - fromCol == -2 && king.canLongCastle(boardInterface)) {
                         king.longCastle(boardInterface);
 //                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O-O");
-                        boardInterface.addToPGN(movingPiece, PGN.longCastle);
+                        boardInterface.addToPGN(movingPiece, PGN.longCastle, fromRow, fromCol);
                         return true;
                     }
                     if (toCol - fromCol == 2 && king.canShortCastle(boardInterface)) {
                         king.shortCastle(boardInterface);
 //                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O");
-                        boardInterface.addToPGN(movingPiece, PGN.shortCastle);
+                        boardInterface.addToPGN(movingPiece, PGN.shortCastle, fromRow, fromCol);
                         return true;
                     }
                 }
@@ -261,7 +261,7 @@ public class ChessBoard extends View {
                         boardInterface.removePiece(boardInterface.getBoardModel().enPassantPawn);
                         movingPiece.moveTo(toRow, toCol);
 //                        Log.d(TAG, "movePiece: enPassant Capture " + BoardModel.enPassantPawn.getPosition());
-                        boardInterface.addToPGN(pawn, "");
+                        boardInterface.addToPGN(pawn, "", fromRow, fromCol);
                         return true;
                     }
                 }
@@ -269,11 +269,11 @@ public class ChessBoard extends View {
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canPromote()) {
-                        boardInterface.promote(pawn, toRow, toCol);
+                        boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
                         return true;
                     }
                 }
-                boardInterface.addToPGN(movingPiece, "");
+                boardInterface.addToPGN(movingPiece, "", fromRow, fromCol);
                 return true;
             }
         }

@@ -46,7 +46,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
     protected String white = "White", black = "Black";
     public PGN pgn;
-    protected BoardModel boardModel = null, tempBoardModel;
+    protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
     private Button btn_undo_move;
     private TextView PGN_textView, gameStateView, whiteName, blackName;
@@ -148,7 +148,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         Pawn pawn = unPromotedPawn();
-        if (pawn != null) promote(pawn, pawn.getRow(), pawn.getCol());
+        if (pawn != null) promote(pawn, pawn.getRow(), pawn.getCol(), -1, -1);
 
     }
 
@@ -214,8 +214,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         dataManager.saveData(theme);
     }
 
-    public void addToPGN(Piece piece, String move) {
-        pgn.addToPGN(piece, move);
+    public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
+        String position, capture = "";
+        StringBuilder moveStringBuilder = new StringBuilder(piece.getPosition());
+        position = toNotation(fromRow, fromCol);
+        if (move.contains(PGN.capture)) capture = "x";
+        moveStringBuilder.insert(1, position + capture);
+
+        if (move.equals(PGN.longCastle) || move.equals(PGN.shortCastle))
+            moveStringBuilder = new StringBuilder(move);
+        pgn.addToPGN(piece, moveStringBuilder.toString());
         updatePGNView();
     }
 
@@ -262,7 +270,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     @Override
-    public boolean promote(Pawn pawn, int row, int col) {
+    public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
         PromoteDialog promoteDialog = new PromoteDialog(this);
         promoteDialog.show();
 
@@ -276,13 +284,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         promoteDialog.setOnDismissListener(dialogInterface -> {
             Piece piece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
 //            addToPGN(pawn, pawn.getPosition().charAt(1) + "=" + piece.getPosition().substring(1) + piece.getPosition().charAt(0));
-            addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0));
+            addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0), -1, -1);
             updateAll();
             isChecked();
             chessBoard.invalidate();
 //            this.return true;
         });
-        return false;
     }
 
     @Override
@@ -476,6 +483,14 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return "" + (char) ('a' + position % 8) + (position / 8 + 1);
     }
 
+    static String toNotation(int row, int col) {
+        return "" + (char) ('a' + col) + (row + 1);
+    }
+
+    public static char colToChar(int col) {
+        return (char) ('a' + col);
+    }
+
     /**
      * Temporary BoardInterface for computing Legal Moves
      */
@@ -496,7 +511,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
 
         @Override
-        public void addToPGN(Piece piece, String move) {
+        public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
         }
 
         @Override
@@ -504,8 +519,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
 
         @Override
-        public boolean promote(Pawn pawn, int row, int col) {
-            return false;
+        public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
         }
 
         @Override

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
+import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.File;
@@ -28,7 +29,7 @@ import java.util.LinkedList;
 public class PGN implements Serializable {
     public static final String longCastle = "O-O-O", shortCastle = "O-O", capture = "Capture", promote = "promote";
     private final String app, date;
-    private String white, black, result, termination = "";
+    private String white, black, termination = "";
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
 
@@ -70,21 +71,6 @@ public class PGN implements Serializable {
     public void addToPGN(Piece piece, String move) {
         if (move.isEmpty()) moves.addLast(piece.getPosition());
         else moves.addLast(move);
-
-        switch (GameActivity.getGameState()) {
-            case WHITE_TO_PLAY:
-            case BLACK_TO_PLAY:
-                result = "*";
-                break;
-            case RESIGN:
-            case CHECKMATE:
-                result = "";
-                break;
-            case STALEMATE:
-            case DRAW:
-                result = "1/2-1/2";
-                break;
-        }
     }
 
     public String lastMove() {
@@ -124,21 +110,36 @@ public class PGN implements Serializable {
 
     private String getTags() {
         StringBuilder tags = new StringBuilder();
-        tags.append("[App \"").append(app).append("\"] ");
-        tags.append("[Date \"").append(date).append("\"] ");
-        tags.append("[White \"").append(white).append("\"] ");
-        tags.append("[Black \"").append(black).append("\"] ");
-        tags.append("[Result  \"").append(result).append("\"] ");
+        tags.append("[App \"").append(app).append("\"]\n");
+        tags.append("[Date \"").append(date).append("\"]\n");
+        tags.append("[White \"").append(white).append("\"]\n");
+        tags.append("[Black \"").append(black).append("\"]\n");
+        tags.append("[Result  \"").append(getResult()).append("\"]\n");
         if (!termination.isEmpty())
-            tags.append("[Termination \"").append(termination).append("\"] ");
+            tags.append("[Termination \"").append(termination).append("\"]\n");
         return tags.toString();
+    }
+
+    private String getResult() {
+        switch (GameActivity.getGameState()) {
+            case WHITE_TO_PLAY:
+            case BLACK_TO_PLAY:
+                return "*";
+            case RESIGN:
+            case CHECKMATE:
+                return Player.WHITE.isInCheck() ? "0-1" : "1-0";
+            case STALEMATE:
+            case DRAW:
+                return "1/2-1/2";
+        }
+        return "*";
     }
 
     public String getPGN() {
         StringBuilder pgn = new StringBuilder();
         int length = moves.size();
         for (int i = 0; i < length; i++) {
-            if (i % 2 == 0) pgn.append(i / 2 + 1).append(". ");
+            if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
             pgn.append(moves.get(i)).append(' ');
         }
         return pgn.toString();

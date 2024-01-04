@@ -22,11 +22,11 @@ public interface BoardInterface {
      */
     boolean movePiece(int fromRow, int fromCol, int toRow, int toCol);
 
-    void addToPGN(Piece piece, String move);
+    void addToPGN(Piece piece, String move, int fromRow, int fromCol);
 
     void removePiece(Piece piece);
 
-    boolean promote(Pawn pawn, int row, int col);
+    void promote(Pawn pawn, int row, int col, int fromRow, int fromCol);
 
     BoardModel getBoardModel();
 
