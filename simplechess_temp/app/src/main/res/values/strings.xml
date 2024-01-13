@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simple Chess Temp</string>
+    <string name="app_name">Simple Chess</string>
     <string name="grey">Grey</string>
     <string name="green">Green</string>
     <string name="brown">Brown</string>
@@ -16,4 +16,5 @@
     <string name="copy_fen">Copy FEN</string>
     <string name="fen">FEN</string>
     <string name="pgn">PGN</string>
+    <string name="resign">Resign</string>
 </resources>

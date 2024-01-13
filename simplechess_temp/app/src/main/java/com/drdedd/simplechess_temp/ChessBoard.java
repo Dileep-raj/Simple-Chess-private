@@ -14,7 +14,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -39,7 +38,7 @@ import java.util.Set;
  */
 public class ChessBoard extends View {
 
-    private static final String TAG = "ChessBoard";
+    //    private static final String TAG = "ChessBoard";
     public BoardInterface boardInterface;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
@@ -49,16 +48,14 @@ public class ChessBoard extends View {
     private Piece previousSelectedPiece = null;
     private HashMap<Piece, HashSet<Integer>> allLegalMoves;
     private HashSet<Integer> legalMoves = new HashSet<>();
-    private final boolean cheatMode, computeLegalMoves;
+    private final boolean cheatMode;
     private final Resources res = getResources();
-    public King whiteKing, blackKing;
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         loadBitmaps();
         DataManager dataManager = new DataManager(this.getContext());
         cheatMode = dataManager.cheatModeEnabled();
-        computeLegalMoves = dataManager.computeLegalMovesEnabled();
     }
 
     @Override
@@ -82,8 +79,7 @@ public class ChessBoard extends View {
         drawCoordinates(canvas);
         if (!cheatMode) drawGuides(canvas);
 
-        whiteKing = boardInterface.getBoardModel().getWhiteKing();
-        blackKing = boardInterface.getBoardModel().getBlackKing();
+        King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();
         if (previousSelectedPiece != null)
             highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.drawable.highlight);
         if (Player.WHITE.isInCheck())
@@ -136,7 +132,7 @@ public class ChessBoard extends View {
                 }
         Piece piece = boardInterface.pieceAt(fromRow, fromCol);
         if (piece != null) {
-            if (GameActivity.isPieceToPlay(piece)) {
+            if (GameActivity.isPieceToPlay(piece) || cheatMode) {
                 Bitmap b = bitmaps.get(piece.getResID());
                 canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
             } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
@@ -149,6 +145,8 @@ public class ChessBoard extends View {
     }
 
     private void drawGuides(Canvas canvas) {
+        if (legalMoves == null) return;
+
         if (!legalMoves.isEmpty()) {
             Bitmap b = bitmaps.get(R.drawable.guide_blue);
             for (Integer move : legalMoves) {
@@ -160,12 +158,13 @@ public class ChessBoard extends View {
     }
 
     @SuppressLint("ClickableViewAccessibility")
+    @SuppressWarnings("unchecked")
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int toCol, toRow;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (computeLegalMoves) allLegalMoves = boardInterface.getLegalMoves();
+                allLegalMoves = boardInterface.getLegalMoves();
                 fromCol = (int) ((event.getX() - offsetX) / sideLength);
                 fromRow = 7 - (int) ((event.getY() - offsetY) / sideLength);
                 Piece selectedPiece = boardInterface.pieceAt(fromRow, fromCol);
@@ -185,9 +184,11 @@ public class ChessBoard extends View {
                 if (selectedPiece != null) if (GameActivity.isPieceToPlay(selectedPiece)) {
                     if (fromRow == toRow && fromCol == toCol) previousSelectedPiece = selectedPiece;
                     if (!cheatMode) {
-                        if (computeLegalMoves)
-                            legalMoves = (HashSet<Integer>) allLegalMoves.get(selectedPiece).clone();
-                        else legalMoves = selectedPiece.getPossibleMoves(boardInterface);
+//                        if (computeLegalMoves) {
+                        legalMoves = allLegalMoves.get(selectedPiece);
+                        if (legalMoves != null)
+                            legalMoves = (HashSet<Integer>) legalMoves.clone();
+//                        } else legalMoves = selectedPiece.getPossibleMoves(boardInterface);
                     }
                     invalidate();
                 }
@@ -222,17 +223,17 @@ public class ChessBoard extends View {
 //        Log.d(TAG, "Piece: Type: " + movingPiece.getPlayer() + " Rank: " + movingPiece.getRank());
         if (toPiece != null) if (toPiece.isKing()) return false;
         else if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
-            movingPiece.moveTo(toRow, toCol);
-            boardInterface.removePiece(toPiece);
             if (movingPiece.getRank() == Rank.PAWN) {
                 Pawn pawn = (Pawn) movingPiece;
                 if (pawn.canPromote()) {
                     boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
-                    return true;
+                    return false;
                 }
             }
 //                Log.d(TAG, "Move capture: " + toNotation(fromRow, fromCol) + " to " + toNotation(toRow, toCol));
-            boardInterface.addToPGN(movingPiece, PGN.capture, fromRow, fromCol);
+            movingPiece.moveTo(toRow, toCol);
+            boardInterface.removePiece(toPiece);
+            boardInterface.addToPGN(movingPiece, PGN.CAPTURE, fromRow, fromCol);
             return true;
         }
         if (toPiece == null) {
@@ -242,13 +243,13 @@ public class ChessBoard extends View {
                     if (toCol - fromCol == -2 && king.canLongCastle(boardInterface)) {
                         king.longCastle(boardInterface);
 //                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O-O");
-                        boardInterface.addToPGN(movingPiece, PGN.longCastle, fromRow, fromCol);
+                        boardInterface.addToPGN(movingPiece, PGN.LONG_CASTLE, fromRow, fromCol);
                         return true;
                     }
                     if (toCol - fromCol == 2 && king.canShortCastle(boardInterface)) {
                         king.shortCastle(boardInterface);
 //                        Log.d(TAG, "Castle: " + king.getPlayer() + " King O-O");
-                        boardInterface.addToPGN(movingPiece, PGN.shortCastle, fromRow, fromCol);
+                        boardInterface.addToPGN(movingPiece, PGN.SHORT_CASTLE, fromRow, fromCol);
                         return true;
                     }
                 }
@@ -265,14 +266,14 @@ public class ChessBoard extends View {
                         return true;
                     }
                 }
-                movingPiece.moveTo(toRow, toCol);
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canPromote()) {
                         boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
-                        return true;
+                        return false;
                     }
                 }
+                movingPiece.moveTo(toRow, toCol);
                 boardInterface.addToPGN(movingPiece, "", fromRow, fromCol);
                 return true;
             }

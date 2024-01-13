@@ -13,18 +13,30 @@ public enum Player {
         this.inCheck = inCheck;
     }
 
+    /**
+     * Player's name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Set Player's name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns whether a player is in check
+     */
     public boolean isInCheck() {
         return inCheck;
     }
 
+    /**
+     * Set check flag
+     */
     public void setInCheck(boolean inCheck) {
         this.inCheck = inCheck;
     }

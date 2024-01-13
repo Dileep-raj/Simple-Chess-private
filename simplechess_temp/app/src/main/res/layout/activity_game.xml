@@ -71,7 +71,7 @@
 
         <TextView
             android:id="@+id/pgn_textview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollHorizontally="true"
             android:textSize="16sp" />
@@ -125,38 +125,61 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardNameLayout">
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_reset"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@drawable/ic_restart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/btn_background"
             android:contentDescription="@string/reset_board"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_undo_move"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_restart" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btn_undo_move"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@drawable/ic_undo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/btn_background"
             android:contentDescription="@string/undo"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_save_exit"
+            app:layout_constraintEnd_toStartOf="@+id/btn_resign"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_undo" />
 
-        <Button
+        <ImageButton
+            android:id="@+id/btn_resign"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/btn_background"
+            android:contentDescription="@string/resign"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_save_exit"
+            app:layout_constraintStart_toEndOf="@id/btn_undo_move"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/resign_flag" />
+
+        <ImageButton
             android:id="@+id/btn_save_exit"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:background="@drawable/ic_exit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/btn_background"
             android:contentDescription="@string/exit"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_undo_move"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/btn_resign"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_exit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

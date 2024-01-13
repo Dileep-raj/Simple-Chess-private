@@ -6,9 +6,20 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.util.HashSet;
 
+/**
+ * {@inheritDoc}
+ */
 public class King extends Piece {
     private boolean castled, longCastled, shortCastled;
 
+    /**
+     * Creates a new <code>King</code> piece
+     *
+     * @param player Player type (<code>WHITE|BLACK</code>)
+     * @param row    Row number of the piece
+     * @param col    Column number of the piece
+     * @param resID  Resource ID of the piece
+     */
     public King(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.KING, resID);
         moved = false;
@@ -43,6 +54,11 @@ public class King extends Piece {
         return possibleMoves;
     }
 
+    /**
+     * Checks whether the <code>King</code> can short castle
+     *
+     * @return <code>True|False</code>
+     */
     public boolean canShortCastle(BoardInterface boardInterface) {
         if (hasNotMoved() && !castled) {
             for (int i = getCol() + 1; i < 7; i++)
@@ -53,6 +69,11 @@ public class King extends Piece {
         return false;
     }
 
+    /**
+     * Checks whether the <code>King</code> can long castle
+     *
+     * @return <code>True|False</code>
+     */
     public boolean canLongCastle(BoardInterface boardInterface) {
         if (hasNotMoved() && !castled) {
             for (int i = getCol() - 1; i > 0; i--)
@@ -63,6 +84,9 @@ public class King extends Piece {
         return false;
     }
 
+    /**
+     * Long castles the <code>King</code>
+     */
     public void longCastle(BoardInterface boardInterface) {
         Piece rook = boardInterface.pieceAt(getRow(), 0);
         rook.moveTo(getRow(), 3);
@@ -70,6 +94,9 @@ public class King extends Piece {
         castled = longCastled = true;
     }
 
+    /**
+     * Short castles the <code>King</code>
+     */
     public void shortCastle(BoardInterface boardInterface) {
         Piece rook = boardInterface.pieceAt(getRow(), 7);
         rook.moveTo(getRow(), 5);
@@ -77,18 +104,36 @@ public class King extends Piece {
         castled = shortCastled = true;
     }
 
+    /**
+     * Returns whether the <code>King</code> has castled yet or not
+     */
     public boolean isCastled() {
         return castled;
     }
 
+    /**
+     * Returns whether the <code>King</code> has not short castled
+     *
+     * @return <code>True|False</code>
+     */
     public boolean isNotShortCastled() {
         return !shortCastled && !castled;
     }
 
+    /**
+     * Returns whether the <code>King</code> has not long castled
+     *
+     * @return <code>True|False</code>
+     */
     public boolean isNotLongCastled() {
         return !longCastled && !castled;
     }
 
+    /**
+     * Checks if the <code>King</code> is checked by any opponent piece
+     *
+     * @return <code>True|False</code>
+     */
     public boolean isChecked(BoardInterface boardInterface) {
         HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
         for (Piece piece : pieces)

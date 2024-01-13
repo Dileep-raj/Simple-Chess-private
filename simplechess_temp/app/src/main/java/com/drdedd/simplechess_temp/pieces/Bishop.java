@@ -6,15 +6,26 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.util.HashSet;
 
+/**
+ * {@inheritDoc}
+ */
 public class Bishop extends Piece {
+
+    /**
+     * Creates a new <code>Bishop</code> piece
+     *
+     * @param player Player type (<code>WHITE|BLACK</code>)
+     * @param row    Row number of the piece
+     * @param col    Column number of the piece
+     * @param resID  Resource ID of the piece
+     */
     public Bishop(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.BISHOP, resID);
     }
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        HashSet<Integer> legalMoves = getPossibleMoves(boardInterface);
-        return legalMoves.contains(row * 8 + col);
+        return getPossibleMoves(boardInterface).contains(row * 8 + col);
     }
 
     @Override

@@ -9,9 +9,20 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.util.HashSet;
 
+/**
+ * {@inheritDoc}
+ */
 public class Pawn extends Piece {
     public final int direction, lastRank;
 
+    /**
+     * Creates a new <code>Pawn</code> piece
+     *
+     * @param player Player type (<code>WHITE|BLACK</code>)
+     * @param row    Row number of the piece
+     * @param col    Column number of the piece
+     * @param resID  Resource ID of the piece
+     */
     public Pawn(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.PAWN, resID);
         direction = this.isWhite() ? 1 : -1;
@@ -33,9 +44,8 @@ public class Pawn extends Piece {
 
     public boolean canCaptureEnPassant(BoardInterface boardInterface) {
         Pawn enPassantPawn = boardInterface.getBoardModel().enPassantPawn;
-        if (enPassantPawn != null)
-            if (enPassantPawn.getPlayer() != getPlayer())
-                return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
+        if (enPassantPawn != null) if (enPassantPawn.getPlayer() != getPlayer())
+            return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
         return false;
     }
 
@@ -68,6 +78,6 @@ public class Pawn extends Piece {
     }
 
     public boolean canPromote() {
-        return getRow() == lastRank;
+        return getRow() == (lastRank - direction);
     }
 }

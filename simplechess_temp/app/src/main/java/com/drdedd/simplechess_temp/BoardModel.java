@@ -101,7 +101,7 @@ public class BoardModel implements Serializable, Cloneable {
     /**
      * Returns Black king from <code>{@link BoardModel#pieces}</code> set
      *
-     * @return <code>King</code>
+     * @return <code>{@link King}</code>
      */
     public King getBlackKing() {
         for (Piece piece : pieces)
@@ -115,7 +115,7 @@ public class BoardModel implements Serializable, Cloneable {
     /**
      * Returns White king from <code>{@link BoardModel#pieces}</code> set
      *
-     * @return <code>King</code>
+     * @return <code>{@link  King}</code>
      */
     public King getWhiteKing() {
         for (Piece piece : pieces)
@@ -131,7 +131,7 @@ public class BoardModel implements Serializable, Cloneable {
      *
      * @param row Row number
      * @param col Column number
-     * @return <code>Piece|null</code>
+     * @return <code>{@link Piece}|null</code>
      */
     public Piece pieceAt(int row, int col) {
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
@@ -165,7 +165,7 @@ public class BoardModel implements Serializable, Cloneable {
      * @param rank <code>Queen|Rook|Knight|Bishop</code>
      * @param row  Row of the pawn
      * @param col  Column of the pawn
-     * @return <code>Piece</code> - Promoted piece
+     * @return <code>{@link Piece}</code> - Promoted piece
      */
     public Piece promote(Piece pawn, Rank rank, int row, int col) {
         Piece piece = null;
@@ -238,6 +238,7 @@ public class BoardModel implements Serializable, Cloneable {
 
     /**
      * Converts current position to FEN Notation <br>
+     * @return <code>String</code> - FEN of the <code>BoardModel</code>
      *
      * @see <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation">More about FEN</a>
      */

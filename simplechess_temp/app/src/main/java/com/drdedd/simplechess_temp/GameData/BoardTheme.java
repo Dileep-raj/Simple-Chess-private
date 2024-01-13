@@ -13,7 +13,7 @@ public enum BoardTheme {
     LICHESS_DARK("Lichess dark", R.color.theme_lichess2_light, R.color.theme_lichess2_dark),
     BLUE("Blue", R.color.theme_blue_light, R.color.theme_blue_dark);
     final int lightColor, darkColor;
-    public static final BoardTheme[] values = values();
+    private static final BoardTheme[] values = values();
     private final String themeName;
 
     BoardTheme(String themeName, int lightColor, int darkColor) {
@@ -22,18 +22,30 @@ public enum BoardTheme {
         this.darkColor = darkColor;
     }
 
+    /**
+     * Name of the Theme
+     */
     public String getThemeName() {
         return themeName;
     }
 
+    /**
+     * Array of values of BoardThemes
+     */
     public static BoardTheme[] getValues() {
         return values;
     }
 
+    /**
+     * Dark color resource id
+     */
     public int getDarkColor() {
         return darkColor;
     }
 
+    /**
+     * Light color resource id
+     */
     public int getLightColor() {
         return lightColor;
     }

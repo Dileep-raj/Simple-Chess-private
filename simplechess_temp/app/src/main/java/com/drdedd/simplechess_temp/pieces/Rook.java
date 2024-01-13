@@ -6,9 +6,19 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 
 import java.util.HashSet;
 
+/**
+ * {@inheritDoc}
+ */
 public class Rook extends Piece {
 
-
+    /**
+     * Creates a new <code>Rook</code> piece
+     *
+     * @param player Player type (<code>WHITE|BLACK</code>)
+     * @param row    Row number of the piece
+     * @param col    Column number of the piece
+     * @param resID  Resource ID of the piece
+     */
     public Rook(Player player, int row, int col, int resID) {
         super(player, row, col, Rank.ROOK, resID);
         moved = false;

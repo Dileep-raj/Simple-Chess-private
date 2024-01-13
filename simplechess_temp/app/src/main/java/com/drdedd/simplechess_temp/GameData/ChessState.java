@@ -1,8 +1,31 @@
 package com.drdedd.simplechess_temp.GameData;
 
 /**
- * Game State (White to play, Black to play, Checkmate, Resign, Stalemate, Draw)
+ * State of the game (White to play, Black to play, Checkmate, Resign, Stalemate, Draw)
  */
 public enum ChessState {
-    WHITE_TO_PLAY, BLACK_TO_PLAY, CHECKMATE, RESIGN, STALEMATE, DRAW
+    /**
+     * White's turn to play
+     */
+    WHITE_TO_PLAY,
+    /**
+     * Black's turn to play
+     */
+    BLACK_TO_PLAY,
+    /**
+     * Game over by checkmate
+     */
+    CHECKMATE,
+    /**
+     * Game over by Resignation
+     */
+    RESIGN,
+    /**
+     * Game over by stalemate
+     */
+    STALEMATE,
+    /**
+     * Game over by draw
+     */
+    DRAW
 }

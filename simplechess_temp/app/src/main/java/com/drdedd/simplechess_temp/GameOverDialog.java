@@ -25,8 +25,7 @@ public class GameOverDialog extends Dialog {
     private final String[] permissions;
     private final Context context;
     private final String termination;
-    ClipboardManager clipboard;
-    private final String TAG = "GameOverDialog";
+    private final ClipboardManager clipboard;
 
     public GameOverDialog(@NonNull Context context, PGN pgn) {
         super(context);
@@ -66,6 +65,7 @@ public class GameOverDialog extends Dialog {
                 Toast.makeText(context, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 Toast.makeText(context, "File not saved!", Toast.LENGTH_SHORT).show();
+                String TAG = "GameOverDialog";
                 Log.d(TAG, "exportPGN: \n" + e);
             }
         } else {

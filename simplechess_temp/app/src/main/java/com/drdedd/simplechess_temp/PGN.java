@@ -27,12 +27,22 @@ import java.util.LinkedList;
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation"> More about PGN </a>
  */
 public class PGN implements Serializable {
-    public static final String longCastle = "O-O-O", shortCastle = "O-O", capture = "Capture", promote = "promote";
+    /**
+     * Constant String for special moves
+     */
+    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote";
     private final String app, date;
     private String white, black, termination = "";
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
 
+    /**
+     * @param app       Name of app
+     * @param white     Name of White player
+     * @param black     Name of Black player
+     * @param date      Date of the game
+     * @param gameState State of the game
+     */
     PGN(String app, String white, String black, String date, ChessState gameState) {
         this.app = app;
         this.white = white;
@@ -45,7 +55,7 @@ public class PGN implements Serializable {
     /**
      * Exports current PGN into a text file with <code>.pgn</code> extension
      *
-     * @return <code>String</code> - Directory of the file
+     * @return String - Directory of the file
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("SimpleDateFormat")
@@ -89,25 +99,44 @@ public class PGN implements Serializable {
         this.gameState = gameState;
     }
 
+    /**
+     * Set White and Black player names
+     */
     public void setWhiteBlack(String white, String black) {
         this.white = white;
         this.black = black;
     }
 
+    /**
+     * @return <code>String</code> - White player name
+     */
     public String getWhite() {
         return white;
     }
 
+    /**
+     * @return <code>String</code> - Black player name
+     */
     public String getBlack() {
         return black;
     }
 
+    /**
+     * Converts PGN to standard text format
+     *
+     * @return String - PGN with tags and moves
+     */
     @NonNull
     @Override
     public String toString() {
         return getTags() + getPGN();
     }
 
+    /**
+     * Returns PGN tags with their values
+     *
+     * @return String - PGN Tags text
+     */
     private String getTags() {
         StringBuilder tags = new StringBuilder();
         tags.append("[App \"").append(app).append("\"]\n");
@@ -120,6 +149,11 @@ public class PGN implements Serializable {
         return tags.toString();
     }
 
+    /**
+     * Returns result of the game
+     *
+     * @return * | 0-1 | 1-0 | 1/2-1/2
+     */
     private String getResult() {
         switch (GameActivity.getGameState()) {
             case WHITE_TO_PLAY:
@@ -135,6 +169,11 @@ public class PGN implements Serializable {
         return "*";
     }
 
+    /**
+     * Returns PGN without tags and just moves
+     *
+     * @return String - PGN text
+     */
     public String getPGN() {
         StringBuilder pgn = new StringBuilder();
         int length = moves.size();
@@ -145,6 +184,11 @@ public class PGN implements Serializable {
         return pgn.toString();
     }
 
+    /**
+     * Set termination message for the game
+     *
+     * @param termination Termination message
+     */
     public void setTermination(String termination) {
         this.termination = termination;
     }

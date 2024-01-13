@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,11 +18,11 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 /**
- * A class to store and retrieve the game data using files or SharedPreferences
+ * A class to store and retrieve the game data using files or <code>SharedPreferences</code>
  */
 public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile";
-    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG", computeLegalMovesLabel = "computeLegalMoves";
+    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -36,6 +37,12 @@ public class DataManager {
             themesMap.put(theme.toString(), theme);
     }
 
+    /**
+     * Read serialized object from the file
+     *
+     * @param fileName Name of the file
+     * @return <code>Object|null</code>
+     */
     public Object readObject(String fileName) {
         try {
             FileInputStream fileInputStream = context.openFileInput(fileName);
@@ -57,6 +64,12 @@ public class DataManager {
         return null;
     }
 
+    /**
+     * Save serialized object into a file in storage
+     *
+     * @param fileName Name of the file
+     * @param obj      Object to be saved
+     */
     public void saveObject(String fileName, Object obj) {
         try {
             FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -72,6 +85,15 @@ public class DataManager {
             Toast.makeText(context, "Error while saving " + fileName, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Error while saving " + fileName + "\n" + e);
         }
+    }
+
+    public void deleteFile(String fileName) {
+        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
+        File file = new File(path);
+        if (file.exists()) {
+            Log.d(TAG, "deleteFile: File exists: " + path);
+            if (file.delete()) Log.d(TAG, "deleteFile: File deleted successfully");
+        } else Log.d(TAG, "deleteFile: File does not exist");
     }
 
     public BoardTheme getBoardTheme() {
@@ -96,10 +118,16 @@ public class DataManager {
         editor.commit();
     }
 
+    /**
+     * Get White player's name
+     */
     public String getWhite() {
         return sharedPreferences.getString(whiteLabel, "White");
     }
 
+    /**
+     * Get Black player's name
+     */
     public String getBlack() {
         return sharedPreferences.getString(blackLabel, "Black");
     }
@@ -129,14 +157,5 @@ public class DataManager {
     public void setInvertBlackSVG(boolean invertBlackSVGs) {
         editor.putBoolean(invertBlackSVGLabel, invertBlackSVGs);
         editor.commit();
-    }
-
-    public void setComputeLegalMoves(boolean computeLegalMoves) {
-        editor.putBoolean(computeLegalMovesLabel, computeLegalMoves);
-        editor.commit();
-    }
-
-    public boolean computeLegalMovesEnabled() {
-        return sharedPreferences.getBoolean(computeLegalMovesLabel, false);
     }
 }

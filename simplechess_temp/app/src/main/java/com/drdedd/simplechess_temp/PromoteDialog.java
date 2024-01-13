@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
 public class PromoteDialog extends Dialog implements View.OnClickListener {
-
     private Rank rank;
 
     public PromoteDialog(@NonNull Context context) {

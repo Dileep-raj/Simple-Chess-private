@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +44,11 @@ import java.util.Stack;
 @SuppressLint({"SimpleDateFormat", "NewApi"})
 public class GameActivity extends AppCompatActivity implements BoardInterface {
     private final String TAG = "GameActivity";
-    protected String white = "White", black = "Black";
+    protected String white = "White", black = "Black", termination;
     public PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
-    private Button btn_undo_move;
+    private ImageButton btn_undo_move;
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
@@ -56,7 +56,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
-    protected boolean newGame, gameTerminated;
+    protected static boolean newGame, gameTerminated;
     protected Stack<BoardModel> boardModelStack;
     protected ClipboardManager clipboard;
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
@@ -92,7 +92,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         Bundle extras = getIntent().getExtras();
         if (extras != null) newGame = extras.getBoolean("newGame");
         initializeData();
-//        gameLogic = new GameLogic(getApplicationContext(), chessBoard);
 
         findViewById(R.id.btn_save_exit).setOnClickListener(view -> finish());
         findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
@@ -101,13 +100,11 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_copy_fen).setOnClickListener(view -> copyFEN());
         btn_undo_move.setOnClickListener(view -> undoLastMove());
 
-        btn_undo_move.setEnabled(pgn.lastMove() != null);
-
         if (newGame) reset();
-//        Log.d(TAG, "onCreate: PGN: " + pgn.hashCode());
         updateAll();
     }
 
+    @SuppressWarnings("unchecked")
     private void initializeData() {
         gameTerminated = false;
 
@@ -140,16 +137,29 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         whiteName.setText(white);
         blackName.setText(black);
 
-//        GameLogic.boardInterface = this;
         chessBoard.boardInterface = this;
         chessBoard.setTheme(theme);
-        isChecked();
+//        isChecked();
 
         permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         Pawn pawn = unPromotedPawn();
         if (pawn != null) promote(pawn, pawn.getRow(), pawn.getCol(), -1, -1);
 
+    }
+
+    public void reset() {
+        gameTerminated = false;
+        boardModel = new BoardModel(getApplicationContext());
+        pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
+        boardModelStack = new Stack<>();
+        pushToStack();
+        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
+        Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
+        gameState = pgn.getGameState();
+        PGN_textView.setText(pgn.getPGN());
+        updateAll();
+        chessBoard.invalidate();
     }
 
     private Pawn unPromotedPawn() {
@@ -161,11 +171,12 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return null;
     }
 
-    //    @Override
+    @Override
     public Piece pieceAt(int row, int col) {
         return boardModel.pieceAt(row, col);
     }
 
+    @Override
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
         if (dataManager.cheatModeEnabled()) {
             Piece movingPiece = boardModel.pieceAt(fromRow, fromCol);
@@ -184,7 +195,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             Piece movingPiece = pieceAt(fromRow, fromCol);
             if (movingPiece == null) return false;
 
-            if (dataManager.computeLegalMovesEnabled()) if (isPieceToPlay(movingPiece))
+            if (isPieceToPlay(movingPiece)) if (legalMoves.get(movingPiece) != null)
                 if (!legalMoves.get(movingPiece).contains(toCol + toRow * 8)) return false;
             boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
             if (result) {
@@ -192,17 +203,11 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2)
                     boardModel.enPassantPawn = (Pawn) movingPiece;
                 else boardModel.enPassantPawn = null;
-                HashSet<Integer> moves = legalMoves.get(movingPiece);
-                Log.d(TAG, "movePiece: Legal Moves HashSet: " + legalMoves.size() + " Piece: " + legalMoves.containsKey(movingPiece));
-                if (moves != null)
-                    Log.d(TAG, "movePiece: " + (moves.contains(toRow * 8 + toCol) ? "Legal Move " : "Illegal Move " + movingPiece.getPosition()));
-                toggleGameState();
-                saveGame();
                 pushToStack();
-                isChecked();
+                toggleGameState();
+//                isChecked();
                 if (Player.WHITE.isInCheck() || Player.BLACK.isInCheck()) printLegalMoves();
             }
-            btn_undo_move.setEnabled(pgn.lastMove() != null);
             return result;
         }
     }
@@ -214,33 +219,29 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         dataManager.saveData(theme);
     }
 
+    @Override
     public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
         String position, capture = "";
         StringBuilder moveStringBuilder = new StringBuilder(piece.getPosition());
         position = toNotation(fromRow, fromCol);
-        if (move.contains(PGN.capture)) capture = "x";
+        if (move.contains(PGN.CAPTURE)) capture = "x";
         moveStringBuilder.insert(1, position + capture);
 
-        if (move.equals(PGN.longCastle) || move.equals(PGN.shortCastle))
+        if (move.contains(PGN.PROMOTE)) {
+            moveStringBuilder.append('=').append(piece.getPosition().charAt(0));
+            moveStringBuilder.deleteCharAt(0);
+        }
+
+        if (move.equals(PGN.LONG_CASTLE) || move.equals(PGN.SHORT_CASTLE))
             moveStringBuilder = new StringBuilder(move);
+
         pgn.addToPGN(piece, moveStringBuilder.toString());
         updatePGNView();
     }
 
-    public void reset() {
-        boardModel = new BoardModel(getApplicationContext());
-        pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
-        boardModelStack = new Stack<>();
-        pushToStack();
-        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
-        Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
-        gameState = pgn.getGameState();
-        PGN_textView.setText(pgn.getPGN());
-        btn_undo_move.setEnabled(pgn.lastMove() != null);
-        updateAll();
-        chessBoard.invalidate();
-    }
-
+    /**
+     * Export PGN to file with <code>.pgn</code> extension
+     */
     public void exportPGN() {
         if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             try {
@@ -282,19 +283,29 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
 //        Invalidate chess board to show new promoted piece
         promoteDialog.setOnDismissListener(dialogInterface -> {
-            Piece piece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
-//            addToPGN(pawn, pawn.getPosition().charAt(1) + "=" + piece.getPosition().substring(1) + piece.getPosition().charAt(0));
-            addToPGN(pawn, piece.getPosition().substring(1) + piece.getPosition().charAt(0), -1, -1);
-            updateAll();
-            isChecked();
+            Piece tempPiece = pieceAt(row, col);
+            Piece promotedPiece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
+            if (tempPiece != null) {
+                if (tempPiece.getPlayer() != promotedPiece.getPlayer()) {
+                    removePiece(tempPiece);
+                    addToPGN(promotedPiece, PGN.PROMOTE + PGN.CAPTURE, fromRow, fromCol);
+                } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
+            }
+            pushToStack();
+            toggleGameState();
+//            isChecked();
             chessBoard.invalidate();
-//            this.return true;
         });
     }
 
     @Override
     public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
         return legalMoves;
+    }
+
+    @Override
+    public BoardModel getBoardModel() {
+        return boardModel;
     }
 
     public void setGameState(ChessState gameState) {
@@ -315,33 +326,48 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     @SuppressLint("SetTextI18n")
     void updateGameStateView() {
-        gameStateView.setText(playerToPlay().getName());
+        if (gameTerminated) gameStateView.setText(termination);
+        else gameStateView.setText(playerToPlay().getName());
     }
 
     private void undoLastMove() {
+        if (gameTerminated) return;
+
         pgn.removeLast();
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
+            boardModel = boardModelStack.peek().clone();
             toggleGameState();
         }
 
-        boardModel = boardModelStack.peek().clone();
-        updateAll();
-        btn_undo_move.setEnabled(pgn.lastMove() != null);
         chessBoard.invalidate();
-        isChecked();
-        saveGame();
     }
 
+    /**
+     * Updates all necessary fields and views
+     */
     private void updateAll() {
         updateLegalMoves();
+        checkGameTermination();
         updatePGNView();
         updateGameStateView();
-        checkGameTermination();
+
+        btn_undo_move.setEnabled(boardModelStack.size() > 1);
+        if (gameTerminated) btn_undo_move.setEnabled(false);
+
+        if (btn_undo_move.isEnabled()) btn_undo_move.setAlpha(1f);
+        else btn_undo_move.setAlpha(0.5f);
+
+        saveGame();
+        isChecked();
+//        Log.d(TAG, "updateAll: All updated");
     }
 
+    /**
+     * Checks for termination of the game after each move
+     */
     private void checkGameTermination() {
-        Log.d(TAG, "checkGameTermination: Checking for Termination");
+//        Log.d(TAG, "checkGameTermination: Checking for Termination");
         Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
         Iterator<Map.Entry<Piece, HashSet<Integer>>> piecesIterator = pieces.iterator();
         while (piecesIterator.hasNext()) {
@@ -350,7 +376,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
         if (!piecesIterator.hasNext()) {
             gameTerminated = true;
-            String termination;
             ChessState terminationState;
             Log.d(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
             isChecked();
@@ -370,15 +395,27 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
     }
 
+    /**
+     * Terminates the game and displays Game Over dialog
+     *
+     * @param gameState State of the termination
+     */
     private void terminateGame(ChessState gameState) {
         setGameState(gameState);
+        Log.d(TAG, "terminateGame: Game terminated by: " + gameState);
+        dataManager.deleteFile(DataManager.boardFile);
+        dataManager.deleteFile(DataManager.PGNFile);
+        dataManager.deleteFile(DataManager.stackFile);
         GameOverDialog gameOverDialog = new GameOverDialog(this, pgn);
         gameOverDialog.show();
 
         gameOverDialog.setOnDismissListener(dialogInterface -> finish());
     }
 
-    public void isChecked() {
+    /**
+     * Checks if any of the player is checked
+     */
+    private void isChecked() {
         King whiteKing = boardModel.getWhiteKing();
         King blackKing = boardModel.getBlackKing();
         Player.WHITE.setInCheck(false);
@@ -393,24 +430,17 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
     }
 
-    private void pushToStack() {
-        boardModelStack.push(boardModel.clone());
-    }
-
-    void updatePGNView() {
-        PGN_textView.setText(pgn.getPGN());
-        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
-    }
-
-    public BoardModel getBoardModel() {
-        return boardModel;
-    }
-
+    /**
+     * Updates all legal moves after each move
+     */
     private void updateLegalMoves() {
         legalMoves = computeLegalMoves();
-        Log.d(TAG, "updateLegalMoves: Updated Legal Moves");
+//        Log.d(TAG, "updateLegalMoves: Updated Legal Moves");
     }
 
+    /**
+     * Prints all legal moves for the player in check
+     */
     private void printLegalMoves() {
         if (legalMoves == null) return;
         Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
@@ -422,23 +452,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
                 for (int move : moves)
                     allMoves.append(toNotation(move)).append(" ");
                 Log.d(TAG, "movePiece: Legal Moves for " + piece.getPosition() + ": " + allMoves);
-            } else Log.d(TAG, "movePiece: No legal moves for " + piece.getPosition());
+            }
+//            else Log.d(TAG, "movePiece: No legal moves for " + piece.getPosition());
         }
     }
 
-    public static Player opponentPlayer(Player player) {
-        return player == Player.WHITE ? Player.BLACK : Player.WHITE;
-    }
-
-    public static Player playerToPlay() {
-        return gameState == ChessState.WHITE_TO_PLAY ? Player.WHITE : Player.BLACK;
-    }
-
-    public static boolean isPieceToPlay(@NonNull Piece piece) {
-        return piece.getPlayer() == playerToPlay();
-    }
-
-
+    /**
+     * Computes all legal moves for the player to play
+     *
+     * @return {@code  HashMap<Piece, HashSet<Integer>>} <br> Set of legal moves for each <code>Piece</code>
+     */
     private HashMap<Piece, HashSet<Integer>> computeLegalMoves() {
         legalMoves = new HashMap<>();
         HashSet<Piece> pieces = boardModel.pieces;
@@ -446,18 +469,21 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             if (!isPieceToPlay(piece)) continue;
             HashSet<Integer> possibleMoves = piece.getPossibleMoves(this), illegalMoves = new HashSet<>();
             for (int move : possibleMoves)
-                if (isIllegalMove(piece, move)) {
-//                    Log.d(TAG, "getLegalMoves:" + piece.getPlayer() + " Illegal Move " + piece.getPosition() + "->" + toNotation(move));
-                    illegalMoves.add(move);
-                }
-//                else
-//                    Log.d(TAG, "getLegalMoves:" + piece.getPlayer() + " Legal Move " + piece.getPosition() + "->" + toNotation(move));
+                if (isIllegalMove(piece, move)) illegalMoves.add(move);
+
             possibleMoves.removeAll(illegalMoves);
             legalMoves.put(piece, possibleMoves);
         }
         return legalMoves;
     }
 
+    /**
+     * Finds if a move is illegal for the given piece
+     *
+     * @param piece <code>Piece</code> to move
+     * @param move  Move for the piece
+     * @return <code>True|False</code>
+     */
     private boolean isIllegalMove(Piece piece, int move) {
         TempBoardInterface tempBoardInterface = new TempBoardInterface();
         tempBoardInterface.tempBoardModel = boardModel.clone();
@@ -471,18 +497,68 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return isChecked;
     }
 
+    private void updatePGNView() {
+        PGN_textView.setText(pgn.getPGN());
+        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+    }
+
+    private void pushToStack() {
+        boardModelStack.push(boardModel.clone());
+    }
+
+    /**
+     * Opponent player for the given <code>Player</code>
+     *
+     * @return <code>White|Black</code>
+     */
+    public static Player opponentPlayer(Player player) {
+        return player == Player.WHITE ? Player.BLACK : Player.WHITE;
+    }
+
+    /**
+     * Returns the current player to play
+     *
+     * @return <code>White|Black</code>
+     */
+    public static Player playerToPlay() {
+//        if (gameTerminated) return playerToPlay;
+        return gameState == ChessState.WHITE_TO_PLAY ? Player.WHITE : Player.BLACK;
+    }
+
+    /**
+     * Returns whether the piece belongs to the current player to play
+     *
+     * @param piece <code>Piece</code> to check
+     * @return <code>True|False</code>
+     */
+    public static boolean isPieceToPlay(@NonNull Piece piece) {
+        return piece.getPlayer() == playerToPlay();
+    }
+
+    /**
+     * Converts absolute position to column number
+     */
     private int toCol(int position) {
         return position % 8;
     }
 
+    /**
+     * Converts absolute position to row number
+     */
     private int toRow(int position) {
         return position / 8;
     }
 
+    /**
+     * Converts absolute position to Standard Notation
+     */
     static String toNotation(int position) {
         return "" + (char) ('a' + position % 8) + (position / 8 + 1);
     }
 
+    /**
+     * Converts row and column numbers to Standard Notation
+     */
     static String toNotation(int row, int col) {
         return "" + (char) ('a' + col) + (row + 1);
     }
