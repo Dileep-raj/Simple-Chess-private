@@ -12,7 +12,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/promote_to_rook"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/queen" />
 
     <ImageButton
         android:id="@+id/promote_to_rook"
@@ -22,7 +23,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/promote_to_knight"
         app:layout_constraintStart_toEndOf="@+id/promote_to_queen"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/rook" />
 
     <ImageButton
         android:id="@+id/promote_to_knight"
@@ -32,7 +34,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/promote_to_bishop"
         app:layout_constraintStart_toEndOf="@+id/promote_to_rook"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/knight" />
 
     <ImageButton
         android:id="@+id/promote_to_bishop"
@@ -42,6 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/promote_to_knight"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/bishop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

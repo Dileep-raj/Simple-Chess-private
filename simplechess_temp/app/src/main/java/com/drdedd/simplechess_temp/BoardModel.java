@@ -238,8 +238,8 @@ public class BoardModel implements Serializable, Cloneable {
 
     /**
      * Converts current position to FEN Notation <br>
-     * @return <code>String</code> - FEN of the <code>BoardModel</code>
      *
+     * @return <code>String</code> - FEN of the <code>BoardModel</code>
      * @see <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation">More about FEN</a>
      */
     public String toFEN() {
@@ -273,12 +273,10 @@ public class BoardModel implements Serializable, Cloneable {
         King whiteKing = getWhiteKing(), blackKing = getBlackKing();
         StringBuilder castleRights = new StringBuilder();
         if (whiteKing != null) {
-//            Log.d(TAG, "toFEN: White King Short Castled: " + whiteKing.isShortCastled() + " Long Castled: " + whiteKing.isLongCastled());
             if (whiteKing.isNotShortCastled()) castleRights.append('K');
             if (whiteKing.isNotLongCastled()) castleRights.append('Q');
         }
         if (blackKing != null) {
-//            Log.d(TAG, "toFEN: Black King Short Castled: " + blackKing.isShortCastled() + " Long Castled: " + blackKing.isLongCastled());
             if (blackKing.isNotShortCastled()) castleRights.append('k');
             if (blackKing.isNotLongCastled()) castleRights.append('q');
         }
@@ -286,7 +284,7 @@ public class BoardModel implements Serializable, Cloneable {
         else FEN.append(castleRights);
 
         if (enPassantPawn != null)
-            FEN.append(' ').append(enPassantPawn.getPosition().charAt(1)).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+            FEN.append(' ').append(GameActivity.colToChar(enPassantPawn.getCol())).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
         return String.valueOf(FEN);
     }
 }

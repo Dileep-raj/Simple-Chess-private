@@ -5,8 +5,7 @@
     android:id="@+id/MainView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    tools:ignore="HardcodedText">
+    tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/MainMenuButtonsLayout"
@@ -22,7 +21,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Continue"
+            android:text="@string/continue_game"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -37,7 +36,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="New Game"
+            android:text="@string/new_game"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -52,7 +51,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Settings"
+            android:text="@string/settings"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -67,7 +66,7 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Exit"
+            android:text="@string/exit"
             android:textAllCaps="false"
             android:textColor="@color/black"
             android:textSize="16sp"
@@ -81,154 +80,3 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-<!--    <androidx.appcompat.widget.SwitchCompat-->
-<!--        android:id="@+id/fullScreenToggle"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="8dp"-->
-<!--        android:text="@string/full_screen"-->
-<!--        android:textColor="@color/black"-->
-<!--        android:textSize="18sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--    <com.google.android.material.divider.MaterialDivider-->
-<!--        android:id="@+id/divider1"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="2dp"-->
-<!--        android:layout_margin="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/fullScreenToggle" />-->
-
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/playerNamesLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/divider1">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/textView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="8dp"-->
-<!--            android:text="Player names"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="16sp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/whiteLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_margin="8dp"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/textView">-->
-
-<!--            <TextView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:labelFor="@+id/whiteName"-->
-<!--                android:text="White"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="18sp" />-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/whiteName"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:layout_weight="3"-->
-<!--                android:autofillHints="White"-->
-<!--                android:background="@null"-->
-<!--                android:inputType="textPersonName"-->
-<!--                android:paddingHorizontal="8dp"-->
-<!--                android:text="White" />-->
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/blackLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="8dp"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/whiteLayout">-->
-
-<!--            <TextView-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:labelFor="@+id/blackName"-->
-<!--                android:text="Black"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="18sp" />-->
-
-<!--            <EditText-->
-<!--                android:id="@+id/blackName"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="48dp"-->
-<!--                android:layout_weight="3"-->
-<!--                android:autofillHints="Black"-->
-<!--                android:background="@null"-->
-<!--                android:inputType="textPersonName"-->
-<!--                android:paddingHorizontal="8dp"-->
-<!--                android:text="Black" />-->
-<!--        </LinearLayout>-->
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-
-<!--    <com.google.android.material.divider.MaterialDivider-->
-<!--        android:id="@+id/divider2"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="2dp"-->
-<!--        android:layout_margin="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/playerNamesLayout" />-->
-
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/ThemeMenuLayout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="8dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/divider2">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/SelectThemeText"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="8dp"-->
-<!--            android:text="@string/select_board_theme"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="18sp"-->
-<!--            app:layout_constraintBottom_toBottomOf="@+id/themeSpinnerMenu"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="@+id/themeSpinnerMenu" />-->
-
-<!--        <Spinner-->
-<!--            android:id="@+id/themeSpinnerMenu"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="8dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toEndOf="@+id/SelectThemeText"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />-->
-
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->

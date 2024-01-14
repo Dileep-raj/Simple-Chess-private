@@ -1,6 +1,7 @@
 package com.drdedd.simplechess_temp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,22 +20,26 @@ import androidx.core.app.ActivityCompat;
 
 import java.io.IOException;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
+@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class GameOverDialog extends Dialog {
     private final PGN pgn;
     private final String[] permissions;
     private final Context context;
+    private final Activity activity;
     private final String termination;
     private final ClipboardManager clipboard;
 
-    public GameOverDialog(@NonNull Context context, PGN pgn) {
+    public GameOverDialog(@NonNull Context context, Activity activity, PGN pgn) {
         super(context);
         setCancelable(false);
         this.context = context;
+        this.activity = activity;
         this.termination = pgn.getTermination();
         this.pgn = pgn;
         clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        else permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
     }
 
     @Override
@@ -43,8 +48,8 @@ public class GameOverDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.game_over_dialog);
         findViewById(R.id.close_dialog).setOnClickListener(v -> dismiss());
-        TextView terminationMessage, pgnTextView;
 
+        TextView terminationMessage, pgnTextView;
         terminationMessage = findViewById(R.id.termination_message);
         pgnTextView = findViewById(R.id.copy_pgn_textView);
 
@@ -58,7 +63,7 @@ public class GameOverDialog extends Dialog {
         clipboard.setPrimaryClip(ClipData.newPlainText("PGN", pgn.toString()));
     }
 
-    public void exportPGN() {
+    private void exportPGN() {
         if (context.checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             try {
                 String dir = pgn.exportPGN();
@@ -69,8 +74,8 @@ public class GameOverDialog extends Dialog {
                 Log.d(TAG, "exportPGN: \n" + e);
             }
         } else {
-            Toast.makeText(context, "Write permission is required to export PGN file", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(getOwnerActivity(), permissions, 0);
+            Toast.makeText(context, "Write permission is required to export PGN", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(activity, permissions, 0);
         }
     }
 

@@ -62,7 +62,7 @@ public class PGN implements Serializable {
     public String exportPGN() throws IOException {
         final String TAG = "PGN";
 
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Simple chess/";
         Log.d(TAG, "exportPGN: Directory: " + dir);
 
@@ -70,10 +70,12 @@ public class PGN implements Serializable {
 
         File file = new File(dir, "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn");
 
-        if (file.createNewFile()) Log.d(TAG, "exportPGN: File created successfully");
+        if (file.createNewFile())
+            Log.d(TAG, "exportPGN: File \"" + file.getName() + "\" saved successfully");
         FileOutputStream fileOutputStream = new FileOutputStream(file);
 //      Convert String to UTF-8 CharacterSet
-        fileOutputStream.write(toString().getBytes(StandardCharsets.UTF_8));
+        fileOutputStream.write(toString().getBytes());
+//        fileOutputStream.write(toString().getBytes(StandardCharsets.UTF_8));
         fileOutputStream.close();
         return dir;
     }
@@ -81,10 +83,6 @@ public class PGN implements Serializable {
     public void addToPGN(Piece piece, String move) {
         if (move.isEmpty()) moves.addLast(piece.getPosition());
         else moves.addLast(move);
-    }
-
-    public String lastMove() {
-        return moves.peekLast();
     }
 
     public void removeLast() {
@@ -160,6 +158,7 @@ public class PGN implements Serializable {
             case BLACK_TO_PLAY:
                 return "*";
             case RESIGN:
+                return termination.contains(Player.WHITE.getName()) ? "1-0" : "0-1";
             case CHECKMATE:
                 return Player.WHITE.isInCheck() ? "0-1" : "1-0";
             case STALEMATE:
@@ -193,6 +192,11 @@ public class PGN implements Serializable {
         this.termination = termination;
     }
 
+    /**
+     * Get termination message of the game
+     *
+     * @return <code>String</code> - Termination message
+     */
     public String getTermination() {
         return termination;
     }

@@ -52,7 +52,7 @@ public class DataManager {
             fileInputStream.close();
             return obj;
         } catch (FileNotFoundException e) {
-            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
             Log.d(TAG, fileName + " not found" + "\n" + e);
         } catch (IOException e) {
             Toast.makeText(context, "Couldn't load file", Toast.LENGTH_SHORT).show();
@@ -87,13 +87,16 @@ public class DataManager {
         }
     }
 
-    public void deleteFile(String fileName) {
-        String path = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-        File file = new File(path);
-        if (file.exists()) {
-            Log.d(TAG, "deleteFile: File exists: " + path);
-            if (file.delete()) Log.d(TAG, "deleteFile: File deleted successfully");
-        } else Log.d(TAG, "deleteFile: File does not exist");
+    private boolean deleteFile(String fileName) {
+        File file = new File(context.getFilesDir(), fileName);
+        if (file.exists()) return file.delete();
+        else Log.d(TAG, "deleteFile: File does not exist");
+        return false;
+    }
+
+    public void deleteGameFiles() {
+        if (deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile))
+            Log.d(TAG, "deleteGameFiles: Game deleted successfully");
     }
 
     public BoardTheme getBoardTheme() {

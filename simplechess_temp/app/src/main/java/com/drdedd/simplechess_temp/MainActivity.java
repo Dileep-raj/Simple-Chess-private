@@ -3,10 +3,13 @@ package com.drdedd.simplechess_temp;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.window.OnBackInvokedDispatcher;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +17,7 @@ import com.drdedd.simplechess_temp.GameData.DataManager;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
+    private final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_exit_app).setOnClickListener(view -> exit_app());
         findViewById(R.id.btn_settings).setOnClickListener(view -> startActivity(new Intent(this, SettingsActivity.class)));
 
-        if (dataManager.readObject(DataManager.boardFile) == null || dataManager.readObject(DataManager.PGNFile) == null)
+        if (dataManager.readObject(DataManager.boardFile) == null || dataManager.readObject(DataManager.PGNFile) == null || dataManager.readObject(DataManager.stackFile) == null)
             btn_continue.setVisibility(View.GONE);
     }
 
     public void startGame(boolean newGame) {
+        Log.d(TAG, "startGame: Game started");
         Intent i = new Intent(this, GameActivity.class);
         i.putExtra("newGame", newGame);
         startActivity(i);
@@ -45,4 +50,11 @@ public class MainActivity extends AppCompatActivity {
         finishAffinity();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: Restarted");
+        finish();
+        startActivity(getIntent());
+    }
 }
