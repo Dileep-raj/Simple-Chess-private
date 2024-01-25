@@ -78,6 +78,4 @@ public class GameOverDialog extends Dialog {
             ActivityCompat.requestPermissions(activity, permissions, 0);
         }
     }
-
-
 }

@@ -77,10 +77,10 @@ public class ChessBoard extends View {
         drawBoard(canvas);
         drawPieces(canvas);
         drawCoordinates(canvas);
-        if (!cheatMode) drawGuides(canvas);
+        if (!cheatMode && !GameActivity.isGameTerminated()) drawGuides(canvas);
 
         King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();
-        if (previousSelectedPiece != null)
+        if (previousSelectedPiece != null && !GameActivity.isGameTerminated())
             highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.drawable.highlight);
         if (Player.WHITE.isInCheck())
             highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
@@ -132,7 +132,7 @@ public class ChessBoard extends View {
                 }
         Piece piece = boardInterface.pieceAt(fromRow, fromCol);
         if (piece != null) {
-            if (GameActivity.isPieceToPlay(piece) || cheatMode) {
+            if (!GameActivity.isGameTerminated() && GameActivity.isPieceToPlay(piece) || cheatMode) {
                 Bitmap b = bitmaps.get(piece.getResID());
                 canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
             } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
@@ -206,6 +206,8 @@ public class ChessBoard extends View {
     }
 
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        if (GameActivity.isGameTerminated()) return false;
+
         Piece movingPiece = boardInterface.pieceAt(fromRow, fromCol);
         if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7)
             return false;

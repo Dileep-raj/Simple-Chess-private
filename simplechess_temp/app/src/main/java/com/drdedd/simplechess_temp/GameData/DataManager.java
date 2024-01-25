@@ -8,7 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,8 +20,8 @@ import java.util.HashMap;
  * A class to store and retrieve the game data using files or <code>SharedPreferences</code>
  */
 public class DataManager {
-    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile";
-    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
+    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile", FENsListFile = "FENsListFile";
+    private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG", timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLabel = "whiteTimeLeft", blackTimeLabel = "blackTimeLeft";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -87,6 +86,7 @@ public class DataManager {
         }
     }
 
+/*
     private boolean deleteFile(String fileName) {
         File file = new File(context.getFilesDir(), fileName);
         if (file.exists()) return file.delete();
@@ -98,6 +98,7 @@ public class DataManager {
         if (deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile))
             Log.d(TAG, "deleteGameFiles: Game deleted successfully");
     }
+*/
 
     public BoardTheme getBoardTheme() {
         BoardTheme boardTheme = themesMap.get(sharedPreferences.getString(boardThemeLabel, "DEFAULT_BROWN"));
@@ -160,5 +161,42 @@ public class DataManager {
     public void setInvertBlackSVG(boolean invertBlackSVGs) {
         editor.putBoolean(invertBlackSVGLabel, invertBlackSVGs);
         editor.commit();
+    }
+
+    public void setTimerEnabled(boolean timerEnabled) {
+        editor.putBoolean(timerLabel, timerEnabled);
+        editor.commit();
+    }
+
+    public boolean isTimerEnabled() {
+        return sharedPreferences.getBoolean(timerLabel, false);
+    }
+
+    public void setTimerMinutesSeconds(int minutes, int seconds) {
+        editor.putInt(minutesLabel, minutes);
+        editor.putInt(secondsLabel, seconds);
+        editor.commit();
+    }
+
+    public int getTimerMinutes() {
+        return sharedPreferences.getInt(minutesLabel, 10);
+    }
+
+    public int getTimerSeconds() {
+        return sharedPreferences.getInt(secondsLabel, 0);
+    }
+
+    public void setWhiteBlackTimeLeft(long whiteTimeLeft, long blackTimeLeft) {
+        editor.putLong(whiteTimeLabel, whiteTimeLeft);
+        editor.putLong(blackTimeLabel, blackTimeLeft);
+        editor.commit();
+    }
+
+    public long getWhiteTime() {
+        return sharedPreferences.getLong(whiteTimeLabel, 0);
+    }
+
+    public long getBlackTime() {
+        return sharedPreferences.getLong(boardThemeLabel, 0);
     }
 }

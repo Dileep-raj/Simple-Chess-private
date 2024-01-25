@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark_bg">#222222</color>
+    <color name="dark_bg">#262421</color>
     <color name="light_bg">#DDDDDD</color>
     <color name="light_grey_text">#CCCCCC</color>
     <color name="piece_selection">#228B22</color>
@@ -16,6 +16,9 @@
     <color name="icon_tint">#FFFFFFFF</color>
 
     <color name="btn_background">#33AAAAAA</color>
+    <color name="timer_default">#343434</color>
+    <color name="timer_active">#909090</color>
+    <color name="timer_critical">#d72222</color>
 
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>

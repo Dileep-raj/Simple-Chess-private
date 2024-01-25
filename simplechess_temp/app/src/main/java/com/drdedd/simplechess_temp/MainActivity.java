@@ -7,9 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.window.OnBackInvokedDispatcher;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -50,11 +48,11 @@ public class MainActivity extends AppCompatActivity {
         finishAffinity();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d(TAG, "onRestart: Restarted");
-        finish();
-        startActivity(getIntent());
-    }
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        Log.d(TAG, "onRestart: Restarted");
+//        finish();
+//        startActivity(getIntent());
+//    }
 }

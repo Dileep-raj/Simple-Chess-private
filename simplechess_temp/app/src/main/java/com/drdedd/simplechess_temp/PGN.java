@@ -158,6 +158,7 @@ public class PGN implements Serializable {
             case BLACK_TO_PLAY:
                 return "*";
             case RESIGN:
+            case TIMEOUT:
                 return termination.contains(Player.WHITE.getName()) ? "1-0" : "0-1";
             case CHECKMATE:
                 return Player.WHITE.isInCheck() ? "0-1" : "1-0";

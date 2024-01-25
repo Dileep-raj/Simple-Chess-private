@@ -287,4 +287,54 @@ public class BoardModel implements Serializable, Cloneable {
             FEN.append(' ').append(GameActivity.colToChar(enPassantPawn.getCol())).append(enPassantPawn.getRow() + 1 - enPassantPawn.direction);
         return String.valueOf(FEN);
     }
+
+    public String[] toFENStrings() {
+        String[] FEN = new String[4];
+
+        StringBuilder position = new StringBuilder();
+        int i, j, c = 0;
+        for (i = 7; i >= 0; i--) {
+            for (j = 0; j < 8; j++) {
+                Piece tempPiece = pieceAt(i, j);
+                if (tempPiece == null) c++;
+                else {
+                    if (c > 0) {
+                        position.append(c);
+                        c = 0;
+                    }
+                    char ch = tempPiece.getRank().toString().charAt(0);
+                    if (tempPiece.getRank() == Rank.KNIGHT) ch = 'N';
+                    if (!tempPiece.isWhite()) ch = Character.toLowerCase(ch);
+                    position.append(ch);
+                }
+            }
+            if (c > 0) {
+                position.append(c);
+                c = 0;
+            }
+            position.append("/");
+        }
+
+        FEN[0] = String.valueOf(position);
+
+        if (GameActivity.getGameState() == ChessState.WHITE_TO_PLAY) FEN[1] = "w";
+        else if (GameActivity.getGameState() == ChessState.BLACK_TO_PLAY) FEN[1] = "b";
+
+        King whiteKing = getWhiteKing(), blackKing = getBlackKing();
+        StringBuilder castleRights = new StringBuilder();
+        if (whiteKing != null) {
+            if (whiteKing.isNotShortCastled()) castleRights.append('K');
+            if (whiteKing.isNotLongCastled()) castleRights.append('Q');
+        }
+        if (blackKing != null) {
+            if (blackKing.isNotShortCastled()) castleRights.append('k');
+            if (blackKing.isNotLongCastled()) castleRights.append('q');
+        }
+        if (castleRights.length() == 0) FEN[2] = "-";
+        else FEN[2] = String.valueOf(castleRights);
+
+        if (enPassantPawn != null)
+            FEN[3] = String.valueOf(GameActivity.colToChar(enPassantPawn.getCol())) + (enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+        return FEN;
+    }
 }

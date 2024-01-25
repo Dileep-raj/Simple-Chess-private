@@ -20,7 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.ChessState;
@@ -32,11 +31,10 @@ import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.IOException;
-import java.security.Permission;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -46,13 +44,13 @@ import java.util.Stack;
  * {@inheritDoc}
  */
 @SuppressLint({"SimpleDateFormat", "NewApi"})
-public class GameActivity extends AppCompatActivity implements BoardInterface {
+public class GameActivity extends AppCompatActivity implements BoardInterface, View.OnClickListener {
     private final String TAG = "GameActivity";
     protected String white = "White", black = "Black", termination;
     public PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
-    private ImageButton btn_undo_move;
+    private ImageButton btn_undo_move, btn_resign;
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
@@ -60,10 +58,13 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
-    protected static boolean newGame, gameTerminated;
+    private static boolean newGame, gameTerminated;
     protected Stack<BoardModel> boardModelStack;
     protected ClipboardManager clipboard;
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
+    private LinkedList<String[]> FENs;
+    private ChessTimer chessTimer;
+    private boolean timerEnabled;
 
     @Override
     protected void onDestroy() {
@@ -86,6 +87,8 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             View decorView = getWindow().getDecorView();            // Hide the status bar.
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
+        timerEnabled = dataManager.isTimerEnabled();
+        if (timerEnabled) chessTimer = new ChessTimer(this);
 
         chessBoard = findViewById(R.id.chessBoard);
         PGN_textView = findViewById(R.id.pgn_textview);
@@ -94,6 +97,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         whiteName = findViewById(R.id.whiteNameTV);
         blackName = findViewById(R.id.blackNameTV);
         btn_undo_move = findViewById(R.id.btn_undo_move);
+        btn_resign = findViewById(R.id.btn_resign);
 
         clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         Bundle extras = getIntent().getExtras();
@@ -105,11 +109,16 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
         findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
         findViewById(R.id.btn_copy_fen).setOnClickListener(view -> copyFEN());
-        findViewById(R.id.btn_resign).setOnClickListener(view -> resign());
+
+        btn_resign.setOnClickListener(view -> resign());
         btn_undo_move.setOnClickListener(view -> undoLastMove());
 
         if (newGame) reset();
         updateAll();
+        if (!timerEnabled) {
+            findViewById(R.id.whiteTimeLayout).setVisibility(View.GONE);
+            findViewById(R.id.blackTimeLayout).setVisibility(View.GONE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -127,12 +136,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
             boardModel = (BoardModel) dataManager.readObject(DataManager.boardFile);
             pgn = (PGN) dataManager.readObject(DataManager.PGNFile);
             boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.stackFile);
+            FENs = (LinkedList<String[]>) dataManager.readObject(DataManager.FENsListFile);
         }
 
         if (boardModel == null || pgn == null) {
             boardModel = new BoardModel(getApplicationContext());
             boardModelStack = new Stack<>();
+            FENs = new LinkedList<>();
             boardModelStack.push(boardModel);
+            FENs.push(boardModel.toFENStrings());
             pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
         }
 
@@ -153,10 +165,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     public void reset() {
+        if (timerEnabled) {
+            chessTimer.resetTimer();
+            chessTimer.startTimer();
+        }
         gameTerminated = false;
         boardModel = new BoardModel(getApplicationContext());
         pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
         boardModelStack = new Stack<>();
+        FENs = new LinkedList<>();
         pushToStack();
         Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
         Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
@@ -173,6 +190,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     @Override
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        if (gameTerminated) return false;
         if (dataManager.cheatModeEnabled()) {
             Piece movingPiece = boardModel.pieceAt(fromRow, fromCol);
             if (movingPiece != null) {
@@ -210,10 +228,11 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
     }
 
     public void saveGame() {
-        if (gameTerminated) return;
+//        if (gameTerminated) return;
         dataManager.saveObject(DataManager.boardFile, boardModel);
         dataManager.saveObject(DataManager.PGNFile, pgn);
         dataManager.saveObject(DataManager.stackFile, boardModelStack);
+        dataManager.saveObject(DataManager.FENsListFile, FENs);
         dataManager.saveData(theme);
 //        Log.d(TAG, "saveGame: Game saved");
     }
@@ -314,17 +333,22 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return gameState;
     }
 
+    public static boolean isGameTerminated() {
+        return gameTerminated;
+    }
+
     private void toggleGameState() {
         if (gameState == ChessState.WHITE_TO_PLAY) gameState = ChessState.BLACK_TO_PLAY;
         else if (gameState == ChessState.BLACK_TO_PLAY) gameState = ChessState.WHITE_TO_PLAY;
         pgn.setGameState(gameState);
+        if (timerEnabled) chessTimer.toggleTimer();
         updateAll();
     }
 
     @SuppressLint("SetTextI18n")
     void updateGameStateView() {
         if (gameTerminated) gameStateView.setText(termination);
-        else gameStateView.setText(playerToPlay().getName());
+        else gameStateView.setText(playerToPlay().getName() + "'s turn");
     }
 
     private void undoLastMove() {
@@ -333,6 +357,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         pgn.removeLast();
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
+            FENs.pop();
             boardModel = boardModelStack.peek().clone();
             toggleGameState();
         }
@@ -355,6 +380,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         if (btn_undo_move.isEnabled()) btn_undo_move.setAlpha(1f);
         else btn_undo_move.setAlpha(0.5f);
 
+        if (btn_resign.isEnabled()) btn_resign.setAlpha(1f);
+        else btn_resign.setAlpha(0.5f);
+
         saveGame();
         isChecked();
     }
@@ -363,14 +391,36 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
      * Checks for termination of the game after each move
      */
     private void checkGameTermination() {
-        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
-        Iterator<Map.Entry<Piece, HashSet<Integer>>> piecesIterator = pieces.iterator();
-        while (piecesIterator.hasNext()) {
-            Map.Entry<Piece, HashSet<Integer>> entry = piecesIterator.next();
-            if (!entry.getValue().isEmpty()) break;
+        ChessState terminationState;
+
+//      Check for draw by insufficient material
+        if (drawByInsufficientMaterial()) {
+            termination = "Draw by insufficient material";
+            terminationState = ChessState.DRAW;
+            pgn.setTermination(termination);
+            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            terminateGame(terminationState);
+            return;
         }
-        if (!piecesIterator.hasNext()) {
-            ChessState terminationState;
+
+//      Check for draw by repetition
+        if (drawByRepetition()) {
+            termination = "Draw by repetition";
+            terminationState = ChessState.DRAW;
+            pgn.setTermination(termination);
+            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            terminateGame(terminationState);
+            return;
+        }
+
+//        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
+//        Iterator<Map.Entry<Piece, HashSet<Integer>>> piecesIterator = pieces.iterator();
+//        while (piecesIterator.hasNext()) {
+//            Map.Entry<Piece, HashSet<Integer>> entry = piecesIterator.next();
+//            if (!entry.getValue().isEmpty()) break;
+//        }
+//        if (!piecesIterator.hasNext()) {
+        if (noLegalMoves()) {
             Log.d(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
             isChecked();
 
@@ -388,20 +438,83 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         }
     }
 
+    private boolean noLegalMoves() {
+        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
+        for (Map.Entry<Piece, HashSet<Integer>> entry : pieces)
+            if (!entry.getValue().isEmpty()) return false;
+        return true;
+    }
+
     /**
      * Terminates the game and displays Game Over dialog
      *
      * @param gameState State of the termination
      */
     private void terminateGame(ChessState gameState) {
+        if (timerEnabled) chessTimer.stopTimer();
+        chessBoard.invalidate();
         gameTerminated = true;
         setGameState(gameState);
+        btn_resign.setEnabled(false);
         Log.d(TAG, "terminateGame: Game terminated by: " + gameState);
-        dataManager.deleteGameFiles();
+//        dataManager.deleteGameFiles();
         GameOverDialog gameOverDialog = new GameOverDialog(this, this, pgn);
         gameOverDialog.show();
 
-        gameOverDialog.setOnDismissListener(dialogInterface -> finish());
+//        gameOverDialog.setOnDismissListener(dialogInterface -> finish());
+    }
+
+    public void terminateByTimeOut() {
+        gameTerminated = true;
+        termination = opponentPlayer(playerToPlay()).getName() + " won on time";
+        pgn.setTermination(termination);
+        terminateGame(ChessState.TIMEOUT);
+    }
+
+    private boolean drawByInsufficientMaterial() {
+        boolean draw = false;
+        int whiteValue = 0, blackValue = 0, totalValue;
+        for (Piece piece : boardModel.pieces) {
+            if (piece.isKing()) continue;
+            if (piece.isWhite()) {
+                if (piece.getRank() == Rank.PAWN) whiteValue += 9;
+                else whiteValue += piece.getRank().getValue();
+            } else {
+                if (piece.getRank() == Rank.PAWN) blackValue += 9;
+                blackValue += piece.getRank().getValue();
+            }
+        }
+        totalValue = whiteValue + blackValue;
+        if (whiteValue <= 3 && blackValue <= 3 && totalValue <= 7) {
+            draw = true;
+            Log.d(TAG, "Draw by insufficient material");
+        }
+        return draw;
+    }
+
+    private boolean drawByRepetition() {
+        int i = 0, j, l = FENs.size();
+        String[] positions = new String[l];
+        for (String[] FEN : FENs) {
+            positions[i++] = FEN[0];
+//            Log.d(TAG, "Position " + i + ": " + FEN[0]);
+        }
+        for (i = 0; i < l - 2; i++)
+            for (j = i + 1; j < l - 1; j++) {
+                if (positions[j].equals("")) continue;
+                if (positions[i].equals(positions[j])) {
+                    for (int k = j + 1; k < l; k++)
+                        if (positions[j].equals(positions[k])) {
+                            Log.d(TAG, "Draw by repetition");
+                            Log.d(TAG, "Position : " + i + ", " + j + " & " + k);
+                            Log.d(TAG, "Repeated moves FEN:\n" + i + " - " + positions[i] + "\n" + j + " - " + positions[j] + "\n" + k + " - " + positions[k]);
+                            return true;
+                        }
+                    positions[i] = "";
+                    positions[j] = "";
+                }
+            }
+        return false;
     }
 
     /**
@@ -510,6 +623,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
 
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
+        FENs.push(boardModel.toFENStrings());
     }
 
     /**
@@ -572,6 +686,11 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         return (char) ('a' + col);
     }
 
+    @Override
+    public void onClick(View view) {
+        if (gameTerminated) terminateGame(gameState);
+    }
+
     /**
      * Temporary BoardInterface for computing Legal Moves
      */
@@ -586,7 +705,8 @@ public class GameActivity extends AppCompatActivity implements BoardInterface {
         @Override
         public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
             Piece opponentPiece = pieceAt(toRow, toCol), tempPiece = pieceAt(fromRow, fromCol);
-            tempPiece.moveTo(toRow, toCol);
+            if (tempPiece != null) tempPiece.moveTo(toRow, toCol);
+            else Log.d("TempBoardInterface", "movePiece: Error! tempPiece is null");
             if (opponentPiece != null) tempBoardModel.removePiece(opponentPiece);
             return true;
         }

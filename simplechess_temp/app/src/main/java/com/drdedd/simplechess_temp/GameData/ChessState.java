@@ -27,5 +27,9 @@ public enum ChessState {
     /**
      * Game over by draw
      */
-    DRAW
+    DRAW,
+    /**
+     * Game over by timeout
+     */
+    TIMEOUT
 }

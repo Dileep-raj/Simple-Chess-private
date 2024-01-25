@@ -37,7 +37,7 @@ public class Bishop extends Piece {
     public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
         HashSet<Integer> possibleMoves = new HashSet<>();
         int i, j;
-        //        Top right diagonal
+//        Top right diagonal
         for (i = getRow() + 1, j = getCol() + 1; i < 8 && j < 8; i++, j++)
             if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
 //        Bottom left diagonal
