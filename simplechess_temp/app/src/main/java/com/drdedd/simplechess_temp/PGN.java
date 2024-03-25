@@ -11,13 +11,13 @@ import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
+import com.drdedd.simplechess_temp.fragments.game.GameFragment;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -30,7 +30,7 @@ public class PGN implements Serializable {
     /**
      * Constant String for special moves
      */
-    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote";
+    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME="Simple Chess";
     private final String app, date;
     private String white, black, termination = "";
     private ChessState gameState;
@@ -43,7 +43,7 @@ public class PGN implements Serializable {
      * @param date      Date of the game
      * @param gameState State of the game
      */
-    PGN(String app, String white, String black, String date, ChessState gameState) {
+    public PGN(String app, String white, String black, String date, ChessState gameState) {
         this.app = app;
         this.white = white;
         this.black = black;
@@ -153,18 +153,20 @@ public class PGN implements Serializable {
      * @return * | 0-1 | 1-0 | 1/2-1/2
      */
     private String getResult() {
-        switch (GameActivity.getGameState()) {
-            case WHITE_TO_PLAY:
-            case BLACK_TO_PLAY:
-                return "*";
-            case RESIGN:
-            case TIMEOUT:
-                return termination.contains(Player.WHITE.getName()) ? "1-0" : "0-1";
-            case CHECKMATE:
-                return Player.WHITE.isInCheck() ? "0-1" : "1-0";
-            case STALEMATE:
-            case DRAW:
-                return "1/2-1/2";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            switch (GameFragment.getGameState()) {
+                case WHITE_TO_PLAY:
+                case BLACK_TO_PLAY:
+                    return "*";
+                case RESIGN:
+                case TIMEOUT:
+                    return termination.contains(Player.WHITE.getName()) ? "1-0" : "0-1";
+                case CHECKMATE:
+                    return Player.WHITE.isInCheck() ? "0-1" : "1-0";
+                case STALEMATE:
+                case DRAW:
+                    return "1/2-1/2";
+            }
         }
         return "*";
     }

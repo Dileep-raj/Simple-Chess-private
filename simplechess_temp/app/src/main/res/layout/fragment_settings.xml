@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity"
-    tools:ignore="HardcodedText">
+    tools:context=".fragments.settings.SettingsFragment">
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/fullScreenToggle"
@@ -41,7 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Player names"
+            android:text="@string/player_names"
             android:textColor="@color/light_grey_text"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:labelFor="@+id/whiteName"
-                android:text="White"
+                android:text="@string/white"
                 android:textAlignment="center"
                 android:textColor="@color/light_grey_text"
                 android:textSize="18sp" />
@@ -78,7 +77,7 @@
                 android:inputType="textPersonName"
                 android:maxLength="20"
                 android:paddingHorizontal="8dp"
-                android:text="White"
+                android:text="@string/white"
                 android:textColor="@color/light_grey_text" />
         </LinearLayout>
 
@@ -98,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:labelFor="@+id/blackName"
-                android:text="Black"
+                android:text="@string/black"
                 android:textAlignment="center"
                 android:textColor="@color/light_grey_text"
                 android:textSize="18sp" />
@@ -113,7 +112,7 @@
                 android:inputType="textPersonName"
                 android:maxLength="20"
                 android:paddingHorizontal="8dp"
-                android:text="Black"
+                android:text="@string/black"
                 android:textColor="@color/light_grey_text" />
         </LinearLayout>
 
@@ -165,12 +164,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Invert Black Pieces"
+        android:text="@string/invert_black_pieces"
         android:textColor="@color/light_grey_text"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ThemeMenuLayout" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/unicodeToggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/unicode_characters"
+        android:textColor="@color/light_grey_text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/invertBlackSVGToggle" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider3"
@@ -179,14 +190,14 @@
         android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/invertBlackSVGToggle" />
+        app:layout_constraintTop_toBottomOf="@+id/unicodeToggle" />
 
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/cheatToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Cheat Mode"
+        android:text="@string/cheat_mode"
         android:textColor="@color/light_grey_text"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -214,7 +225,7 @@
             android:id="@+id/timerToggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Timer"
+            android:text="@string/timer"
             android:textColor="@color/light_grey_text"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -233,7 +244,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
-                android:text="Set time"
+                android:text="@string/set_time"
                 android:textColor="@color/light_grey_text"
                 android:textSize="18sp" />
 
@@ -243,7 +254,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="mm"
+                android:hint="@string/mm"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="2"
@@ -254,7 +265,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text=":"
+                android:text="@string/colon"
                 android:textAlignment="center"
                 android:textColor="@color/light_grey_text"
                 android:textSize="18sp" />
@@ -265,7 +276,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@null"
-                android:hint="ss"
+                android:hint="@string/ss"
                 android:importantForAutofill="no"
                 android:inputType="number"
                 android:maxLength="2"

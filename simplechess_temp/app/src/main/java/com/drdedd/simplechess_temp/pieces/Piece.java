@@ -18,6 +18,7 @@ public abstract class Piece implements Serializable, Cloneable {
     private final int resID;
     private final Rank rank;
     protected boolean moved;
+    private final String unicode;
 
     /**
      * @param player Player type (<code>WHITE|BLACK</code>)
@@ -26,12 +27,17 @@ public abstract class Piece implements Serializable, Cloneable {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    protected Piece(Player player, int row, int col, Rank rank, int resID) {
+    protected Piece(Player player, int row, int col, Rank rank, int resID, String unicode) {
         this.player = player;
         this.row = row;
         this.col = col;
         this.rank = rank;
         this.resID = resID;
+        this.unicode = unicode;
+    }
+
+    public String getUnicode() {
+        return unicode;
     }
 
     /**
@@ -175,5 +181,12 @@ public abstract class Piece implements Serializable, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return unicode;
+//        return super.toString();
     }
 }

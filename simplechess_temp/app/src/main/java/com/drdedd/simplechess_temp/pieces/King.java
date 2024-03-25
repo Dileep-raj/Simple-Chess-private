@@ -20,8 +20,8 @@ public class King extends Piece {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    public King(Player player, int row, int col, int resID) {
-        super(player, row, col, Rank.KING, resID);
+    public King(Player player, int row, int col, int resID, String unicode) {
+        super(player, row, col, Rank.KING, resID, unicode);
         moved = false;
         castled = shortCastled = longCastled = false;
     }

@@ -14,7 +14,7 @@ public enum Player {
     }
 
     /**
-     * Player's name
+     * @return Player's name
      */
     public String getName() {
         return name;
@@ -22,20 +22,21 @@ public enum Player {
 
     /**
      * Set Player's name
+     * @param name Name of the player
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Returns whether a player is in check
+     * @return Whether a player is in check
      */
     public boolean isInCheck() {
         return inCheck;
     }
 
     /**
-     * Set check flag
+     * Set check flag <code>(true|false)</code>
      */
     public void setInCheck(boolean inCheck) {
         this.inCheck = inCheck;

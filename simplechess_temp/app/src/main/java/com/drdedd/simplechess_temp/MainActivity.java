@@ -1,58 +1,58 @@
 package com.drdedd.simplechess_temp;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationView;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
-    private final String TAG = "MainActivity";
+    //    private static final String TAG = "MainActivity";
+    private ActivityMainBinding binding;
+    private AppBarConfiguration mAppBarConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        WindowInsetsControllerCompat windowInsetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.setSystemBarsBehavior(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
 
         DataManager dataManager = new DataManager(this);
         if (dataManager.isFullScreen())
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
 
-        Button btn_continue = findViewById(R.id.btn_continue_game);
+        setContentView(binding.getRoot());
+        setSupportActionBar(binding.appBarMain.toolBar);
 
-        btn_continue.setOnClickListener(view -> startGame(false));
-        findViewById(R.id.btn_new_game).setOnClickListener(view -> startGame(true));
-        findViewById(R.id.btn_exit_app).setOnClickListener(view -> exit_app());
-        findViewById(R.id.btn_settings).setOnClickListener(view -> startActivity(new Intent(this, SettingsActivity.class)));
+        DrawerLayout drawerLayout = binding.MainView;
+        NavigationView navigationView = binding.navView;
 
-        if (dataManager.readObject(DataManager.boardFile) == null || dataManager.readObject(DataManager.PGNFile) == null || dataManager.readObject(DataManager.stackFile) == null)
-            btn_continue.setVisibility(View.GONE);
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home).setOpenableLayout(drawerLayout).build();
+        NavController navController = Navigation.findNavController(this, R.id.main_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+        String[] FENs = {"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"};
+        for (String FEN : FENs) BoardModel.parseFEN(FEN, this);
     }
 
-    public void startGame(boolean newGame) {
-        Log.d(TAG, "startGame: Game started");
-        Intent i = new Intent(this, GameActivity.class);
-        i.putExtra("newGame", newGame);
-        startActivity(i);
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.main_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
-
-    public void exit_app() {
-        finishAffinity();
-    }
-
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-//        Log.d(TAG, "onRestart: Restarted");
-//        finish();
-//        startActivity(getIntent());
-//    }
 }

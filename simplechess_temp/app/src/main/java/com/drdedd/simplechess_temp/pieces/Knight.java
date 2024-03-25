@@ -19,8 +19,8 @@ public class Knight extends Piece {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    public Knight(Player player, int row, int col, int resID) {
-        super(player, row, col, Rank.KNIGHT, resID);
+    public Knight(Player player, int row, int col, int resID, String unicode) {
+        super(player, row, col, Rank.KNIGHT, resID, unicode);
     }
 
     @Override

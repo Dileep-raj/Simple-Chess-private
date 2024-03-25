@@ -1,4 +1,4 @@
-package com.drdedd.simplechess_temp;
+package com.drdedd.simplechess_temp.dialogs;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -10,6 +10,7 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.R;
 
 public class PromoteDialog extends Dialog implements View.OnClickListener {
     private Rank rank = null;

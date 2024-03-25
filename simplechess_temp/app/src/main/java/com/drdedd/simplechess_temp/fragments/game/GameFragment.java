@@ -1,51 +1,60 @@
-package com.drdedd.simplechess_temp;
+package com.drdedd.simplechess_temp.fragments.game;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.drdedd.simplechess_temp.GameData.BoardTheme;
+import com.drdedd.simplechess_temp.BoardInterface;
+import com.drdedd.simplechess_temp.BoardModel;
+import com.drdedd.simplechess_temp.ChessBoard;
+import com.drdedd.simplechess_temp.ChessTimer;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.PGN;
+import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.databinding.FragmentGameBinding;
+import com.drdedd.simplechess_temp.dialogs.GameOverDialog;
+import com.drdedd.simplechess_temp.dialogs.PromoteDialog;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 
-/**
- * {@inheritDoc}
- */
-@SuppressLint({"SimpleDateFormat", "NewApi"})
-public class GameActivity extends AppCompatActivity implements BoardInterface, View.OnClickListener {
-    private final String TAG = "GameActivity";
+@SuppressLint({"NewApi"})
+public class GameFragment extends Fragment implements BoardInterface {
+    private final static String TAG = "GameFragment";
+    private FragmentGameBinding binding;
     protected String white = "White", black = "Black", termination;
     public PGN pgn;
     protected BoardModel boardModel = null;
@@ -54,7 +63,6 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
-    private BoardTheme theme;
     private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
@@ -63,63 +71,72 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
     protected ClipboardManager clipboard;
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
     private LinkedList<String[]> FENs;
-    private ChessTimer chessTimer;
     private boolean timerEnabled;
 
+    public TextView whiteTimeTV, blackTimeTV;
+    public LinearLayout whiteTimeLayout, blackTimeLayout;
+
+    private ChessTimer chessTimer;
+
+    /**
+     * Temporary BoardInterface for computing Legal Moves
+     */
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (!gameTerminated) {
-            Log.d(TAG, "onDestroy: Saving game");
-            saveGame();
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentGameBinding.inflate(inflater, container, false);
+//        return inflater.inflate(R.layout.fragment_game, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        dataManager = new DataManager(this);
-        if (dataManager.isFullScreen()) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            Objects.requireNonNull(getSupportActionBar()).hide();   //Hide the action bar
-            View decorView = getWindow().getDecorView();            // Hide the status bar.
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-        }
-        timerEnabled = dataManager.isTimerEnabled();
-        if (timerEnabled) chessTimer = new ChessTimer(this);
+        GameViewModel viewModel = new ViewModelProvider(this).get(GameViewModel.class);
+        chessBoard = binding.chessBoard;
+        btn_undo_move = binding.btnUndoMove;
+        btn_resign = binding.btnResign;
+        PGN_textView = binding.pgnTextview;
+        gameStateView = binding.gameStateView;
+        whiteName = binding.whiteNameTV;
+        blackName = binding.blackNameTV;
+        horizontalScrollView = binding.scrollView;
 
-        chessBoard = findViewById(R.id.chessBoard);
-        PGN_textView = findViewById(R.id.pgn_textview);
-        horizontalScrollView = findViewById(R.id.scrollView);
-        gameStateView = findViewById(R.id.gameStateView);
-        whiteName = findViewById(R.id.whiteNameTV);
-        blackName = findViewById(R.id.blackNameTV);
-        btn_undo_move = findViewById(R.id.btn_undo_move);
-        btn_resign = findViewById(R.id.btn_resign);
+        whiteTimeTV = binding.whiteTimeTV;
+        blackTimeTV = binding.blackTimeTV;
+        whiteTimeLayout = binding.whiteTimeLayout;
+        blackTimeLayout = binding.blackTimeLayout;
 
-        clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) newGame = extras.getBoolean("newGame");
+        dataManager = new DataManager(requireContext());
         initializeData();
 
-        findViewById(R.id.btn_save_exit).setOnClickListener(view -> finish());
-        findViewById(R.id.btn_copy_pgn).setOnClickListener(view -> copyPGN());
-        findViewById(R.id.btn_export_pgn).setOnClickListener(view -> exportPGN());
-        findViewById(R.id.btn_reset).setOnClickListener(view -> reset());
-        findViewById(R.id.btn_copy_fen).setOnClickListener(view -> copyFEN());
+        timerEnabled = dataManager.isTimerEnabled();
 
-        btn_resign.setOnClickListener(view -> resign());
-        btn_undo_move.setOnClickListener(view -> undoLastMove());
+        clipboard = (ClipboardManager) requireActivity().getSystemService(CLIPBOARD_SERVICE);
+
+        newGame = getArguments().getBoolean("newGame");
+        if (!newGame && isGameTerminated()) {
+            terminateGame(null);
+        }
+        initializeData();
+
+        binding.btnSaveExit.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        binding.btnCopyPgn.setOnClickListener(v -> copyPGN());
+        binding.btnExportPgn.setOnClickListener(v -> exportPGN());
+        binding.btnReset.setOnClickListener(v -> reset());
+        binding.btnCopyFen.setOnClickListener(v -> copyFEN());
+
+        btn_resign.setOnClickListener(v -> resign());
+        btn_undo_move.setOnClickListener(v -> undoLastMove());
 
         if (newGame) reset();
         updateAll();
         if (!timerEnabled) {
-            findViewById(R.id.whiteTimeLayout).setVisibility(View.GONE);
-            findViewById(R.id.blackTimeLayout).setVisibility(View.GONE);
+            binding.whiteTimeLayout.setVisibility(View.GONE);
+            binding.blackTimeLayout.setVisibility(View.GONE);
         }
     }
+
 
     @SuppressWarnings("unchecked")
     private void initializeData() {
@@ -130,7 +147,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         black = dataManager.getBlack();
         Player.BLACK.setName(black);
 
-        pgnDate = new SimpleDateFormat("yyyy.MM.dd");
+        pgnDate = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
+        if (timerEnabled)
+            chessTimer = new ChessTimer(this, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
 
         if (!newGame) {
             boardModel = (BoardModel) dataManager.readObject(DataManager.boardFile);
@@ -140,24 +159,24 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         }
 
         if (boardModel == null || pgn == null) {
-            boardModel = new BoardModel(getApplicationContext());
+            boardModel = new BoardModel(requireContext(), true);
             boardModelStack = new Stack<>();
             FENs = new LinkedList<>();
             boardModelStack.push(boardModel);
             FENs.push(boardModel.toFENStrings());
-            pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
+            pgn = new PGN(PGN.APP_NAME, white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
+            if (timerEnabled) chessTimer = new ChessTimer(this);
         }
 
         gameState = pgn.getGameState();         //Get previous state from PGN
         pgn.setWhiteBlack(white, black);        //Set the white and the black players' names
         PGN_textView.setText(pgn.getPGN());     //Update PGN in TextView
-        theme = dataManager.getBoardTheme();    //Get theme from DataManager
 
         whiteName.setText(white);
         blackName.setText(black);
 
         chessBoard.boardInterface = this;
-        chessBoard.setTheme(theme);
+        chessBoard.setTheme(dataManager.getBoardTheme());
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
             permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -165,13 +184,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
     }
 
     public void reset() {
+        dataManager.setGameTerminationMessage("");
+        dataManager.setGameTerminated(false);
         if (timerEnabled) {
             chessTimer.resetTimer();
-            chessTimer.startTimer();
+//            chessTimer.startTimer();
         }
         gameTerminated = false;
-        boardModel = new BoardModel(getApplicationContext());
-        pgn = new PGN("Simple chess", white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
+        boardModel = new BoardModel(requireContext(), true);
+        pgn = new PGN(PGN.APP_NAME, white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
         boardModelStack = new Stack<>();
         FENs = new LinkedList<>();
         pushToStack();
@@ -229,12 +250,13 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
 
     public void saveGame() {
 //        if (gameTerminated) return;
-        dataManager.saveObject(DataManager.boardFile, boardModel);
-        dataManager.saveObject(DataManager.PGNFile, pgn);
-        dataManager.saveObject(DataManager.stackFile, boardModelStack);
-        dataManager.saveObject(DataManager.FENsListFile, FENs);
-        dataManager.saveData(theme);
+//        dataManager.saveObject(DataManager.boardFile, boardModel);
+//        dataManager.saveObject(DataManager.PGNFile, pgn);
+//        dataManager.saveObject(DataManager.stackFile, boardModelStack);
+//        dataManager.saveObject(DataManager.FENsListFile, FENs);
+//        dataManager.saveData(theme);
 //        Log.d(TAG, "saveGame: Game saved");
+        dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
     }
 
     @Override
@@ -261,26 +283,28 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
      * Export PGN to a file with <code>.pgn</code> extension
      */
     private void exportPGN() {
-        if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
-            try {
-                String dir = pgn.exportPGN();
-                Toast.makeText(this, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Toast.makeText(this, "File not saved!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "exportPGN: \n" + e);
-            }
-        } else {
-            Toast.makeText(this, "Write permission is required to export PGN", Toast.LENGTH_SHORT).show();
-            ActivityCompat.requestPermissions(this, permissions, 0);
-        }
+//        if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
+//            try {
+//                String dir = pgn.exportPGN();
+//                Toast.makeText(this, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
+//            } catch (IOException e) {
+//                Toast.makeText(this, "File not saved!", Toast.LENGTH_SHORT).show();
+//                Log.d(TAG, "exportPGN: \n" + e);
+//            }
+//        } else {
+//            Toast.makeText(this, "Write permission is required to export PGN", Toast.LENGTH_SHORT).show();
+//            ActivityCompat.requestPermissions(this, permissions, 0);
+//        }
     }
 
     private void copyFEN() {
         clipboard.setPrimaryClip(ClipData.newPlainText("FEN", boardModel.toFEN()));
+        Toast.makeText(requireContext(), "FEN copied", Toast.LENGTH_SHORT).show();
     }
 
     private void copyPGN() {
         clipboard.setPrimaryClip(ClipData.newPlainText("PGN", pgn.toString()));
+        Toast.makeText(requireContext(), "PGN copied", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -290,7 +314,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
 
     @Override
     public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
-        PromoteDialog promoteDialog = new PromoteDialog(this);
+        PromoteDialog promoteDialog = new PromoteDialog(requireContext());
         promoteDialog.show();
 
 //        Set image buttons as respective color pieces
@@ -325,12 +349,8 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         return boardModel;
     }
 
-    public void setGameState(ChessState gameState) {
-        GameActivity.gameState = gameState;
-    }
-
-    public static ChessState getGameState() {
-        return gameState;
+    private void setGameState(ChessState gameState) {
+        GameFragment.gameState = gameState;
     }
 
     public static boolean isGameTerminated() {
@@ -398,7 +418,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
             termination = "Draw by insufficient material";
             terminationState = ChessState.DRAW;
             pgn.setTermination(termination);
-            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
             terminateGame(terminationState);
             return;
         }
@@ -408,7 +428,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
             termination = "Draw by repetition";
             terminationState = ChessState.DRAW;
             pgn.setTermination(termination);
-            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
             terminateGame(terminationState);
             return;
         }
@@ -433,7 +453,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
             }
 
             pgn.setTermination(termination);
-            Toast.makeText(this, termination, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
             terminateGame(terminationState);
         }
     }
@@ -451,14 +471,15 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
      * @param gameState State of the termination
      */
     private void terminateGame(ChessState gameState) {
-        if (timerEnabled) chessTimer.stopTimer();
+        dataManager.setGameTerminated(true);
+//        if (timerEnabled) chessTimer.stopTimer();
         chessBoard.invalidate();
         gameTerminated = true;
         setGameState(gameState);
         btn_resign.setEnabled(false);
         Log.d(TAG, "terminateGame: Game terminated by: " + gameState);
 //        dataManager.deleteGameFiles();
-        GameOverDialog gameOverDialog = new GameOverDialog(this, this, pgn);
+        GameOverDialog gameOverDialog = new GameOverDialog(requireContext(), pgn);
         gameOverDialog.show();
 
 //        gameOverDialog.setOnDismissListener(dialogInterface -> finish());
@@ -497,11 +518,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         String[] positions = new String[l];
         for (String[] FEN : FENs) {
             positions[i++] = FEN[0];
-//            Log.d(TAG, "Position " + i + ": " + FEN[0]);
         }
         for (i = 0; i < l - 2; i++)
             for (j = i + 1; j < l - 1; j++) {
-                if (positions[j].equals("")) continue;
+                if (positions[j].isEmpty()) continue;
                 if (positions[i].equals(positions[j])) {
                     for (int k = j + 1; k < l; k++)
                         if (positions[j].equals(positions[k])) {
@@ -521,7 +541,7 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
      * Resigns and terminates the game
      */
     private void resign() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setMessage("Are you sure you want to resign?");
         builder.setTitle("Resign");
         builder.setPositiveButton("Yes", (dialog, i) -> {
@@ -644,6 +664,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         return gameState == ChessState.WHITE_TO_PLAY ? Player.WHITE : Player.BLACK;
     }
 
+    public static ChessState getGameState() {
+        return gameState;
+    }
+
     /**
      * Returns whether the piece belongs to the current player to play
      *
@@ -657,15 +681,29 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
     /**
      * Converts absolute position to column number
      */
-    private int toCol(int position) {
+    public static int toCol(int position) {
         return position % 8;
     }
 
     /**
      * Converts absolute position to row number
      */
-    private int toRow(int position) {
+    public static int toRow(int position) {
         return position / 8;
+    }
+
+    /**
+     * Converts notation to column number
+     */
+    public static int toCol(String position) {
+        return position.charAt(0) - 'a';
+    }
+
+    /**
+     * Converts notation to row number
+     */
+    public static int toRow(String position) {
+        return position.charAt(1) - '1';
     }
 
     /**
@@ -686,10 +724,10 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         return (char) ('a' + col);
     }
 
-    @Override
-    public void onClick(View view) {
-        if (gameTerminated) terminateGame(gameState);
-    }
+//    @Override
+//    public void onClick(View view) {
+//        if (gameTerminated) terminateGame(gameState);
+//    }
 
     /**
      * Temporary BoardInterface for computing Legal Moves
@@ -732,5 +770,9 @@ public class GameActivity extends AppCompatActivity implements BoardInterface, V
         public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
             return null;
         }
+    }
+
+    public static String getTAG() {
+        return TAG;
     }
 }

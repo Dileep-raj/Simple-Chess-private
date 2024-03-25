@@ -19,8 +19,8 @@ public class Queen extends Piece {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    public Queen(Player player, int row, int col, int resID) {
-        super(player, row, col, Rank.QUEEN, resID);
+    public Queen(Player player, int row, int col, int resID, String unicode) {
+        super(player, row, col, Rank.QUEEN, resID, unicode);
     }
 
     @Override

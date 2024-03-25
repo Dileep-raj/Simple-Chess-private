@@ -19,12 +19,14 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.fragments.game.GameFragment;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
@@ -36,6 +38,7 @@ import java.util.Set;
 /**
  * Custom View to create a Chess board and design game interface
  */
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class ChessBoard extends View {
 
     //    private static final String TAG = "ChessBoard";
@@ -77,10 +80,10 @@ public class ChessBoard extends View {
         drawBoard(canvas);
         drawPieces(canvas);
         drawCoordinates(canvas);
-        if (!cheatMode && !GameActivity.isGameTerminated()) drawGuides(canvas);
+        if (!cheatMode && !GameFragment.isGameTerminated()) drawGuides(canvas);
 
         King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();
-        if (previousSelectedPiece != null && !GameActivity.isGameTerminated())
+        if (previousSelectedPiece != null && !GameFragment.isGameTerminated())
             highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.drawable.highlight);
         if (Player.WHITE.isInCheck())
             highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
@@ -132,7 +135,7 @@ public class ChessBoard extends View {
                 }
         Piece piece = boardInterface.pieceAt(fromRow, fromCol);
         if (piece != null) {
-            if (!GameActivity.isGameTerminated() && GameActivity.isPieceToPlay(piece) || cheatMode) {
+            if (!GameFragment.isGameTerminated() && GameFragment.isPieceToPlay(piece) || cheatMode) {
                 Bitmap b = bitmaps.get(piece.getResID());
                 canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
             } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
@@ -180,7 +183,7 @@ public class ChessBoard extends View {
                 toRow = 7 - (int) ((event.getY() - offsetY) / sideLength);
                 selectedPiece = boardInterface.pieceAt(toRow, toCol);
 
-                if (selectedPiece != null) if (GameActivity.isPieceToPlay(selectedPiece)) {
+                if (selectedPiece != null) if (GameFragment.isPieceToPlay(selectedPiece)) {
                     if (fromRow == toRow && fromCol == toCol) previousSelectedPiece = selectedPiece;
                     if (!cheatMode) legalMoves = allLegalMoves.get(selectedPiece);
                     invalidate();
@@ -190,6 +193,7 @@ public class ChessBoard extends View {
                         previousSelectedPiece = selectedPiece;
                 } else if (boardInterface.movePiece(fromRow, fromCol, toRow, toCol))
                     previousSelectedPiece = null;
+                else previousSelectedPiece = null;
 
                 fromRow = fromCol = -1;
                 invalidate();
@@ -206,12 +210,12 @@ public class ChessBoard extends View {
     }
 
     public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        if (GameActivity.isGameTerminated()) return false;
+        if (GameFragment.isGameTerminated()) return false;
 
         Piece movingPiece = boardInterface.pieceAt(fromRow, fromCol);
         if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7)
             return false;
-        if (!GameActivity.isPieceToPlay(movingPiece)) return false;
+        if (!GameFragment.isPieceToPlay(movingPiece)) return false;
 
         Piece toPiece = boardInterface.pieceAt(toRow, toCol);
         if (toPiece != null) if (toPiece.isKing()) return false;

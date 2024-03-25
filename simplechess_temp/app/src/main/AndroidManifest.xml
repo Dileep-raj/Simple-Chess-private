@@ -17,14 +17,6 @@
         android:theme="@style/Theme.Simplechess_temp"
         tools:targetApi="31">
 
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.drdedd.simplechess_temp.MainActivity" />
-        </activity>
-
         <activity android:name=".GameActivity" />
 
         <activity

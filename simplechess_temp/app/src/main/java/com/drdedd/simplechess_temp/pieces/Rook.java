@@ -19,8 +19,8 @@ public class Rook extends Piece {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    public Rook(Player player, int row, int col, int resID) {
-        super(player, row, col, Rank.ROOK, resID);
+    public Rook(Player player, int row, int col, int resID, String unicode) {
+        super(player, row, col, Rank.ROOK, resID, unicode);
         moved = false;
     }
 

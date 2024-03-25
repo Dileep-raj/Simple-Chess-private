@@ -3,7 +3,6 @@ package com.drdedd.simplechess_temp.pieces;
 import androidx.annotation.NonNull;
 
 import com.drdedd.simplechess_temp.BoardInterface;
-import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
@@ -23,8 +22,8 @@ public class Pawn extends Piece {
      * @param col    Column number of the piece
      * @param resID  Resource ID of the piece
      */
-    public Pawn(Player player, int row, int col, int resID) {
-        super(player, row, col, Rank.PAWN, resID);
+    public Pawn(Player player, int row, int col, int resID, String unicode) {
+        super(player, row, col, Rank.PAWN, resID, unicode);
         direction = this.isWhite() ? 1 : -1;
 
         if (player == Player.BLACK) lastRank = 0;
