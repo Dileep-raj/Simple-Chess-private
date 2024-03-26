@@ -389,6 +389,7 @@ public class GameFragment extends Fragment implements BoardInterface {
      * Updates all necessary fields and views
      */
     private void updateAll() {
+        isChecked();
         updateLegalMoves();
         checkGameTermination();
         updatePGNView();
@@ -404,7 +405,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         else btn_resign.setAlpha(0.5f);
 
         saveGame();
-        isChecked();
+//        isChecked();
     }
 
     /**

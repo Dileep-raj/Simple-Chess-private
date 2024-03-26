@@ -49,8 +49,10 @@ public class King extends Piece {
                     continue;
                 addMove(possibleMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
             }
-        if (canShortCastle(boardInterface)) possibleMoves.add(getRow() * 8 + getCol() + 2);
-        if (canLongCastle(boardInterface)) possibleMoves.add(getRow() * 8 + getCol() - 2);
+        if (!getPlayer().isInCheck() && canShortCastle(boardInterface))
+            possibleMoves.add(getRow() * 8 + getCol() + 2);
+        if (!getPlayer().isInCheck() && canLongCastle(boardInterface))
+            possibleMoves.add(getRow() * 8 + getCol() - 2);
         return possibleMoves;
     }
 
