@@ -11,7 +11,7 @@ public interface BoardInterface {
      * Searches for piece at given row and column <br>
      * 0 < Row & Column < 7
      *
-     * @return Piece | null
+     * @return <code>Piece|null</code>
      */
     Piece pieceAt(int row, int col);
 
@@ -33,7 +33,7 @@ public interface BoardInterface {
     void addToPGN(Piece piece, String move, int fromRow, int fromCol);
 
     /**
-     * Remove a piece from {@link BoardModel#pieces pieces}
+     * Remove a piece from the board
      */
     void removePiece(Piece piece);
 

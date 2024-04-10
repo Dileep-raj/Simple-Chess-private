@@ -139,7 +139,7 @@ public class King extends Piece {
     public boolean isChecked(BoardInterface boardInterface) {
         HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
         for (Piece piece : pieces)
-            if (piece.getPlayer() != getPlayer())
+            if (piece.getPlayer() != getPlayer() && piece.isNotCaptured())
                 if (piece.canCapture(boardInterface, this)) return true;
         return false;
     }

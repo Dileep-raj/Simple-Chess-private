@@ -2,17 +2,15 @@ package com.drdedd.simplechess_temp;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
-import com.drdedd.simplechess_temp.fragments.game.GameFragment;
+import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.pieces.Bishop;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Knight;
@@ -29,7 +27,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class BoardModel implements Serializable, Cloneable {
     /**
      * Set of all the pieces on the board
@@ -169,7 +166,7 @@ public class BoardModel implements Serializable, Cloneable {
     public Piece pieceAt(int row, int col) {
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
         for (Piece piece : pieces)
-            if (piece.getCol() == col && piece.getRow() == row) return piece;
+            if (piece.isNotCaptured() && piece.getCol() == col && piece.getRow() == row) return piece;
         return null;
     }
 
@@ -179,7 +176,7 @@ public class BoardModel implements Serializable, Cloneable {
      * @param piece <code>Piece</code> to be removed
      */
     public void removePiece(Piece piece) {
-        pieces.remove(piece);
+        piece.setCaptured(true);
     }
 
     /**
@@ -215,7 +212,8 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(piece);
 //            Log.d(TAG, "promote: Promoted " + pawn.getPosition().charAt(1) + " file pawn to " + piece.getRank());
         }
-        removePiece(pawn);
+        pieces.remove(pawn);
+//        removePiece(pawn);
         return piece;
     }
 
@@ -276,7 +274,6 @@ public class BoardModel implements Serializable, Cloneable {
         return fenStrings[0] + " " + fenStrings[1] + " " + fenStrings[2] + " " + fenStrings[3];
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public String[] toFENStrings() {
         String[] FEN = new String[4];
 
@@ -340,8 +337,8 @@ public class BoardModel implements Serializable, Cloneable {
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
         BoardModel boardModel = new BoardModel(context, false);
-        Pattern pattern = Pattern.compile("[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+/[kqbnrp1-8]+ [wb] [-kq]+ (-|[a-h][1-8]) [0-9]+ [0-9]+", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(FEN);
+        Pattern FENPattern = Pattern.compile("[kqbnrp1-8]+/{7}[kqbnrp1-8]+ [wb] -|[|kq]+ (-|[a-h][1-8]) [0-9]+ [0-9]+", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = FENPattern.matcher(FEN);
         if (!matcher.find()) {
             Log.d(TAG, "parseFEN: Invalid FEN! FEN didn't match the pattern");
             return null;

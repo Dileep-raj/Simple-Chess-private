@@ -1,6 +1,5 @@
 package com.drdedd.simplechess_temp;
 
-import android.annotation.SuppressLint;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Environment;
@@ -11,7 +10,7 @@ import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.fragments.game.GameFragment;
+import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.File;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Locale;
 
 /**
  * <p>PGN (Portable Game Notation) is a standard text format used to record Chess game moves with standard notations</p>
@@ -30,7 +30,7 @@ public class PGN implements Serializable {
     /**
      * Constant String for special moves
      */
-    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME="Simple Chess";
+    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME = "Simple Chess";
     private final String app, date;
     private String white, black, termination = "";
     private ChessState gameState;
@@ -55,14 +55,13 @@ public class PGN implements Serializable {
     /**
      * Exports current PGN into a text file with <code>.pgn</code> extension
      *
-     * @return String - Directory of the file
+     * @return <code>String</code> - Directory of the file
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressLint("SimpleDateFormat")
     public String exportPGN() throws IOException {
         final String TAG = "PGN";
 
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH);
         String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Simple chess/";
         Log.d(TAG, "exportPGN: Directory: " + dir);
 

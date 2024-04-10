@@ -26,7 +26,7 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
-import com.drdedd.simplechess_temp.fragments.game.GameFragment;
+import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
@@ -69,7 +69,7 @@ public class ChessBoard extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         int width = getWidth(), height = getHeight();
         float scaleFactor = 0.95f;
@@ -164,12 +164,13 @@ public class ChessBoard extends View {
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int toCol, toRow;
+        Piece selectedPiece;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 allLegalMoves = boardInterface.getLegalMoves();
                 fromCol = (int) ((event.getX() - offsetX) / sideLength);
                 fromRow = 7 - (int) ((event.getY() - offsetY) / sideLength);
-                Piece selectedPiece = boardInterface.pieceAt(fromRow, fromCol);
+                selectedPiece = boardInterface.pieceAt(fromRow, fromCol);
                 if (previousSelectedPiece != null && selectedPiece != previousSelectedPiece)
                     if (boardInterface.movePiece(previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), fromRow, fromCol)) {
                         previousSelectedPiece = null;

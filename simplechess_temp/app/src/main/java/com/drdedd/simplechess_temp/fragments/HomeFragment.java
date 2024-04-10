@@ -1,4 +1,4 @@
-package com.drdedd.simplechess_temp.fragments.home;
+package com.drdedd.simplechess_temp.fragments;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +19,7 @@ import com.drdedd.simplechess_temp.R;
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
+    public static final String NEW_GAME_KEY = "NewGame";
     private NavController navController;
 
     @Override
@@ -45,21 +46,18 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        navController = Navigation.findNavController(getActivity(), R.id.main_fragment);
+        navController = Navigation.findNavController(requireActivity(), R.id.main_fragment);
     }
 
     public void startGame(boolean newGame) {
         Bundle args = new Bundle();
-        args.putBoolean("newGame", newGame);
+        args.putBoolean(NEW_GAME_KEY, newGame);
         navController.navigate(R.id.nav_game, args);
-//        Intent i = new Intent(this, GameActivity.class);
-//        i.putExtra("newGame", newGame);
-//        startActivity(i);
         Log.d(TAG, "startGame: Game started");
     }
 
     public void exit_app() {
-        getActivity().finishAffinity();
+        requireActivity().finishAffinity();
     }
 
     public static String getTAG() {

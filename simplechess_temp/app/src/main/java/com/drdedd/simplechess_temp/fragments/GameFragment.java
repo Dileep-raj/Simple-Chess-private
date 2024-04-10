@@ -1,14 +1,12 @@
-package com.drdedd.simplechess_temp.fragments.game;
+package com.drdedd.simplechess_temp.fragments;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.drdedd.simplechess_temp.BoardInterface;
 import com.drdedd.simplechess_temp.BoardModel;
@@ -51,11 +48,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-@SuppressLint({"NewApi"})
-public class GameFragment extends Fragment implements BoardInterface {
+@SuppressLint("NewApi")
+public class GameFragment extends Fragment implements BoardInterface, View.OnClickListener {
     private final static String TAG = "GameFragment";
     private FragmentGameBinding binding;
-    protected String white = "White", black = "Black", termination;
+    private String white = "White", black = "Black", termination;
     public PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
@@ -63,7 +60,7 @@ public class GameFragment extends Fragment implements BoardInterface {
     private TextView PGN_textView, gameStateView, whiteName, blackName;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
-    private String[] permissions;
+    //    private String[] permissions;
     private SimpleDateFormat pgnDate;
     private static ChessState gameState;
     private static boolean newGame, gameTerminated;
@@ -72,15 +69,10 @@ public class GameFragment extends Fragment implements BoardInterface {
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
     private LinkedList<String[]> FENs;
     private boolean timerEnabled;
-
     public TextView whiteTimeTV, blackTimeTV;
     public LinearLayout whiteTimeLayout, blackTimeLayout;
-
     private ChessTimer chessTimer;
 
-    /**
-     * Temporary BoardInterface for computing Legal Moves
-     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentGameBinding.inflate(inflater, container, false);
@@ -91,8 +83,6 @@ public class GameFragment extends Fragment implements BoardInterface {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        GameViewModel viewModel = new ViewModelProvider(this).get(GameViewModel.class);
         chessBoard = binding.chessBoard;
         btn_undo_move = binding.btnUndoMove;
         btn_resign = binding.btnResign;
@@ -114,10 +104,8 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         clipboard = (ClipboardManager) requireActivity().getSystemService(CLIPBOARD_SERVICE);
 
-        newGame = getArguments().getBoolean("newGame");
-        if (!newGame && isGameTerminated()) {
-            terminateGame(null);
-        }
+        newGame = requireArguments().getBoolean(HomeFragment.NEW_GAME_KEY);
+        if (!newGame && isGameTerminated()) terminateGame(null);
         initializeData();
 
         binding.btnSaveExit.setOnClickListener(v -> getParentFragmentManager().popBackStack());
@@ -132,11 +120,10 @@ public class GameFragment extends Fragment implements BoardInterface {
         if (newGame) reset();
         updateAll();
         if (!timerEnabled) {
-            binding.whiteTimeLayout.setVisibility(View.GONE);
-            binding.blackTimeLayout.setVisibility(View.GONE);
-        }
+            whiteTimeLayout.setVisibility(View.GONE);
+            blackTimeLayout.setVisibility(View.GONE);
+        } else chessTimer.startTimer();
     }
-
 
     @SuppressWarnings("unchecked")
     private void initializeData() {
@@ -178,18 +165,16 @@ public class GameFragment extends Fragment implements BoardInterface {
         chessBoard.boardInterface = this;
         chessBoard.setTheme(dataManager.getBoardTheme());
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        else permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
+//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+//            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
+//        else permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
     }
 
     public void reset() {
         dataManager.setGameTerminationMessage("");
         dataManager.setGameTerminated(false);
-        if (timerEnabled) {
-            chessTimer.resetTimer();
-//            chessTimer.startTimer();
-        }
+        if (timerEnabled) chessTimer.resetTimer();
+
         gameTerminated = false;
         boardModel = new BoardModel(requireContext(), true);
         pgn = new PGN(PGN.APP_NAME, white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
@@ -249,14 +234,9 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     public void saveGame() {
-//        if (gameTerminated) return;
-//        dataManager.saveObject(DataManager.boardFile, boardModel);
-//        dataManager.saveObject(DataManager.PGNFile, pgn);
-//        dataManager.saveObject(DataManager.stackFile, boardModelStack);
-//        dataManager.saveObject(DataManager.FENsListFile, FENs);
-//        dataManager.saveData(theme);
-//        Log.d(TAG, "saveGame: Game saved");
+        if (gameTerminated) return;
         dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
+//        Log.d(TAG, "saveGame: Game saved");
     }
 
     @Override
@@ -326,13 +306,15 @@ public class GameFragment extends Fragment implements BoardInterface {
 //        Invalidate chess board to show new promoted piece
         promoteDialog.setOnDismissListener(dialogInterface -> {
             Piece tempPiece = pieceAt(row, col);
-            Piece promotedPiece = boardModel.promote(pawn, promoteDialog.getRank(), row, col);
+            Rank rank = promoteDialog.getRank();
+            Piece promotedPiece = boardModel.promote(pawn, rank, row, col);
             if (tempPiece != null) {
                 if (tempPiece.getPlayer() != promotedPiece.getPlayer()) {
                     removePiece(tempPiece);
                     addToPGN(promotedPiece, PGN.PROMOTE + PGN.CAPTURE, fromRow, fromCol);
-                } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
-            }
+                }
+            } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
+            Log.d(TAG, "promote: Promoted to " + rank);
             pushToStack();
             toggleGameState();
             chessBoard.invalidate();
@@ -405,6 +387,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         else btn_resign.setAlpha(0.5f);
 
         saveGame();
+        Log.d(TAG, "updateAll: Updated and saved game");
 //        isChecked();
     }
 
@@ -725,10 +708,10 @@ public class GameFragment extends Fragment implements BoardInterface {
         return (char) ('a' + col);
     }
 
-//    @Override
-//    public void onClick(View view) {
-//        if (gameTerminated) terminateGame(gameState);
-//    }
+    @Override
+    public void onClick(View view) {
+        if (gameTerminated) terminateGame(gameState);
+    }
 
     /**
      * Temporary BoardInterface for computing Legal Moves

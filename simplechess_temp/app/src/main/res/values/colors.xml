@@ -5,17 +5,37 @@
     <color name="purple_700">#FF3700B3</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+
+    <color name="brown_200">#c0a490</color>
+    <color name="brown_500">#734f2f</color>
+    <color name="brown_700">#593921</color>
+    <color name="brown_900">#3d1f0f</color>
+
+    <color name="primary_900">#424242</color>
+    <color name="primary_700">#626262</color>
+    <color name="primary_500">#9f9f9f</color>
+    <color name="primary_200">#EFEFEF</color>
+
+    <color name="secondary_200">#83cdc6</color>
+    <color name="secondary_500">#189A8C</color>
+    <color name="secondary_700">#137C6E</color>
+    <color name="secondary_900">#0C5043</color>
+
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
     <color name="dark_bg">#262421</color>
     <color name="light_bg">#DDDDDD</color>
+
     <color name="light_grey_text">#CCCCCC</color>
+
     <color name="piece_selection">#228B22</color>
     <color name="checked_square">#d72222</color>
 
     <color name="icon_tint">#FFFFFFFF</color>
+    <color name="btn_background">#424242</color>
+    <color name="btn_txt_color">#EFEFEF</color>
 
-    <color name="btn_background">#33AAAAAA</color>
     <color name="timer_default">#343434</color>
     <color name="timer_active">#909090</color>
     <color name="timer_critical">#d72222</color>
@@ -33,7 +53,7 @@
     <color name="theme_lichess_dark">#B58863</color>
 
     <color name="theme_lichess2_light">#dcc4aa</color>
-    <color name="theme_lichess2_dark">#a07655</color>
+    <color name="theme_lichess2_dark">#A07655</color>
 
     <color name="theme_grey_light">#e9e9e9</color>
     <color name="theme_grey_dark">#666666</color>

@@ -1,11 +1,9 @@
 package com.drdedd.simplechess_temp.dialogs;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.TextView;
@@ -18,7 +16,7 @@ import com.drdedd.simplechess_temp.R;
 //@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class GameOverDialog extends Dialog {
     private final PGN pgn;
-    private final Context context;
+//    private final Context context;
     //    private final String[] permissions;
     //    private final Activity activity;
     private final String termination;
@@ -27,7 +25,7 @@ public class GameOverDialog extends Dialog {
     public GameOverDialog(@NonNull Context context, PGN pgn) {
         super(context);
         setCancelable(false);
-        this.context = context;
+//        this.context = context;
 //        this.activity = activity;
         this.termination = pgn.getTermination();
         this.pgn = pgn;

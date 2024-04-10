@@ -5,7 +5,7 @@
     android:id="@+id/game_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.game.GameFragment">
+    tools:context=".fragments.GameFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topLayout"
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/pgn"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:drawableLeftCompat="@drawable/ic_copy"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="@string/fen"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:drawableLeftCompat="@drawable/ic_copy"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +51,7 @@
             android:background="@android:color/transparent"
             android:contentDescription="@string/export_pgn"
             android:text="@string/pgn"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="14sp"
             app:drawableLeftCompat="@drawable/ic_save"
             app:layout_constraintBottom_toBottomOf="parent"

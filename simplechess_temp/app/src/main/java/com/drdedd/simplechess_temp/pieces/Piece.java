@@ -17,7 +17,7 @@ public abstract class Piece implements Serializable, Cloneable {
     private int col, row;
     private final int resID;
     private final Rank rank;
-    protected boolean moved;
+    protected boolean moved, captured;
     private final String unicode;
 
     /**
@@ -34,6 +34,7 @@ public abstract class Piece implements Serializable, Cloneable {
         this.rank = rank;
         this.resID = resID;
         this.unicode = unicode;
+        this.captured = false;
     }
 
     public String getUnicode() {
@@ -171,6 +172,14 @@ public abstract class Piece implements Serializable, Cloneable {
      */
     public boolean isKing() {
         return rank == Rank.KING;
+    }
+
+    public boolean isNotCaptured() {
+        return !captured;
+    }
+
+    public void setCaptured(boolean captured) {
+        this.captured = captured;
     }
 
     @NonNull

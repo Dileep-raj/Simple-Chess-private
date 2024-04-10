@@ -12,7 +12,7 @@ import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.fragments.game.GameFragment;
+import com.drdedd.simplechess_temp.fragments.GameFragment;
 
 import java.util.Locale;
 
@@ -139,8 +139,10 @@ public class ChessTimer {
         if (whiteTimeLeft / 100 == 0 || blackTimeLeft / 100 == 0) {
             if (whiteTimeLeft > blackTimeLeft)
                 Toast.makeText(gameFragment.requireContext(), "White wins", Toast.LENGTH_SHORT).show();
-            else Toast.makeText(gameFragment.requireContext(), "Black wins", Toast.LENGTH_SHORT).show();
-        } else Toast.makeText(gameFragment.requireContext(), "Timer stopped", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(gameFragment.requireContext(), "Black wins", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(gameFragment.requireContext(), "Timer stopped", Toast.LENGTH_SHORT).show();
         timerRunning = false;
         updateTimeText();
     }

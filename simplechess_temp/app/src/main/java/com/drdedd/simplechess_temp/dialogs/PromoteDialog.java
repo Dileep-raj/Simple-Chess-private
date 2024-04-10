@@ -12,9 +12,17 @@ import androidx.annotation.NonNull;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.R;
 
+/**
+ * Custom dialog for pawn promotion
+ */
 public class PromoteDialog extends Dialog implements View.OnClickListener {
     private Rank rank = null;
 
+    /**
+     * Dialog for pawn promotion
+     *
+     * @param context Context of the activity/fragment
+     */
     public PromoteDialog(@NonNull Context context) {
         super(context);
         this.setCancelable(false);
@@ -51,6 +59,11 @@ public class PromoteDialog extends Dialog implements View.OnClickListener {
         if (rank != null) dismiss();
     }
 
+    /**
+     * Rank selected for promotion
+     *
+     * @return <code>Queen|Rook|Knight|Bishop</code>
+     */
     public Rank getRank() {
         return rank;
     }
