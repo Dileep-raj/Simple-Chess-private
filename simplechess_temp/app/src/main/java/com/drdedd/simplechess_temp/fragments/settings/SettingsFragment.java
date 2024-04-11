@@ -148,7 +148,7 @@ public class SettingsFragment extends Fragment {
                 int input = Integer.parseInt(dest.toString() + source.toString());
                 if (isInRange(min, max, input)) return null;
             } catch (NumberFormatException nfe) {
-                Log.d("InputFilterError", "Error:\n" + nfe);
+                Log.e("InputFilterError", "Error in filter:\n", nfe);
             }
             return "";
         }

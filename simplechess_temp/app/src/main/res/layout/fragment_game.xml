@@ -65,23 +65,26 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
         android:layout_marginBottom="8dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/boardNameLayout"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/pgn_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="4dp"
             android:scrollHorizontally="true"
             android:textSize="16sp" />
     </HorizontalScrollView>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/boardNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,21 +93,42 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/blackDetailsLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/blackNameTV"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="16sp"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/blackNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/black"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/whiteCapturedPieces"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                    <TextView
+                        android:id="@+id/blackValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/blackTimeLayout"
@@ -121,6 +145,7 @@
                     android:id="@+id/blackTimeTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/sample_time"
                     android:textSize="16sp" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -128,11 +153,7 @@
         <com.drdedd.simplechess_temp.ChessBoard
             android:id="@+id/chessBoard"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/whiteDetailsLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/blackDetailsLayout" />
+            android:layout_height="wrap_content" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/whiteDetailsLayout"
@@ -142,16 +163,40 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/whiteNameTV"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:textSize="16sp"
+                android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/whiteNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:text="@string/white"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/blackCapturedPieces"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+
+                    <TextView
+                        android:id="@+id/whiteValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/whiteTimeLayout"
@@ -168,11 +213,12 @@
                     android:id="@+id/whiteTimeTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="@string/sample_time"
                     android:textSize="16sp"
                     app:fontWeight="700" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/game_options_layout"
@@ -240,10 +286,11 @@
             app:srcCompat="@drawable/ic_exit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/gameStateLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -252,11 +299,8 @@
             android:id="@+id/gameStateView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:text="@string/game"
+            android:textAlignment="gravity"
+            android:textSize="16sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

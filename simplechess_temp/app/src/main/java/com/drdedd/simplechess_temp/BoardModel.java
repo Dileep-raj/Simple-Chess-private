@@ -20,6 +20,7 @@ import com.drdedd.simplechess_temp.pieces.Queen;
 import com.drdedd.simplechess_temp.pieces.Rook;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -166,7 +167,7 @@ public class BoardModel implements Serializable, Cloneable {
     public Piece pieceAt(int row, int col) {
         if (row < 0 || row > 7 || col < 0 || col > 7) return null;
         for (Piece piece : pieces)
-            if (piece.isNotCaptured() && piece.getCol() == col && piece.getRow() == row) return piece;
+            if (!piece.isCaptured() && piece.getCol() == col && piece.getRow() == row) return piece;
         return null;
     }
 
@@ -437,5 +438,11 @@ public class BoardModel implements Serializable, Cloneable {
         Log.d(TAG, String.format(Locale.ENGLISH, "\nGiven FEN: %s\nConverted BoardModel:%s\nConverted BoardModel FEN: %s\nPlayer to play: %s\nWhite ShortCastle: %b\tLongCastle: %b\nBlack ShortCastle: %b\tLongCastle: %b\nEnPassantPawn: %s", FEN, boardModel, boardModel.toFENStrings()[0], playerToPlay, whiteShortCastle, whiteLongCastle, blackShortCastle, blackLongCastle, boardModel.enPassantPawn == null ? "-" : boardModel.enPassantPawn.getPosition()));
         Log.d(TAG, "parseFEN: Valid FEN\n");
         return boardModel;
+    }
+
+    public ArrayList<Piece> getCapturedPieces() {
+        ArrayList<Piece> capturedPieces = new ArrayList<>();
+        for (Piece piece : pieces) if (piece.isCaptured()) capturedPieces.add(piece);
+        return capturedPieces;
     }
 }

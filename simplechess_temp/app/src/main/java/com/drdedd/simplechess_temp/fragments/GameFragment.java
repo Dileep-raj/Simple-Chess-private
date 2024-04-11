@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,12 +73,13 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     private boolean timerEnabled;
     public TextView whiteTimeTV, blackTimeTV;
     public LinearLayout whiteTimeLayout, blackTimeLayout;
+    private LinearLayout whiteCaptured, blackCaptured;
+    private final ViewGroup.LayoutParams pieceImageViewParams = new ViewGroup.LayoutParams(40, 40);
     private ChessTimer chessTimer;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentGameBinding.inflate(inflater, container, false);
-//        return inflater.inflate(R.layout.fragment_game, container, false);
         return binding.getRoot();
     }
 
@@ -96,6 +99,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         blackTimeTV = binding.blackTimeTV;
         whiteTimeLayout = binding.whiteTimeLayout;
         blackTimeLayout = binding.blackTimeLayout;
+        whiteCaptured = binding.whiteCapturedPieces;
+        blackCaptured = binding.blackCapturedPieces;
 
         dataManager = new DataManager(requireContext());
         initializeData();
@@ -181,8 +186,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         boardModelStack = new Stack<>();
         FENs = new LinkedList<>();
         pushToStack();
-        Log.d(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
-        Log.d(TAG, "reset: initial BoardModel in stack: " + boardModel);
+        Log.v(TAG, "reset: New PGN created " + pgnDate.format(new Date()));
+        Log.v(TAG, "reset: initial BoardModel in stack: " + boardModel);
         gameState = pgn.getGameState();
         PGN_textView.setText(pgn.getPGN());
         updateAll();
@@ -236,7 +241,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     public void saveGame() {
         if (gameTerminated) return;
         dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
-//        Log.d(TAG, "saveGame: Game saved");
     }
 
     @Override
@@ -269,7 +273,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
 //                Toast.makeText(this, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
 //            } catch (IOException e) {
 //                Toast.makeText(this, "File not saved!", Toast.LENGTH_SHORT).show();
-//                Log.d(TAG, "exportPGN: \n" + e);
+//                Log.e(TAG, "exportPGN: \n", e);
 //            }
 //        } else {
 //            Toast.makeText(this, "Write permission is required to export PGN", Toast.LENGTH_SHORT).show();
@@ -314,7 +318,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
                     addToPGN(promotedPiece, PGN.PROMOTE + PGN.CAPTURE, fromRow, fromCol);
                 }
             } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
-            Log.d(TAG, "promote: Promoted to " + rank);
+            Log.v(TAG, "promote: Promoted to " + rank);
             pushToStack();
             toggleGameState();
             chessBoard.invalidate();
@@ -355,7 +359,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
 
     private void undoLastMove() {
         if (gameTerminated) return;
-
         pgn.removeLast();
         if (boardModelStack.size() >= 2) {
             boardModelStack.pop();
@@ -363,7 +366,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
             boardModel = boardModelStack.peek().clone();
             toggleGameState();
         }
-
         chessBoard.invalidate();
     }
 
@@ -372,10 +374,14 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
      */
     private void updateAll() {
         isChecked();
+        long start = System.nanoTime();
         updateLegalMoves();
+        long end = System.nanoTime();
+        GameFragment.printTime(TAG, "updating LegalMoves", end - start);
         checkGameTermination();
         updatePGNView();
         updateGameStateView();
+        updateCapturedPieces();
 
         btn_undo_move.setEnabled(boardModelStack.size() > 1);
         if (gameTerminated) btn_undo_move.setEnabled(false);
@@ -387,8 +393,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         else btn_resign.setAlpha(0.5f);
 
         saveGame();
-        Log.d(TAG, "updateAll: Updated and saved game");
-//        isChecked();
+        Log.i(TAG, "updateAll: Updated and saved game");
     }
 
     /**
@@ -425,7 +430,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
 //        }
 //        if (!piecesIterator.hasNext()) {
         if (noLegalMoves()) {
-            Log.d(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
+            Log.v(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
             isChecked();
 
             if (!playerToPlay().isInCheck()) {
@@ -461,7 +466,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         gameTerminated = true;
         setGameState(gameState);
         btn_resign.setEnabled(false);
-        Log.d(TAG, "terminateGame: Game terminated by: " + gameState);
+        Log.v(TAG, "terminateGame: Game terminated by: " + gameState);
 //        dataManager.deleteGameFiles();
         GameOverDialog gameOverDialog = new GameOverDialog(requireContext(), pgn);
         gameOverDialog.show();
@@ -492,7 +497,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         totalValue = whiteValue + blackValue;
         if (whiteValue <= 3 && blackValue <= 3 && totalValue <= 7) {
             draw = true;
-            Log.d(TAG, "Draw by insufficient material");
+            Log.i(TAG, "Draw by insufficient material");
         }
         return draw;
     }
@@ -509,9 +514,9 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
                 if (positions[i].equals(positions[j])) {
                     for (int k = j + 1; k < l; k++)
                         if (positions[j].equals(positions[k])) {
-                            Log.d(TAG, "Draw by repetition");
-                            Log.d(TAG, "Position : " + i + ", " + j + " & " + k);
-                            Log.d(TAG, "Repeated moves FEN:\n" + i + " - " + positions[i] + "\n" + j + " - " + positions[j] + "\n" + k + " - " + positions[k]);
+                            Log.i(TAG, "Draw by repetition");
+                            Log.i(TAG, "Position : " + i + ", " + j + " & " + k);
+                            Log.i(TAG, "Repeated moves FEN:\n" + i + " - " + positions[i] + "\n" + j + " - " + positions[j] + "\n" + k + " - " + positions[k]);
                             return true;
                         }
                     positions[i] = "";
@@ -526,6 +531,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
      */
     private void resign() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setInverseBackgroundForced(true);
         builder.setMessage("Are you sure you want to resign?");
         builder.setTitle("Resign");
         builder.setPositiveButton("Yes", (dialog, i) -> {
@@ -546,11 +552,11 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         Player.BLACK.setInCheck(false);
         if (whiteKing.isChecked(this)) {
             Player.WHITE.setInCheck(true);
-            Log.d(TAG, "isChecked: White King checked");
+            Log.v(TAG, "isChecked: White King checked");
         }
         if (blackKing.isChecked(this)) {
             Player.BLACK.setInCheck(true);
-            Log.d(TAG, "isChecked: Black King checked");
+            Log.v(TAG, "isChecked: Black King checked");
         }
     }
 
@@ -574,9 +580,9 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
                 StringBuilder allMoves = new StringBuilder();
                 for (int move : moves)
                     allMoves.append(toNotation(move)).append(" ");
-                Log.d(TAG, "movePiece: Legal Moves for " + piece.getPosition() + ": " + allMoves);
+                Log.v(TAG, "movePiece: Legal Moves for " + piece.getPosition() + ": " + allMoves);
             }
-//            else Log.d(TAG, "movePiece: No legal moves for " + piece.getPosition());
+//            else Log.v(TAG, "movePiece: No legal moves for " + piece.getPosition());
         }
     }
 
@@ -589,7 +595,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         legalMoves = new HashMap<>();
         HashSet<Piece> pieces = boardModel.pieces;
         for (Piece piece : pieces) {
-            if (!isPieceToPlay(piece)) continue;
+            if (!isPieceToPlay(piece) || piece.isCaptured()) continue;
             HashSet<Integer> possibleMoves = piece.getPossibleMoves(this), illegalMoves = new HashSet<>();
             for (int move : possibleMoves)
                 if (isIllegalMove(piece, move)) illegalMoves.add(move);
@@ -620,9 +626,27 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         return isChecked;
     }
 
+    private void updateCapturedPieces() {
+        whiteCaptured.removeAllViews();
+        blackCaptured.removeAllViews();
+        ArrayList<Piece> capturedPieces = boardModel.getCapturedPieces();
+        for (Piece piece : capturedPieces) {
+            ImageView pieceImageView = createPieceView(piece);
+            if (piece.isWhite()) whiteCaptured.addView(pieceImageView);
+            else blackCaptured.addView(pieceImageView);
+        }
+    }
+
+    private ImageView createPieceView(Piece piece) {
+        ImageView imageView = new ImageView(requireContext());
+        imageView.setImageResource(piece.getResID());
+        imageView.setLayoutParams(pieceImageViewParams);
+        return imageView;
+    }
+
     private void updatePGNView() {
         PGN_textView.setText(pgn.getPGN());
-        horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+        horizontalScrollView.post(() -> horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT));
     }
 
     private void pushToStack() {
@@ -728,7 +752,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
             Piece opponentPiece = pieceAt(toRow, toCol), tempPiece = pieceAt(fromRow, fromCol);
             if (tempPiece != null) tempPiece.moveTo(toRow, toCol);
-            else Log.d("TempBoardInterface", "movePiece: Error! tempPiece is null");
+            else Log.e("TempBoardInterface", "movePiece: Error! tempPiece is null");
             if (opponentPiece != null) tempBoardModel.removePiece(opponentPiece);
             return true;
         }
@@ -758,5 +782,9 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
 
     public static String getTAG() {
         return TAG;
+    }
+
+    public static void printTime(String TAG, String message, long time) {
+        Log.i(TAG, String.format(Locale.ENGLISH, "printTime: Time calculated for %s: %,3d ns", message, time));
     }
 }

@@ -38,6 +38,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.btn_new_game).setOnClickListener(v -> startGame(true));
         view.findViewById(R.id.btn_exit_app).setOnClickListener(v -> exit_app());
         view.findViewById(R.id.btn_settings).setOnClickListener(v -> navController.navigate(R.id.nav_settings));
+//        view.findViewById(R.id.btn_open_test).setOnClickListener(v -> navController.navigate(R.id.nav_test));
 
         if (dataManager.readObject(DataManager.boardFile) == null || dataManager.readObject(DataManager.PGNFile) == null || dataManager.readObject(DataManager.stackFile) == null)
             btn_continue.setVisibility(View.GONE);

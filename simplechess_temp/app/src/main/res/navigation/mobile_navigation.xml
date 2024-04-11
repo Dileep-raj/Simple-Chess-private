@@ -30,4 +30,9 @@
         android:name="com.drdedd.simplechess_temp.fragments.LoadGameFragment"
         android:label="@string/load_game"
         tools:layout="@layout/fragment_load_game" />
+    <fragment
+        android:id="@+id/nav_test"
+        android:name="com.drdedd.simplechess_temp.fragments.TestFragment"
+        android:label="@string/test_fragment"
+        tools:layout="@layout/fragment_test" />
 </navigation>

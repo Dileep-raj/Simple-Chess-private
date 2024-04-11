@@ -24,7 +24,6 @@ import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.databinding.FragmentLoadGameBinding;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -73,8 +72,7 @@ public class LoadGameFragment extends Fragment {
         try {
             showDialog();
         } catch (Exception e) {
-            Log.e(TAG, "onViewCreated: Error from dialog:\n" + Arrays.toString(e.getStackTrace()));
-            Log.e(TAG, "onViewCreated: Error Message: " + e.getMessage());
+            Log.e(TAG, "onViewCreated: Error from dialog:\n", e);
             Toast.makeText(requireContext(), "An unknown error occurred", Toast.LENGTH_SHORT).show();
             getParentFragmentManager().popBackStack();
         }
@@ -107,11 +105,9 @@ public class LoadGameFragment extends Fragment {
 
             Matcher result = Pattern.compile(resultRegex).matcher(pgn);
             if (result.find()) Log.i(TAG, "\nResult: " + result.group().trim());
-
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "validatePGN: Error while validating PGN\\n" + Arrays.toString(e.getStackTrace()));
-            Log.e(TAG, "validatePGN: Error Message: " + e.getMessage());
+            Log.e(TAG, "validatePGN: Error while validating PGN\n", e);
             Toast.makeText(requireContext(), "Error while loading PGN", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -162,7 +158,7 @@ public class LoadGameFragment extends Fragment {
             long start = System.nanoTime();
             boolean result = validatePGN(pgnTxt.getText().toString());
             long end = System.nanoTime();
-            Log.i(TAG, String.format("Time taken to validate PGN: %,3d ns", end - start));
+            GameFragment.printTime(TAG, "validating PGN", end - start);
             if (result) {
                 Log.v(TAG, "onCreateView: No errors in PGN");
                 Toast.makeText(requireContext(), "No errors in PGN", Toast.LENGTH_SHORT).show();

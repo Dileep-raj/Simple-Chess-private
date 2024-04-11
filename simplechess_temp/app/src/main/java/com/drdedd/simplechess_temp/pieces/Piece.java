@@ -174,8 +174,8 @@ public abstract class Piece implements Serializable, Cloneable {
         return rank == Rank.KING;
     }
 
-    public boolean isNotCaptured() {
-        return !captured;
+    public boolean isCaptured() {
+        return captured;
     }
 
     public void setCaptured(boolean captured) {

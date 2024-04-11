@@ -31,6 +31,7 @@
     <string name="about">About</string>
     <string name="settings">Settings</string>
     <string name="load_game">Load Game</string>
+    <string name="test_fragment">Test Fragment</string>
 
     <string name="unicode_kw">\u2654</string>
     <string name="unicode_qw">\u2655</string>
@@ -63,6 +64,7 @@
     <string name="paste_your_pgn_here">Paste your PGN here</string>
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="load">Load</string>
+    <string name="sample_time">10:00.0</string>
 
     <string-array name="unicodes">
         <item>\u2654</item>
