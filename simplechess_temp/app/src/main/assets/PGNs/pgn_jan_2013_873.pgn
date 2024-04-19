@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/mk6j9go4"]
+[White "JohnUA"]
+[Black "arun"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:35:16"]
+[WhiteElo "1267"]
+[BlackElo "1309"]
+[WhiteRatingDiff "-10"]
+[BlackRatingDiff "+21"]
+[ECO "B00"]
+[Opening "Nimzowitsch Defense: Scandinavian Variation, Bogoljubov Variation, Heinola-Deppe Gambit"]
+[TimeControl "60+10"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. d4 d5 3. Nc3 Nc6 4. Bb5 exd4 5. Nxd5 a6 6. Bxc6+ bxc6 7. Nf4 c5 8. Nf3 Bg4 9. O-O Bxf3 10. Qxf3 Bd6 11. Re1 f6 12. Ne6 Qd7 13. Qh3 Ke7 14. Nxg7 h6 15. Nf5+ Kd8 16. g3 Ne7 17. g4 Nxf5 18. exf5 Re8 19. Rxe8+ Qxe8 20. Bxh6 Kd7 21. g5 fxg5 22. Bxg5 Qg8 23. f6+ Ke8 24. Re1+ Kf7 25. Qd7+ Kf8 0-1

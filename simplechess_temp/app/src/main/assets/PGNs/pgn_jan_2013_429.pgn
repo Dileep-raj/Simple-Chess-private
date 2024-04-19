@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/8tay8u2x"]
+[White "tiggran"]
+[Black "lamobot"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:04:21"]
+[WhiteElo "1582"]
+[BlackElo "1310"]
+[WhiteRatingDiff "-18"]
+[BlackRatingDiff "+32"]
+[ECO "B02"]
+[Opening "Alekhine Defense: Scandinavian Variation"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 Nf6 2. Nc3 d5 3. exd5 Nxd5 4. Nxd5 Qxd5 5. d3 Nc6 6. Be2 e5 7. Nf3 Bb4+ 8. c3 Ba5 9. O-O O-O 10. Be3 Bg4 11. h3 Bh5 12. Nh2 Bg6 13. Bf3 Qe6 14. Be2 Rad8 15. Qc2 f5 16. Rfd1 f4 17. Bxf4 exf4 18. b3 Ne5 19. Qb2 Bxd3 20. Rxd3 Nxd3 21. Rd1 Nxb2 0-1

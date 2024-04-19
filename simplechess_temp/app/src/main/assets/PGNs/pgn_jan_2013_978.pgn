@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/qqv15g22"]
+[White "Arbequina"]
+[Black "famcaliap"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:59:21"]
+[WhiteElo "1699"]
+[BlackElo "1706"]
+[WhiteRatingDiff "+11"]
+[BlackRatingDiff "-11"]
+[ECO "D06"]
+[Opening "Queen's Gambit Refused: Marshall Defense"]
+[TimeControl "600+5"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 Nf6 3. e3 e6 4. Nf3 Bb4+ 5. Nc3 Bxc3+ 6. bxc3 dxc4 7. Bxc4 O-O 8. Qd3 c6 9. e4 Nbd7 10. e5 Nd5 11. Ng5 g6 12. Qh3 h5 13. O-O Nd5b6 14. Be2 f6 15. Nxe6 fxe5 16. Nxd8 1-0

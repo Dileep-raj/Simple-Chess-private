@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/ysmsba6s"]
+[White "1000"]
+[Black "giao"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:44:48"]
+[WhiteElo "1656"]
+[BlackElo "1431"]
+[WhiteRatingDiff "+6"]
+[BlackRatingDiff "-5"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. b3 g6 2. Bb2 Nf6 3. a3 Bg7 4. g4 O-O 5. g5 b6 6. gxf6 exf6 7. Bg2 f5 8. Bxg7 Kxg7 9. Bxa8 Nc6 10. Bxc6 dxc6 11. Qc1 Qf6 12. c3 b5 13. Qb2 a5 14. Ra2 Kg8 15. c4 Qd6 16. Nc3 bxc4 17. bxc4 Be6 18. c5 Qxc5 19. Qc2 Rd8 20. e3 Qb6 21. d4 c5 22. Na4 Bxa2 23. Nxb6 cxb6 24. Qxa2 1-0

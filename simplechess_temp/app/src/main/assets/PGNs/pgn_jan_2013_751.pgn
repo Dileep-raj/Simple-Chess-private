@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/5uiumdsi"]
+[White "famcaliap"]
+[Black "gilberthoy"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:08:58"]
+[WhiteElo "1720"]
+[BlackElo "1437"]
+[WhiteRatingDiff "+4"]
+[BlackRatingDiff "-4"]
+[ECO "C23"]
+[Opening "Bishop's Opening"]
+[TimeControl "600+11"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6 4. Qxf7# 1-0

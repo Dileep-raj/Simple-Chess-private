@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/no4zwsvy"]
+[White "Elquesoy"]
+[Black "Marzinkus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:52:57"]
+[WhiteElo "1416"]
+[BlackElo "1587"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+16"]
+[ECO "C00"]
+[Opening "French Defense: Knight Variation"]
+[TimeControl "180+0"]
+[Termination "Normal"]
+
+1. e4 e6 2. Nf3 d5 3. exd5 exd5 4. Qe2+ Be7 5. d4 Nf6 6. Bf4 O-O 7. Ng5 h6 8. Nf3 Re8 9. Qd3 c5 10. Be2 c4 11. Qd2 Ne4 12. Qc1 Nc6 13. O-O Be6 14. c3 Rc8 15. Nbd2 a5 16. Nxe4 dxe4 17. Ne1 b5 18. Bxh6 gxh6 19. Qxh6 Bg5 20. f4 Bxh6 0-1

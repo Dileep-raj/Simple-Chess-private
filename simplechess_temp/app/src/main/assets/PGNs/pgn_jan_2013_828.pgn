@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/e9m8ye05"]
+[White "aggresivenapk1n"]
+[Black "JohnUA"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:57:39"]
+[WhiteElo "1078"]
+[BlackElo "1353"]
+[WhiteRatingDiff "+115"]
+[BlackRatingDiff "-17"]
+[ECO "D06"]
+[Opening "Queen's Gambit Refused: Marshall Defense"]
+[TimeControl "60+10"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. c4 Nf6 3. e3 Nc6 4. Nc3 e5 5. e4 dxe4 6. Bg5 exd4 7. Nxe4 Bb4+ 8. Ke2 O-O 9. a3 d3+ 10. Qxd3 Qxd3+ 11. Kxd3 Rd8+ 12. Ke3 Rd4 13. Ne2 Ng4+ 14. Kf3 Rd3+ 15. Kf4 Bd2+ 16. Nxd2 1-0

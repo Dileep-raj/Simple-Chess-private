@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/tknxpk5u"]
+[White "Link"]
+[Black "ilovemyself"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "03:50:35"]
+[WhiteElo "1361"]
+[BlackElo "1417"]
+[WhiteRatingDiff "-10"]
+[BlackRatingDiff "+12"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Modern Variation #2"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Nf6 3. Nc3 e6 4. Bc4 Bb4 5. Qf3 Nbd7 6. b3 Nc5 7. Bb2 Bxc3 8. Bxc3 O-O 9. dxe6 Bxe6 10. Bxe6 Re8 11. Ne2 Rxe6 12. O-O Qe7 13. Nf4 Rc6 14. Bxf6 Qxf6 15. Rfe1 Nd7 16. Re2 Qxa1+ 17. Re1 Qxe1# 0-1

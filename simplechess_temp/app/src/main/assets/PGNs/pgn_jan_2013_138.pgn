@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/ai5gl3p4"]
+[White "Krieg"]
+[Black "t4nk"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:00:52"]
+[WhiteElo "1612"]
+[BlackElo "1555"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+13"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game #2"]
+[TimeControl "60+1"]
+[Termination "Normal"]
+
+1. d4 d5 2. e3 c6 3. Nf3 b6 4. Be2 a6 5. O-O Bb7 6. b3 c5 7. Bb2 cxd4 8. Nxd4 e6 9. Nd2 Qd6 10. Bf3 Be7 11. c4 Bd8 12. cxd5 Bc7 13. dxe6 Qxh2# 0-1

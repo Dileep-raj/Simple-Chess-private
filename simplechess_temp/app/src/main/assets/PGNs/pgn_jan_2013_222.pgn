@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/uxkwqqn1"]
+[White "georgek"]
+[Black "Neuronchess"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:28:35"]
+[WhiteElo "1542"]
+[BlackElo "1707"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+8"]
+[ECO "C46"]
+[Opening "Four Knights Game"]
+[TimeControl "480+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nc3 Nc6 4. Be2 Bc5 5. Nxe5 Nxe5 6. d4 Bxd4 7. Qxd4 d6 8. O-O Be6 9. Bg5 Qe7 10. Rfe1 O-O-O 11. Qxa7 Nc6 12. Qa3 Nd4 13. Bd1 h6 14. Be3 Nc6 15. Rc1 g5 16. Be2 g4 17. Bb5 h5 18. Qa8+ Kd7 19. Qxb7 Ke8 20. Bg5 Bd7 21. Bxf6 Qxf6 22. Nd5 Qxb2 23. Qxc7 Qxb5 24. Rb1 Qc5 25. Nf6+ Ke7 26. Rb7 Kxf6 27. e5+ Nxe5 28. Rb6 Qxc7 0-1

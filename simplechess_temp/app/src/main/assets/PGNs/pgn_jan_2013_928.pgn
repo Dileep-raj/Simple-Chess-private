@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/sgjh4pj4"]
+[White "ddj"]
+[Black "kinner"]
+[Result "1/2-1/2"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:19:04"]
+[WhiteElo "1550"]
+[BlackElo "1659"]
+[WhiteRatingDiff "+6"]
+[BlackRatingDiff "-3"]
+[ECO "B15"]
+[Opening "Caro-Kann Defense"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. d4 d5 2. Nc3 c6 3. e4 e6 4. exd5 cxd5 5. Bb5+ Bd7 6. Bxd7+ Nxd7 7. Qe2 Ngf6 8. Nf3 Bb4 9. Bd2 O-O 10. O-O Bd6 11. Nb5 Bb8 12. Bb4 Re8 13. Bd6 a6 14. Bxb8 Rxb8 15. Nd6 Rf8 16. c4 Nb6 17. c5 Nc4 18. Nxc4 dxc4 19. Qxc4 Ne4 20. Rfe1 Ng5 21. Nxg5 Qxg5 22. Rad1 Rfd8 23. a4 Qd5 24. b3 g6 25. Re5 Qxe5 26. f4 Qxf4 27. b4 Qe3+ 28. Kf1 e5 29. d5 Qf4+ 30. Qxf4 exf4 31. Kf2 g5 32. Kf3 Kf8 33. g3 fxg3 34. hxg3 h6 35. Kg4 Kg7 36. Kf5 Re8 37. d6 Re3 38. d7 Rd8 39. b5 axb5 40. axb5 Rxg3 41. c6 bxc6 42. bxc6 Rf3+ 43. Ke4 Rc3 44. Kd5 f5 45. Kd6 Rf8 46. Kc7 Rf7 47. Kd6 Rf6+ 48. Ke5 Rc5+ 49. Kd4 Rcxc6 50. Ke3 Rcd6 51. d8=Q Rxd8 52. Rxd8 f4+ 53. Kf3 g4+ 54. Kxg4 f3 55. Rd1 f2 56. Rf1 Kg6 57. Kg3 Kg5 58. Rxf2 Rxf2 59. Kxf2 Kh4 60. Kg2 h5 61. Kh2 Kg4 62. Kg2 h4 63. Kh2 h3 64. Kg1 Kg3 65. Kh1 Kf2 66. Kh2 Kf1 67. Kxh3 1/2-1/2

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/d6vxjp1j"]
+[White "Hephesto"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:24:17"]
+[WhiteElo "1844"]
+[BlackElo "1541"]
+[WhiteRatingDiff "+4"]
+[BlackRatingDiff "-4"]
+[ECO "C00"]
+[Opening "French Defense: King's Indian Attack"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. e4 e6 2. d3 f6 3. f4 g6 4. Nf3 h6 5. f5 g5 6. fxe6 f5 7. exf5 h5 8. exd7+ Bxd7 9. Bxg5 Qc8 10. Nc3 Be7 11. Qe2 Kf7 12. Bxe7 Nxe7 13. Ne5+ Ke8 14. Nxd7 Qxd7 15. O-O-O Qxf5 16. Re1 Nc6 17. g3 Rd8 18. Bg2 Rc8 19. Bxc6+ Kf8 20. Rhf1 1-0

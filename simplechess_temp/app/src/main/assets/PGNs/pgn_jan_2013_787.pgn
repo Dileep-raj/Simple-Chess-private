@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/dme6x8ll"]
+[White "garlic"]
+[Black "_viper_"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:29:13"]
+[WhiteElo "1716"]
+[BlackElo "1679"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-13"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. b3 e6 2. Bb2 d5 3. f3 Nf6 4. e4 Be7 5. e5 Nfd7 6. d4 f6 7. exf6 Bxf6 8. c3 O-O 9. h4 c5 10. g4 cxd4 11. cxd4 Qb6 12. Ba3 Rf7 13. Bb2 1-0

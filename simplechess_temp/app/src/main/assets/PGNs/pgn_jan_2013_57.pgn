@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/svgpbjpp"]
+[White "sebastian44"]
+[Black "jtkjtkful"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:34:23"]
+[WhiteElo "1351"]
+[BlackElo "1542"]
+[WhiteRatingDiff "+15"]
+[BlackRatingDiff "-57"]
+[ECO "B01"]
+[Opening "Scandinavian Defense"]
+[TimeControl "300+5"]
+[Termination "Normal"]
+
+1. e4 d5 2. e5 d4 3. d3 Qd5 4. Nf3 h6 5. c3 dxc3 6. Nxc3 Qc6 7. d4 Bg4 8. Be2 Qg6 9. Nd5 Na6 10. Nh4 O-O-O 11. Nxg6 fxg6 12. Bxg4+ 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/943kotgy"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:56:57"]
+[WhiteElo "1497"]
+[BlackElo "1885"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "A43"]
+[Opening "Old Benoni Defense"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 c5 2. Be3 e6 3. Bd2 cxd4 4. e3 e5 5. exd4 exd4 6. Nf3 Nc6 7. Bg5 Nf6 8. Bf4 d5 9. Ne5 Nxe5 10. Bxe5 Bd6 11. Bxf6 Qxf6 12. Qe2+ Be6 13. c3 O-O 14. cxd4 Qxd4 15. Nd2 Qxb2 16. Rb1 Qc2 17. Qd1 Qf5 18. g3 Qe5+ 19. Qe2 Qf6 0-1

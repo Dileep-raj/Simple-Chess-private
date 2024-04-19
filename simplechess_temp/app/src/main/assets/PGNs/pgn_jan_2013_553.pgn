@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/r58rahyq"]
+[White "cheesedout"]
+[Black "Ben_Dover"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "03:32:17"]
+[WhiteElo "1861"]
+[BlackElo "1891"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+10"]
+[ECO "E61"]
+[Opening "King's Indian Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. Nf3 O-O 5. Bg5 d5 6. e3 dxc4 7. Bxc4 a6 8. Bd3 b5 9. Qc2 Nbd7 10. O-O-O Qe8 11. h4 c5 12. dxc5 Nxc5 13. Kb1 Be6 14. Nd4 b4 15. Nxe6 Nxe6 16. Ne4 Rc8 17. Qd2 Nd5 18. h5 f5 19. Ng3 Nxg5 20. hxg6 b3 21. gxh7+ Kh8 22. Nxf5 a5 23. Nxg7 Kxg7 24. Ba6 Nb4 25. Qd4+ e5 26. Qa7+ Kh8 27. Bxc8 Qg6+ 28. Ka1 Nc2+ 29. Kb1 Na3+ 30. Ka1 Qb1+ 31. Rxb1 Nc2# 0-1

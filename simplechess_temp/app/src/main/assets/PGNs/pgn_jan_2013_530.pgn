@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/2i83ggs0"]
+[White "cheesedout"]
+[Black "Ben_Dover"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "03:12:26"]
+[WhiteElo "1891"]
+[BlackElo "1865"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-10"]
+[ECO "E20"]
+[Opening "Nimzo-Indian Defense #2"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 e6 3. Nc3 c5 4. Nf3 cxd4 5. Nxd4 Bc5 6. Nf3 O-O 7. Bg5 d6 8. e3 Nbd7 9. Bd3 Qb6 10. Qc2 h6 11. Bh4 Ne8 12. O-O-O Qc7 13. h3 a6 14. g4 Rb8 15. g5 hxg5 16. Nxg5 b5 17. cxb5 axb5 18. Bxb5 Ba6 19. Qh7# 1-0

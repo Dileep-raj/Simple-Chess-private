@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/7tuxquet"]
+[White "excel"]
+[Black "VanillaShamanilla"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:40:45"]
+[WhiteElo "1646"]
+[BlackElo "1678"]
+[WhiteRatingDiff "+11"]
+[BlackRatingDiff "-61"]
+[ECO "C46"]
+[Opening "Three Knights Opening"]
+[TimeControl "600+5"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Nc3 Bc5 4. Bb5 Nd4 5. Nxe5 Qg5 6. Nf3 Qxg2 7. Nxd4 Qxh1+ 8. Ke2 Qxd1+ 9. Kxd1 Bxd4 10. Nd5 Bb6 11. Be2 Nf6 12. Nc3 O-O 13. d3 Bxf2 14. Bg5 d6 15. Bxf6 gxf6 16. Nd5 f5 17. Nxc7 Rb8 18. Nb5 f4 19. Nxd6 Be3 20. Nb5 a6 21. Nc3 Bh3 22. Nd5 Kg7 23. c4 Kg6 24. Kc2 Rbe8 25. b4 f5 26. exf5+ Kxf5 27. Bf1 Bxf1 28. Rxf1 Rg8 29. Nxe3+ Ke5 30. Nd5 Rg2+ 31. Kc3 Rxa2 32. d4+ Kf5 33. Nxf4 Re3+ 34. Nd3+ Ke4 35. Rf4# 1-0

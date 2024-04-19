@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/45a9vq7r"]
+[White "GEZ"]
+[Black "jtkjtkful"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:19:03"]
+[WhiteElo "1408"]
+[BlackElo "1441"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-35"]
+[ECO "B00"]
+[Opening "Nimzowitsch Defense"]
+[TimeControl "300+1"]
+[Termination "Normal"]
+
+1. e4 Nc6 2. Bc4 b6 3. Nc3 Nh6 4. d3 Nd4 5. Be3 c5 6. Qd2 d6 7. O-O-O a5 8. Nf3 a4 9. a3 Bd7 10. Nxd4 cxd4 11. Bxd4 b5 12. Nxb5 Bxb5 13. Bxb5+ 1-0

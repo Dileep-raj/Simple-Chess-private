@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/097w2vfq"]
+[White "Yeshi"]
+[Black "xiaoqiao"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:51:10"]
+[WhiteElo "1992"]
+[BlackElo "2045"]
+[WhiteRatingDiff "-33"]
+[BlackRatingDiff "+11"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack: English Variation"]
+[TimeControl "120+0"]
+[Termination "Normal"]
+
+1. b3 c5 2. Bb2 d5 3. Nf3 Nc6 4. e3 Bg4 5. Be2 Bxf3 6. Bxf3 e5 7. d4 e4 8. Be2 Nf6 9. O-O Be7 10. c4 cxd4 11. Bxd4 O-O 12. Nc3 Nxd4 13. Qxd4 dxc4 14. Qxc4 Rc8 15. Rfd1 Rxc4 16. Rxd8 Rxc3 0-1

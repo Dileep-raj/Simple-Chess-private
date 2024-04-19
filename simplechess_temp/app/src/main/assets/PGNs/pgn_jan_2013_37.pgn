@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/qwuudn2s"]
+[White "sebastian44"]
+[Black "jtkjtkful"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:24:11"]
+[WhiteElo "1347"]
+[BlackElo "1519"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+23"]
+[ECO "B01"]
+[Opening "Scandinavian Defense"]
+[TimeControl "300+5"]
+[Termination "Time forfeit"]
+
+1. e4 d5 2. e5 d4 3. Nf3 Nc6 4. c3 d3 5. Na3 f6 6. exf6 Nxf6 7. Qa4 Qd5 0-1

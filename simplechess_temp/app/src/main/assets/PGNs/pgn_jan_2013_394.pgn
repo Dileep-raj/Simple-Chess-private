@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/lbcdy142"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:49:34"]
+[WhiteElo "1509"]
+[BlackElo "1872"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "A00"]
+[Opening "Van't Kruijs Opening"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. e3 c5 2. Bc4 e6 3. Qg4 d5 4. Bb3 Nf6 5. Qf3 Be7 6. e4 O-O 7. exd5 exd5 8. c4 d4 9. d3 Nc6 10. Ba4 Bg4 0-1

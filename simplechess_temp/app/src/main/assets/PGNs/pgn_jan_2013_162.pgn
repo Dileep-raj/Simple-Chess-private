@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/hlvdokju"]
+[White "LEGENDARY_ERFAN"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:08:34"]
+[WhiteElo "1200"]
+[BlackElo "1818"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+1"]
+[ECO "B20"]
+[Opening "Sicilian Defense: Bowdler Attack"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. Bc4 e6 3. d3 d5 4. e5 dxc4 5. dxc4 Qxd1+ 6. Kxd1 Nc6 7. Nf3 f6 8. exf6 Nxf6 9. Nc3 Be7 10. Bf4 O-O 11. Ne5 Nd4 12. Re1 Bd6 13. Bg5 Bxe5 14. Rxe5 Ng4 15. Re4 Nxf2+ 16. Kd2 Nxe4+ 17. Ke3 Nxc3 18. bxc3 Nxc2+ 19. Kd2 Nxa1 20. Be7 Re8 21. Bd6 e5 22. Bxc5 Bf5 23. g4 Bg6 24. h3 Nc2 25. h4 h6 26. h5 Bh7 27. Bb4 Nxb4 28. cxb4 e4 29. Kc3 e3 30. Kb3 e2 31. Ka4 e1=Q 32. Kb5 Qd2 33. Kc5 Qxa2 34. Kd5 Red8+ 35. Kc5 Rac8+ 36. Kb5 Qxc4+ 37. Ka4 b5+ 38. Ka5 Rb8 39. g5 Qa2# 0-1

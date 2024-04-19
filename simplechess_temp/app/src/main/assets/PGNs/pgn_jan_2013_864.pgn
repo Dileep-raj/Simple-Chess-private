@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/uw9lodjf"]
+[White "RUS2012"]
+[Black "baracuda"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:29:46"]
+[WhiteElo "1583"]
+[BlackElo "1533"]
+[WhiteRatingDiff "-32"]
+[BlackRatingDiff "+12"]
+[ECO "C23"]
+[Opening "Bishop's Opening"]
+[TimeControl "300+8"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. Bc4 d6 3. d3 a6 4. a4 h6 5. h3 Qe7 6. Nc3 Be6 7. Nd5 Qd7 8. Ne2 Nc6 9. O-O Bxd5 10. Bxd5 Nf6 11. Nc3 Nxd5 12. Nxd5 O-O-O 13. f4 exf4 14. Bxf4 Ne7 15. c4 Nxd5 16. cxd5 Be7 17. b4 Rde8 18. Rc1 g5 19. Bg3 f6 20. e5 dxe5 21. d4 Qxd5 0-1

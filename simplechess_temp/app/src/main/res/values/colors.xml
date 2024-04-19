@@ -27,18 +27,20 @@
     <color name="dark_bg">#262421</color>
     <color name="light_bg">#DDDDDD</color>
 
-    <color name="light_grey_text">#CCCCCC</color>
-
     <color name="piece_selection">#228B22</color>
     <color name="checked_square">#d72222</color>
 
     <color name="icon_tint">#FFFFFFFF</color>
     <color name="btn_background">#424242</color>
     <color name="btn_txt_color">#EFEFEF</color>
+    <color name="default_text_color">#DFDFDF</color>
+    <color name="ic_close_bg">#FF0013</color>
 
     <color name="timer_default">#343434</color>
     <color name="timer_active">#909090</color>
     <color name="timer_critical">#d72222</color>
+    <color name="active3">#4FAA69</color>
+    <color name="pgn_move">#262421</color>
 
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>
@@ -61,4 +63,5 @@
     <color name="theme_blue_light">#CEE3F5</color>
     <color name="theme_blue_dark">#3F698F</color>
 
+    <color name="transparent">#00000000</color>
 </resources>

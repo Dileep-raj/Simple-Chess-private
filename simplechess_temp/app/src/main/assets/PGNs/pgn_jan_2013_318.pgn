@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/d8qglqec"]
+[White "Rodney"]
+[Black "jaquen81"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:11:04"]
+[WhiteElo "1516"]
+[BlackElo "1532"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+10"]
+[ECO "D20"]
+[Opening "Queen's Gambit Accepted: Central Variation, Greco Variation"]
+[TimeControl "480+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 dxc4 3. e4 b5 4. b3 cxb3 5. Bxb5+ Bd7 6. Bxd7+ Qxd7 7. axb3 e6 8. e5 Nc6 9. Nf3 O-O-O 10. Be3 Bb4+ 11. Nbd2 Bxd2+ 12. Qxd2 f6 13. O-O fxe5 14. Nxe5 Nxe5 15. dxe5 Qxd2 16. Bxd2 Rxd2 17. Rxa7 Rb2 18. Rc1 Rxb3 19. Rcxc7+ Kb8 20. g3 Nh6 21. Rxg7 Nf5 22. Rgd7 h5 23. f4 Rg8 24. Kg2 h4 25. Kf2 hxg3+ 26. hxg3 Nxg3 27. Rf7 Ne4+ 28. Ke2 0-1

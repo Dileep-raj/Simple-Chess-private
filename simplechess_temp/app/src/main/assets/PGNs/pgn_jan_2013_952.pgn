@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/zts4x0p2"]
+[White "metrolog"]
+[Black "Andrandand"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:35:36"]
+[WhiteElo "1632"]
+[BlackElo "1563"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-10"]
+[ECO "D30"]
+[Opening "Queen's Gambit Declined"]
+[TimeControl "180+15"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 e6 3. a3 c6 4. Nc3 h6 5. Nf3 Bd6 6. c5 Bc7 7. e3 Nf6 8. b4 b6 9. Bd3 b5 10. Bc2 a5 11. Bb2 a4 12. Qd3 Ng4 13. h3 Nf6 14. O-O-O Nbd7 15. e4 dxe4 16. Nxe4 Nxe4 17. Qxe4 Nf6 18. Qe2 Bf4+ 19. Kb1 O-O 20. g3 Bc7 21. Ne5 Bxe5 22. dxe5 Nd5 23. h4 Qe7 24. h5 Bb7 25. f4 Rfd8 26. Ka1 Nxb4 27. axb4 a3 28. Bc3 Bc8 29. g4 Rxd1+ 30. Rxd1 Bb7 31. f5 exf5 32. gxf5 Qh4 33. f6 Qg3 34. Bd4 a2 35. Qe4 g6 36. Rg1 Qa3 37. hxg6 fxg6 38. Qxg6+ Kf8 39. Qg7+ Ke8 40. Qe7# 1-0

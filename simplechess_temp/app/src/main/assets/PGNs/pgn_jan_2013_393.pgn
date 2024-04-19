@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/6hesvci7"]
+[White "cheesedout"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:48:40"]
+[WhiteElo "1872"]
+[BlackElo "1509"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "A40"]
+[Opening "Queen's Pawn"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 f6 2. c4 f5 3. Nc3 h5 4. Nf3 g5 5. Bxg5 Bh6 6. e3 Bxg5 7. Nxg5 Nf6 8. Qc2 Ng4 9. Qxf5 d5 10. Qf7+ Kd7 11. Qxd5+ Ke8 12. Nf7 Qxd5 13. cxd5 Kxf7 14. Bd3 Re8 15. O-O-O Bd7 16. h3 Nf6 17. g4 Ng8 18. gxh5 1-0

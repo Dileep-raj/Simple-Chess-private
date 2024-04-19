@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/2oawjcsu"]
+[White "4lawsdotcom"]
+[Black "khan"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:28:45"]
+[WhiteElo "1604"]
+[BlackElo "1405"]
+[WhiteRatingDiff "-36"]
+[BlackRatingDiff "+17"]
+[ECO "C55"]
+[Opening "Italian Game: Anti-Fried Liver Defense"]
+[TimeControl "480+4"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 h6 4. O-O d6 5. c3 Qe7 6. d4 Be6 7. d5 Nf6 8. dxe6 fxe6 9. Na3 Nxe4 10. Re1 Nc5 11. Nb5 a6 12. Nxe5 axb5 13. Nxc6 bxc6 14. Qh5+ Kd7 15. Bg5 hxg5 16. Bxe6+ Nxe6 17. Qxh8 g6 18. Qh3 Re8 19. Re3 Bg7 20. Rae1 Be5 21. g3 Qf7 22. Rd1 Qf5 23. Qg4 Qxg4 24. Rdd3 Nc5 25. f3 Qh3 26. Rd2 g4 27. fxg4 Qxg4 28. b4 Na6 29. a3 Bf4 30. Rxe8 Kxe8 31. Rd4 g5 32. Kf2 Be3+ 33. Kxe3 Qxd4+ 34. cxd4 c5 35. dxc5 dxc5 36. bxc5 Nxc5 37. Kd4 Nb7 38. Kd5 Kd7 39. h3 c5 40. Ke4 c4 41. Kd4 Kd6 42. h4 gxh4 43. gxh4 Nd8 44. h5 Nf7 45. Kc3 Kc5 46. Kc2 Kd4 47. Kd2 c3+ 48. Kc2 Kc4 49. Kc1 Kb3 50. Kb1 Kxa3 51. Kc2 b4 52. Kb1 Kb3 53. h6 Nxh6 54. Ka1 Kc4 55. Kb1 b3 56. Ka1 Nf5 57. Kb1 Nd4 58. Ka1 c2 59. Kb2 Kd3 60. Kc1 Kc4 61. Kb2 Ne2 62. Ka1 c1=Q# 0-1

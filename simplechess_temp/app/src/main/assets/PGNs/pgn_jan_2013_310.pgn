@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/8ptmepwt"]
+[White "cheesedout"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:08:29"]
+[WhiteElo "1914"]
+[BlackElo "1506"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "A40"]
+[Opening "English Defense #2"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 b6 2. c4 b5 3. Nc3 bxc4 4. e4 c5 5. d5 d6 6. Bxc4 Ba6 7. Nf3 Bxc4 8. Qa4+ Qd7 9. Qxc4 a6 10. e5 dxe5 11. Nxe5 Qf5 12. f4 1-0

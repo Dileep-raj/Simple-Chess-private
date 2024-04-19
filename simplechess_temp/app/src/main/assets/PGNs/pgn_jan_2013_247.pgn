@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/iwz4x6w4"]
+[White "Krieg"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:35:02"]
+[WhiteElo "1631"]
+[BlackElo "1508"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-8"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game #2"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. d4 d5 2. e3 e5 3. Nf3 exd4 4. Nxd4 c5 5. Nf3 c4 6. Be2 d4 7. O-O dxe3 8. Bxe3 Qxd1 9. Rxd1 Nd7 10. Bxc4 Ndf6 11. Bxf7+ Kxf7 12. c3 Ne7 13. Nbd2 Nfd5 14. Nb3 Nxe3 15. fxe3 Bg4 16. Nfd4 Ke8 17. Re1 Rd8 18. h3 Bh5 19. g4 Bg6 20. Kg2 Be4+ 21. Kg3 Bd5 22. Nf5 Nxf5+ 23. gxf5 Bd6+ 24. Kf2 Bxb3 25. axb3 b5 26. b4 Rc8 27. Rxa7 Bc7 28. e4 Bb8 29. Rb7 Rc7 30. Rxb5 Ba7+ 31. Kf3 g6 32. Re5+ Kd8 33. Rd1+ Kc8 34. Re6 Rd8 35. Rxd8+ Kxd8 36. Rd6+ Kc8 37. Ra6 Kb8 38. fxg6 hxg6 39. Rxg6 Rf7+ 40. Kg3 Kb7 41. Rg4 Bb8+ 42. Kg2 Rd7 43. Rg5 Rd2+ 44. Kf3 Rxb2 45. Ke3 Ba7+ 46. Kd3 Rb1 47. Rd5 Rd1+ 48. Kc4 Rxd5 49. Kxd5 Kc7 50. e5 Kd7 51. c4 Ke7 52. c5 Bb8 53. c6 Bc7 54. b5 Kd8 55. h4 Ba5 56. h5 Bd2 57. b6 Be3 58. b7 Bb6 59. b8=Q+ Ke7 60. Qxb6 Kf7 61. Qb7+ Kg8 62. e6 Kf8 63. e7+ Ke8 64. Qc8+ Kxe7 65. Qd7+ Kf6 66. c7 Kg5 67. c8=Q Kxh5 68. Qc4 Kg5 69. Qe6 Kh5 70. Kd4 Kg5 71. Qcd5+ Kf4 72. Qdd7 Kg3 73. Qg4+ Kf2 74. Qdf5+ Ke1 75. Qge4+ Kd2 76. Qd3+ Kc1 77. Qff1+ Kb2 78. Qfb1# 1-0

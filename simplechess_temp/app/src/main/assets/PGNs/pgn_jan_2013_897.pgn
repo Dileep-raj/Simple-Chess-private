@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/th6yggkp"]
+[White "NikZ"]
+[Black "yurday"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:57:24"]
+[WhiteElo "1615"]
+[BlackElo "1833"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+6"]
+[ECO "B20"]
+[Opening "Sicilian Defense: Bowdler Attack"]
+[TimeControl "420+7"]
+[Termination "Normal"]
+
+1. e4 c5 2. Bc4 Nc6 3. Nf3 h6 4. d4 cxd4 5. Nxd4 e5 6. Nxc6 bxc6 7. O-O Nf6 8. Nc3 Be7 9. h3 O-O 10. Qf3 Bb7 11. Qg3 Kh8 12. Qxe5 Re8 13. Qg3 d5 14. exd5 cxd5 15. Bb5 Rf8 16. Bf4 d4 17. Ne2 Ne4 18. Qd3 Bf6 19. Rad1 Qd5 20. Nxd4 Rad8 21. c3 g5 22. Bc4 Qd7 23. Be3 g4 24. hxg4 Nc5 25. Qd2 Qxg4 26. f3 Qh4 27. Bxh6 Rg8 28. Bxf7 Bg5 29. Bxg5 Rxg5 30. Qe3 Rf8 31. Qe7 Qh6 32. Rfe1 Qg7 33. Ne6 Rxg2+ 34. Kf1 Rg1+ 35. Ke2 Qg2+ 36. Ke3 Qxf3+ 37. Kd4 Qd5+ 38. Ke3 Rg3+ 39. Kf2 Qg2# 0-1

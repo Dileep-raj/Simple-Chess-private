@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/rmi0gr88"]
+[White "ostap"]
+[Black "crazy2013"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:56:56"]
+[WhiteElo "1615"]
+[BlackElo "1707"]
+[WhiteRatingDiff "+13"]
+[BlackRatingDiff "-39"]
+[ECO "A41"]
+[Opening "Old Indian Defense"]
+[TimeControl "300+3"]
+[Termination "Time forfeit"]
+
+1. d4 d6 2. c4 Nd7 3. Nc3 Ngf6 4. e4 b6 5. Nf3 Bb7 6. Bd3 e6 7. Bg5 Be7 8. O-O O-O 9. Qc1 Rc8 10. a4 a5 11. h4 1-0

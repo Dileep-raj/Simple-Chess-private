@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/d3xy50tj"]
+[White "ddj"]
+[Black "Elquesoy"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:57:11"]
+[WhiteElo "1601"]
+[BlackElo "1405"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-10"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game #2"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. d4 d5 2. e3 Nc6 3. Nf3 Bf5 4. Nc3 e6 5. Bb5 h6 6. Bd2 Be7 7. Ne5 Nf6 8. Nxc6 bxc6 9. Bxc6+ Kf8 10. Bxa8 Qxa8 11. O-O Bd6 12. Nb5 c6 13. Nxd6 Qb8 14. Nxf5 Ng4 15. Ng3 h5 16. f3 Nxh2 17. Kxh2 h4 18. f4 g5 19. Nh1 gxf4 20. Rxf4 Rg8 21. Qf3 Rg7 22. Kg1 e5 23. dxe5 Qxe5 24. Bc3 Qg5 25. Bxg7+ Kxg7 26. Rxf7+ Kg6 27. Kf2 Kh6 28. Qf6+ Kh5 29. Rh7+ Kg4 30. Qxg5+ Kxg5 31. Rxa7 1-0

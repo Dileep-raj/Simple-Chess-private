@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/gtpziea4"]
+[White "Allende"]
+[Black "stech"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:05:27"]
+[WhiteElo "1352"]
+[BlackElo "1168"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+21"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Wayward Queen Attack"]
+[TimeControl "540+0"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. Qh5 Qf6 3. Nh3 g6 4. Qg4 Nh6 5. Qg5 Qxg5 6. Nxg5 f6 7. Nf3 Bg7 8. d4 exd4 9. Nxd4 f5 10. Nb5 Be5 11. exf5 gxf5 12. Bxh6 a6 13. Nb5c3 Bxc3+ 14. Nxc3 Nc6 15. Nd5 Kd8 16. Bg5+ Ke8 17. Nxc7+ Kf7 18. Nxa8 Re8+ 19. Be2 Nd4 20. Be3 Nxc2+ 21. Kd2 Nxa1 22. Rxa1 d5 23. Nb6 Be6 24. Rc1 Re7 25. f4 Kf6 26. Bd4+ Kf7 27. Bh5+ Kf8 28. Rc8+ Bxc8 29. Nxc8 Re4 30. Na7 Rxd4+ 31. Kc3 Rxf4 32. Nc8 Rf2 33. Nd6 b5 34. Nxf5 Rxf5 35. Bg4 Rf2 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/ayxflpm0"]
+[White "4di4"]
+[Black "La-la-la"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:21:59"]
+[WhiteElo "1500"]
+[BlackElo "1500"]
+[WhiteRatingDiff "-163"]
+[BlackRatingDiff "+162"]
+[ECO "C42"]
+[Opening "Russian Game: Urusov Gambit"]
+[TimeControl "1320+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nf6 3. Nf3 Nxe4 4. Nxe5 Qf6 5. f3 Qxe5 6. fxe4 Qxe4+ 7. Qe2 Qxe2+ 8. Kxe2 Bc5 9. d3 O-O 10. Be3 Re8 11. d4 Bxd4 12. Kd3 Bxe3 13. Rf1 d5 14. Bxd5 Be6 15. Nc3 c6 16. Bc4 Bxc4+ 17. Kxc4 b5+ 18. Kd3 Bb6 19. Rae1 Na6 20. a3 Nc5+ 21. Kd2 Rad8+ 22. Kc1 Ne6 23. h3 c5 24. Rd1 Nd4 25. Rfe1 Ba5 26. Rxe8+ Rxe8 27. b4 cxb4 28. axb4 Bxb4 29. Rxd4 Bxc3 30. Rd1 g6 31. g4 a5 32. g5 Re1 33. Rxe1 Bxe1 34. Kd1 a4 35. Kxe1 a3 36. Kd2 a2 37. c3 a1=Q 38. Kd3 Qb2 39. h4 Kg7 40. Kd4 b4 41. h5 gxh5 42. g6 fxg6 43. Kd5 bxc3 44. Ke5 c2+ 45. Kd5 c1=Q 46. Kd6 h4 47. Ke6 h3 0-1

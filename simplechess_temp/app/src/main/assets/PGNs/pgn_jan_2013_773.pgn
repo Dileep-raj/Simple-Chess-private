@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/bruz5qpr"]
+[White "ddj"]
+[Black "blizz"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:22:08"]
+[WhiteElo "1619"]
+[BlackElo "1391"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-18"]
+[ECO "D02"]
+[Opening "Queen's Pawn Game: Symmetrical Variation"]
+[TimeControl "240+0"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. Nf3 Nf6 3. c4 Bf5 4. Nc3 e6 5. Bg5 Nbd7 6. e3 1-0

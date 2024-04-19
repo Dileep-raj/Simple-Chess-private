@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/1cr8q7r0"]
+[White "crazy2013"]
+[Black "cougar1"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:50:22"]
+[WhiteElo "1675"]
+[BlackElo "1655"]
+[WhiteRatingDiff "+32"]
+[BlackRatingDiff "-11"]
+[ECO "A80"]
+[Opening "Dutch Defense"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. d4 f5 2. Nd2 Nf6 3. b3 e6 4. Bb2 Be7 5. Ngf3 O-O 6. e3 Bb4 7. c3 Be7 8. Be2 d5 9. Ne5 Nbd7 10. Ndf3 Nxe5 11. Nxe5 Ne4 12. f3 Ng5 13. Qd2 Bf6 14. Bd3 Qe7 15. O-O-O a5 16. h4 Nf7 17. f4 a4 18. b4 a3 19. Ba1 Bd7 20. Qe2 Nd6 21. g4 Ne4 22. g5 Ng3 23. Qf3 Nxh1 24. Nxd7 Qxd7 25. gxf6 Rxf6 26. Rxh1 Rg6 27. Rf1 Qe7 28. Qd1 Qxh4 29. c4 dxc4 30. Bxc4 Rd8 31. Qb3 Qg3 32. Qxa3 Qxe3+ 33. Qxe3 h5 34. Bxe6+ Kh8 35. d5 c6 36. Rd1 cxd5 37. Rxd5 Rf8 38. Bxf5 Rg2 39. Qh3 Rg1+ 40. Kb2 Re8 41. Qxh5+ Kg8 42. Qxe8# 1-0

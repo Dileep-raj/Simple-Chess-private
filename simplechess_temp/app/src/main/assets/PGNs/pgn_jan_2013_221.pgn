@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/qfyvgbe5"]
+[White "Krieg"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:28:29"]
+[WhiteElo "1621"]
+[BlackElo "1518"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-9"]
+[ECO "A40"]
+[Opening "Englund Gambit Declined, Reversed French"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. d4 e5 2. e3 exd4 3. Qxd4 d6 4. Qe4+ Be7 5. Qd3 c6 6. Qd1 b6 7. Nf3 a6 8. g3 f5 9. Bg2 g5 10. b3 h5 11. Bb2 g4 12. Bxh8 gxf3 13. Bxf3 Be6 14. Bxh5+ Bf7 15. Bxf7+ Kxf7 16. Bb2 Bf6 17. Bxf6 Nxf6 18. Nd2 Qe7 19. Qe2 Qe6 20. O-O Qd5 21. c4 Qc5 22. Nf3 Qb4 23. Nd4 Qc3 24. Nxf5 Qe5 25. Nd4 Qe4 26. Qd2 Ng4 27. f3 Qh7 28. fxg4+ Ke7 29. Nf5+ Kd7 30. Qxd6+ Kc8 31. Qe6+ Nd7 32. Qe8+ Kb7 33. Qe4 Rh8 34. Nd6+ Kc7 35. Qxh7 Rxh7 36. Nf5 Nf6 37. e4 Nxe4 38. Rfe1 Nc5 39. Rad1 Nd3 40. Rxd3 Rh5 41. Rd2 c5 42. Ree2 Rxf5 43. gxf5 b5 44. f6 a5 45. f7 bxc4 46. f8=Q c3 47. Rc2 Kb6 48. Rxc3 Kb5 49. Re6 Kb4 50. Qd6 Kxc3 51. Qxc5+ Kb2 52. Rd6 a4 53. Qd4+ Ka3 54. Ra6 Kxa2 55. Rxa4+ Kxb3 56. Qc4+ Kb2 57. Rb4+ Ka1 58. Qc1+ Ka2 59. Ra4+ Kb3 60. Qa3+ Kc2 61. Rf4 Kd2 62. Qa2+ Kc3 63. Qe2 Kb3 64. Qe3+ Kc2 65. Rf2+ Kb1 66. Qe1# 1-0

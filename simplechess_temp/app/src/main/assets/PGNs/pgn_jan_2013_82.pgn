@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/cryiytws"]
+[White "schutzstaffel"]
+[Black "nujabes"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:43:07"]
+[WhiteElo "1863"]
+[BlackElo "1737"]
+[WhiteRatingDiff "-19"]
+[BlackRatingDiff "+16"]
+[ECO "B01"]
+[Opening "Scandinavian Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 d5 2. e5 c5 3. g3 Nc6 4. Qe2 Nh6 5. d4 Bg4 6. f3 Nxd4 7. Qd3 Bf5 8. Qe3 Nxc2+ 0-1

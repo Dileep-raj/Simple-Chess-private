@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/atd54w96"]
+[White "spaces"]
+[Black "Delaza62"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:19:50"]
+[WhiteElo "1533"]
+[BlackElo "1621"]
+[WhiteRatingDiff "-8"]
+[BlackRatingDiff "+8"]
+[ECO "A40"]
+[Opening "Polish Defense"]
+[TimeControl "480+5"]
+[Termination "Normal"]
+
+1. d4 b5 2. Bf4 Bb7 3. e3 e6 4. Bxb5 Bxg2 0-1

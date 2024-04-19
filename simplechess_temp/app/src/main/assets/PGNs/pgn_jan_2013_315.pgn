@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/i4x1tyyo"]
+[White "oleh77"]
+[Black "Maroz"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:10:10"]
+[WhiteElo "1396"]
+[BlackElo "1526"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+8"]
+[ECO "C60"]
+[Opening "Ruy Lopez: Cozio Defense"]
+[TimeControl "1800+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Nge7 4. d4 exd4 5. Nxd4 Nxd4 6. Qxd4 a6 7. Ba4 b5 8. Bb3 Nc6 9. Qd5 Qf6 10. Bg5 Qg6 11. O-O h6 12. Bf4 Bb7 13. Bxc7 Be7 14. c4 b4 15. Ba5 Nxa5 16. Qxa5 Qxe4 17. Nd2 Qxg2# 0-1

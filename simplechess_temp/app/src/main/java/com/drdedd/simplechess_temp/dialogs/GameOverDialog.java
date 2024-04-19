@@ -5,8 +5,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -16,7 +18,7 @@ import com.drdedd.simplechess_temp.R;
 //@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
 public class GameOverDialog extends Dialog {
     private final PGN pgn;
-//    private final Context context;
+    //    private final Context context;
     //    private final String[] permissions;
     //    private final Activity activity;
     private final String termination;
@@ -39,7 +41,7 @@ public class GameOverDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.game_over_dialog);
+        setContentView(R.layout.dialog_game_over);
         findViewById(R.id.close_dialog).setOnClickListener(v -> dismiss());
 
         TextView terminationMessage, pgnTextView;
@@ -50,13 +52,17 @@ public class GameOverDialog extends Dialog {
         pgnTextView.setText(pgn.toString());
         findViewById(R.id.btn_copy_pgn).setOnClickListener(v -> copyPGN());
         findViewById(R.id.btn_export_pgn).setOnClickListener(v -> exportPGN());
+
+        getWindow().setLayout((int) (getContext().getResources().getDisplayMetrics().widthPixels * 0.95), ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     private void copyPGN() {
         clipboard.setPrimaryClip(ClipData.newPlainText("PGN", pgn.toString()));
+        Toast.makeText(getContext(), "PGN copied", Toast.LENGTH_SHORT).show();
     }
 
     private void exportPGN() {
+        Toast.makeText(getContext(), "Coming soon", Toast.LENGTH_SHORT).show();
 //        if (context.checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
 //            try {
 //                String dir = pgn.exportPGN();

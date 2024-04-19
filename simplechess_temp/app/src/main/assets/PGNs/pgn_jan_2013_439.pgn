@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/dg6shgle"]
+[White "Sokol"]
+[Black "ptdhina"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:08:38"]
+[WhiteElo "1774"]
+[BlackElo "1746"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+11"]
+[ECO "C23"]
+[Opening "Bishop's Opening"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nc6 3. Qf3 Bc5 4. Ne2 Nh6 5. d3 Qf6 6. Bxh6 Qxf3 7. gxf3 gxh6 8. f4 exf4 9. Nxf4 Nd4 10. Bb3 Bb6 11. Nd5 c6 12. Nf6+ Ke7 13. Ng4 d5 14. exd5 Bxg4 15. dxc6 bxc6 16. Nd2 Be6 17. O-O-O Bxb3 18. axb3 a5 19. Rde1+ Kd7 20. Nc4 Nf3 21. Nxb6+ Kc7 22. Nxa8+ Kb7 23. Re7+ Kxa8 24. Rxf7 Nh4 25. Re1 Ng6 26. Re6 Rg8 27. Rxc6 Ne5 28. Ra6+ Kb8 29. Rxh7 Nf3 30. Rxa5 Rg1# 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/m6c8eqiw"]
+[White "j-jorjik"]
+[Black "6WX"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:02:51"]
+[WhiteElo "1542"]
+[BlackElo "1404"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-23"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Modern Variation #2"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Nf6 3. Nc3 Nxd5 4. Nxd5 Qxd5 5. b3 e5 6. Bb2 Nc6 7. Nf3 Bd6 8. Bc4 Qa5 9. Bc3 Qb6 10. a4 a5 11. Bb5 O-O 12. Bxc6 bxc6 13. O-O Re8 14. Ng5 Bf5 15. Qf3 Bg6 16. Rae1 h6 17. Ne4 Rad8 18. Nxd6 cxd6 19. d3 Qc5 20. Bb2 Qxc2 21. Re2 Qxd3 22. Re3 Qd5 23. Qxd5 cxd5 24. Rfe1 d4 25. Rf3 f6 26. Bc1 Rc8 27. Bd2 Ra8 28. g4 Bf7 29. h3 Reb8 30. Rb1 e4 31. Rf4 d5 32. h4 Rb4 33. Bxb4 axb4 34. Rd1 d3 35. Kf1 Kf8 36. Rd2 Ke7 37. f3 g5 38. hxg5 hxg5 39. Rf5 Be6 40. fxe4 Bxf5 41. exf5 Kd6 42. Rxd3 Ke5 43. Kf2 Kf4 44. Rd4+ Ke5 45. Ke3 Rc8 46. Rxb4 Rc3+ 47. Ke2 d4 48. a5 Rc1 49. Ra4 Rb1 50. a6 Rxb3 51. a7 Re3+ 52. Kd2 Rg3 53. a8=Q Rxg4 54. Ra5+ Kf4 55. Qb8+ Ke4 56. Qb7+ Kf4 57. Qc7+ Ke4 58. Qc6+ Kf4 59. Qd6+ Ke4 60. Qd5+ Kf4 61. Qxd4+ Kg3 62. Ra3+ Kh4 63. Qf2+ Rg3 64. Ra4+ Kh3 65. Qf1+ Kh2 66. Ke2 Rg1 67. Qf2+ Rg2 68. Qxg2+ Kxg2 69. Ke3 Kg3 70. Ra6 Kg4 71. Ke4 Kh4 72. Rxf6 Kg4 73. Rg6 Kh5 74. Ke5 g4 75. Rg7 Kh6 76. f6 Kh5 77. f7 Kh4 78. f8=Q Kg3 79. Qf4+ Kh4 80. Rh7# 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/xgssf8yu"]
+[White "daredevil"]
+[Black "samdegregori"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:22:00"]
+[WhiteElo "1660"]
+[BlackElo "1573"]
+[WhiteRatingDiff "-14"]
+[BlackRatingDiff "+25"]
+[ECO "B21"]
+[Opening "Sicilian Defense: McDonnell Attack"]
+[TimeControl "900+10"]
+[Termination "Normal"]
+
+1. e4 c5 2. f4 d6 3. Bc4 e6 4. Nc3 a6 5. a3 b5 6. Ba2 Nf6 7. Nf3 Nc6 8. O-O Bb7 9. e5 dxe5 10. fxe5 Nxe5 11. Nxe5 Qd4+ 12. Kh1 Qxe5 13. d3 g5 14. Re1 Qf5 15. Ne2 Ng4 16. Ng3 Bxg2+ 17. Kxg2 Qf2+ 18. Kh3 Qxh2+ 19. Kxg4 f5+ 20. Kf3 g4+ 21. Ke3 Qxg3+ 22. Kd2 Bh6+ 23. Kc3 b4+ 24. Kb3 Qd6 25. Bxh6 a5 26. c4 Qd4 27. a4 Kf7 28. Be3 Qd6 29. Rf1 g3 30. Qh5+ Ke7 31. Rad1 Raf8 32. Qg5+ Kd7 33. d4 Kc6 34. dxc5 Qe5 35. Bd4 Qe2 36. Bxh8 g2 37. Rd6+ Kxc5 38. Rg1 Qxc4# 0-1

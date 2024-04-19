@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/sgopvleh"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:58:28"]
+[WhiteElo "1494"]
+[BlackElo "1888"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "B20"]
+[Opening "Sicilian Defense"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. e4 c5 2. Bd3 e6 3. Bc4 d5 4. exd5 exd5 5. Bb3 Nf6 6. d4 Nc6 7. Qd3 Be7 8. Bd2 O-O 9. c4 dxc4 10. Bd1 cxd3 0-1

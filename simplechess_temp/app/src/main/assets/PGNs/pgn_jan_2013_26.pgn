@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/aw9vx3l5"]
+[White "Federico"]
+[Black "Naitero_Nagasaki"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:12:31"]
+[WhiteElo "1793"]
+[BlackElo "1827"]
+[WhiteRatingDiff "+14"]
+[BlackRatingDiff "-12"]
+[ECO "A40"]
+[Opening "Horwitz Defense"]
+[TimeControl "300+0"]
+[Termination "Time forfeit"]
+
+1. d4 e6 2. e3 c5 3. c3 d5 4. Bd3 c4 5. Bc2 b5 6. f4 Nc6 7. Nf3 a5 8. O-O Bb7 9. Nbd2 b4 10. Ne5 Bd6 11. Qf3 f5 12. Qh5+ g6 13. Nxg6 Nf6 14. Qh3 Rg8 15. Ne5 Qe7 16. Ndf3 O-O-O 17. Rb1 Rg7 18. Ng5 Rdg8 19. Rf2 Ne4 20. Bxe4 fxe4 21. Qxe6+ Qxe6 22. Nxe6 Bxe5 23. Nxg7 Bxg7 24. Bd2 Bf6 25. g3 h5 26. Rbf1 h4 27. Kg2 hxg3 28. hxg3 Kc7 29. Rh1 Bc8 30. Rh6 Bg4 31. Rxf6 Bf3+ 32. Rxf3 exf3+ 33. Kxf3 b3 34. axb3 cxb3 35. e4 dxe4+ 36. Kxe4 a4 37. Kf3 Na5 38. Rf5 Nb7 39. g4 Nd6 40. Rc5+ Kb6 41. c4 Rc8 42. Rxc8 Nxc8 43. Bb4 1-0

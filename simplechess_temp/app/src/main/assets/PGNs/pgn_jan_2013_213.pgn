@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/5g0kgttj"]
+[White "Krieg"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:25:26"]
+[WhiteElo "1604"]
+[BlackElo "1537"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-10"]
+[ECO "A40"]
+[Opening "Horwitz Defense"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. d4 e6 2. e3 f6 3. Nf3 g6 4. Be2 h6 5. O-O f5 6. g3 g5 7. Ne5 h5 8. Ng6 Rh7 9. Nxf8 Kxf8 10. Bxh5 Qe7 11. Be2 Qf6 12. Kg2 Qh6 13. Rh1 Qf6 14. Nd2 Qh8 15. Nf3 Rg7 16. Ne5 Rh7 17. Ng6+ 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/1hi3aveq"]
+[White "BFG9k"]
+[Black "Sagaz"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:07:33"]
+[WhiteElo "1644"]
+[BlackElo "1544"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+14"]
+[ECO "B06"]
+[Opening "Modern Defense"]
+[TimeControl "600+8"]
+[Termination "Normal"]
+
+1. e4 g6 2. d4 d6 3. Nf3 c6 4. h3 Nf6 5. Bg5 Nxe4 6. Qe2 Bf5 7. Nbd2 Qa5 8. c3 Nxd2 9. Bxd2 Nd7 10. b4 Qa3 11. Ng5 h5 12. Qc4 d5 13. Qe2 Qb2 14. Qd1 Bc2 15. Qc1 Qxc1+ 16. Rxc1 Ba4 17. Bd3 Nb6 18. O-O Nc4 19. Bxc4 dxc4 20. Bf4 Bh6 21. Rfe1 O-O 22. Rxe7 Rae8 23. Rxb7 f6 24. Ne6 Rxe6 25. Bxh6 Rf7 26. Rb8+ Kh7 27. Bf4 g5 28. Bd2 Re2 29. Be1 Rfe7 30. Kf1 Bc2 31. Rc8 Bd3 32. Rxc6 Rc2+ 33. Kg1 Rxc1 34. Rxf6 h4 35. g4 Rexe1+ 36. Kg2 Be4+ 37. f3 Rc2# 0-1

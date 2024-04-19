@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/ai1pghdf"]
+[White "Hephesto"]
+[Black "ptdhina"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:46:04"]
+[WhiteElo "1838"]
+[BlackElo "1554"]
+[WhiteRatingDiff "+5"]
+[BlackRatingDiff "-4"]
+[ECO "C45"]
+[Opening "Scotch Game: Haxo Gambit"]
+[TimeControl "120+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. d4 exd4 5. Nbd2 d6 6. Nb3 Bg4 7. Nxc5 dxc5 8. h3 Bh5 9. Bf4 Nf6 10. e5 Nd7 11. c3 Ndxe5 12. Bxe5 Nxe5 13. Qb3 O-O 14. Nxe5 Qe7 15. f4 Kh8 16. O-O f6 17. Nf3 Qe3+ 18. Kh1 a6 19. f5 d3 20. Be6 d2 21. Rad1 Rad8 22. c4 Bxf3 23. Qxe3 Bxd1 24. Rxd1 Rfe8 25. Rxd2 Rxd2 26. Qxd2 g6 27. Qd7 Rb8 1-0

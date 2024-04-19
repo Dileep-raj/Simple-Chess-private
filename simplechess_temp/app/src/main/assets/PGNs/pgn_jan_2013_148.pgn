@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/qfn3p05z"]
+[White "Krieg"]
+[Black "chess345"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:05:10"]
+[WhiteElo "1600"]
+[BlackElo "1863"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+29"]
+[ECO "A45"]
+[Opening "Indian Game"]
+[TimeControl "60+1"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. e3 g6 3. Nf3 Bg7 4. Be2 O-O 5. O-O d6 6. c3 c5 7. dxc5 dxc5 8. Qxd8 Rxd8 9. b3 Nc6 10. Bb2 Ne4 11. a3 Na5 12. b4 Nb3 13. Ra2 Be6 14. Rd1 Rxd1+ 15. Bxd1 Rd8 16. Bxb3 Bxb3 17. Nbd2 Nxd2 18. Nxd2 Rxd2 19. Ra1 Rxb2 20. a4 Bxc3 21. bxc5 Bxa4 22. c6 Bxc6 23. h3 a5 24. Kh2 b5 25. Rc1 b4 26. g3 a4 27. h4 Rxf2+ 28. Kh3 h5 29. Rxc3 Bd7+ 30. g4 Bxg4+ 31. Kg3 Rf3+ 32. Kg2 bxc3 33. e4 c2 34. e5 c1=Q 35. e6 Qf1+ 36. Kh2 Rh3# 0-1

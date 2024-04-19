@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/3v43f8nc"]
+[White "sport"]
+[Black "crazy2013"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:31:28"]
+[WhiteElo "1530"]
+[BlackElo "1625"]
+[WhiteRatingDiff "-8"]
+[BlackRatingDiff "+33"]
+[ECO "C41"]
+[Opening "Philidor Defense #4"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 d6 3. Nf3 Be7 4. Ng5 Bxg5 5. d3 Be7 6. h4 h6 7. Qf3 Bf6 8. Nc3 c6 9. b4 b5 10. Bb3 Ne7 11. a4 bxa4 12. Bxa4 a5 13. b5 Qb6 14. Rb1 c5 15. Nd5 Nxd5 16. exd5 O-O 17. Bxh6 gxh6 18. Qxf6 Kh7 19. g4 Qd8 20. Qf3 Nd7 21. g5 Rg8 22. gxh6 Nb6 23. Bb3 Bg4 24. Qe4+ Kxh6 25. f3 Bh5 26. Kd2 Qd7 27. c3 f5 28. Qe3+ f4 29. Qe4 Rg2+ 30. Kc1 Rag8 31. Bd1 Bg6 32. Qe1 Bxd3 33. Rb2 Rxb2 34. Kxb2 Qxb5+ 35. Bb3 Nc4+ 36. Ka2 Rg2+ 37. Ka1 Qxb3 38. Qb1 Qa3+ 0-1

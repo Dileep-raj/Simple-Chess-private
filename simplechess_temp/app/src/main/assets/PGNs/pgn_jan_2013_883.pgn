@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/veuxv1tc"]
+[White "Aquatica"]
+[Black "ddj"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:43:57"]
+[WhiteElo "1411"]
+[BlackElo "1576"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+13"]
+[ECO "C33"]
+[Opening "King's Gambit Accepted, Bishop's Gambit"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 exf4 3. Bc4 Qh4+ 4. Kf1 Bc5 5. Nf3 Qf2# 0-1

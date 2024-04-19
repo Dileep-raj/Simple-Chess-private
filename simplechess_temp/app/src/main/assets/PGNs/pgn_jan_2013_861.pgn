@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/b1ae7rtf"]
+[White "sakrat"]
+[Black "Maklaud695"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:23:36"]
+[WhiteElo "1915"]
+[BlackElo "1800"]
+[WhiteRatingDiff "-15"]
+[BlackRatingDiff "+14"]
+[ECO "C40"]
+[Opening "Latvian Gambit: Mason Countergambit"]
+[TimeControl "240+1"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 f5 3. d4 fxe4 4. Nxe5 Nf6 5. c4 d6 6. Qe2 dxe5 7. dxe5 Bg4 8. f3 exf3 9. gxf3 Bxf3 10. Qxf3 Qe7 11. Bf4 Nc6 12. Bh3 Nxe5 13. Qe2 Nd3+ 14. Kd1 Qxe2+ 15. Kxe2 Nxf4+ 0-1

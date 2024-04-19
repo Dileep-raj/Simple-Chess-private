@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/rugngqgm"]
+[White "cheesedout"]
+[Black "Krieg"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:51:14"]
+[WhiteElo "1840"]
+[BlackElo "1599"]
+[WhiteRatingDiff "+5"]
+[BlackRatingDiff "-4"]
+[ECO "D31"]
+[Opening "Queen's Gambit Declined: Queen's Knight Variation"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 e6 3. Nc3 dxc4 4. Nf3 b6 5. Bg5 Bb7 6. Bxd8 Kxd8 7. e4 Ke8 8. Bxc4 Be7 9. d5 Nf6 10. dxe6 fxe6 11. e5 Nfd7 12. Bxe6 Nc5 13. Bd5 Bxd5 14. Nxd5 Nbd7 15. Nxc7+ Kd8 16. Nxa8 Kc8 17. e6 Nxe6 18. Qd5 Nec5 19. Qc6+ Kd8 20. Qc7+ Ke8 21. Rd1 Kf7 22. Qf4+ Bf6 23. Nc7 Ne6 24. Rxd7+ Kg6 25. Qg4+ Ng5 26. h4 Re8+ 27. Kd1 h6 28. hxg5 Bxg5 29. Nh4+ Kh7 30. Qf5+ Kh8 31. Ng6+ Kg8 32. Qf7+ Kh7 33. Qxg7# 1-0

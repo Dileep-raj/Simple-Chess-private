@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/4dlly3lw"]
+[White "airtsart"]
+[Black "Neuronchess"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:59:44"]
+[WhiteElo "1500"]
+[BlackElo "1732"]
+[WhiteRatingDiff "+328"]
+[BlackRatingDiff "-15"]
+[ECO "C47"]
+[Opening "Four Knights Game: Scotch Variation Accepted"]
+[TimeControl "480+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nc3 Nc6 3. Nf3 Nf6 4. d4 exd4 5. Nxd4 Nxd4 6. Qxd4 d6 7. Bd3 Bg4 8. O-O Qd7 9. Nd5 Nxd5 10. exd5 O-O-O 11. Qxa7 Qe7 12. Qa8+ Kd7 13. Bb5+ c6 14. dxc6+ Ke8 15. c7+ Bd7 16. cxd8=Q+ Qxd8 17. Re1+ Be7 18. Qxd8+ Kxd8 19. Bxd7 Kxd7 20. Be3 Bf6 21. c3 Rc8 22. Bd4 Bg5 23. Re2 f6 24. g3 h5 25. Be3 Bxe3 26. Rxe3 b5 27. Rae1 g5 28. Re7+ Kc6 29. Rf7 Ra8 30. a3 b4 31. cxb4 Kd5 32. Rc7 f5 33. Ree7 f4 34. gxf4 gxf4 35. b5 Rb8 36. a4 Kd4 37. Rb7 Rc8 38. a5 d5 39. a6 Rc1+ 40. Kg2 Rb1 41. a7 Rxb2 42. a8=Q Kd3 43. Qa3+ Kc2 44. Qxb2+ Kxb2 45. b6 d4 46. Rbd7 Kc3 47. b7 d3 48. b8=Q d2 49. Qxf4 d1=Q 50. Rxd1 h4 51. Qc7+ Kb4 52. Qb7+ Kc5 53. Rc1+ Kd4 54. Qe4# 1-0

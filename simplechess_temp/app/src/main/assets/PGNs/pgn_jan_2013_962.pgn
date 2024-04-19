@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/w502z2m8"]
+[White "Messsi"]
+[Black "Maklaud695"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:45:37"]
+[WhiteElo "1749"]
+[BlackElo "1781"]
+[WhiteRatingDiff "+13"]
+[BlackRatingDiff "-12"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Leonardis Variation"]
+[TimeControl "240+1"]
+[Termination "Normal"]
+
+1. e4 e5 2. d3 Nf6 3. Nf3 d6 4. Be2 Be7 5. O-O h6 6. h3 Nc6 7. Nh2 O-O 8. f4 Be6 9. f5 Bd7 10. c4 Nd4 11. Be3 c5 12. Nc3 a6 13. Ng4 Nxg4 14. Bxg4 Bg5 15. Bxd4 cxd4 16. Nd5 Bc6 17. b3 Bxd5 18. exd5 Be3+ 19. Kh1 f6 20. Bh5 Qe7 21. Bg6 e4 22. dxe4 Qxe4 23. Qb1 Qh4 24. Qe1 Qe4 25. Qg3 Rad8 26. Rae1 Qc2 27. Rxe3 dxe3 28. Qxe3 Qxa2 29. Qf2 Qxb3 30. Qe2 Qg3 31. Qe6+ Kh8 32. Rb1 Qe5 33. Rxb7 Qxe6 34. dxe6 Rb8 35. Ra7 Rb1+ 36. Kh2 Ra1 37. e7 Rb8 38. e8=Q+ Rxe8 39. Bxe8 Kg8 40. Bg6 Kf8 41. Ra8+ Ke7 42. Ra7+ Kf8 43. Rd7 a5 44. Rxd6 a4 45. Ra6 a3 46. c5 a2 47. c6 Ke7 48. Ra7+ Kd8 49. Bf7 Rc1 50. Rxa2 Rxc6 51. Be6 Ke7 52. Ra7+ Kf8 53. Rf7+ Ke8 54. Rxg7 h5 55. Rh7 h4 56. Rxh4 Ke7 57. Rh7+ Kd6 58. Rf7 Ke5 59. h4 Rxe6 60. fxe6 Kxe6 61. Ra7 Kf5 62. g3 Kg6 63. Kh3 Kh6 64. g4 Kg6 65. h5+ Kh6 66. Ra6 Kg5 67. h6 Kxh6 68. Rxf6+ Kg5 69. Rf1 Kh6 70. Kg3 Kg5 71. Rf5+ Kg6 72. Kf4 Kh6 73. Rb5 Kg6 74. Rb6+ Kh7 75. Kg5 Kg7 76. Rb7+ Kg8 77. Kf6 Kh8 78. g5 Kg8 79. g6 Kh8 80. Rb8# 1-0

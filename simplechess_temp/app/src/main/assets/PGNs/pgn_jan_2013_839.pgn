@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/nnvwx72z"]
+[White "Maklaud695"]
+[Black "terracota"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:06:05"]
+[WhiteElo "1807"]
+[BlackElo "1610"]
+[WhiteRatingDiff "+5"]
+[BlackRatingDiff "-8"]
+[ECO "B43"]
+[Opening "Sicilian Defense: Kan Variation, Knight Variation"]
+[TimeControl "240+1"]
+[Termination "Normal"]
+
+1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Nc3 Qc7 6. Be2 Nf6 7. O-O h5 8. h3 Ng4 9. hxg4 hxg4 10. f4 gxf3 11. Nxf3 Bc5+ 12. Nd4 Qg3 13. Rf3 Qh2+ 14. Kf1 Qh1+ 15. Kf2 Qxd1 16. Bxd1 Bxd4+ 17. Ke2 Nc6 18. Bf4 e5 19. Be3 b5 20. Nd5 f6 21. c3 Bb7 22. cxd4 exd4 23. Bf4 Rc8 24. a3 Rh1 25. Rf1 Rh4 26. g3 Rh2+ 27. Rf2 d3+ 28. Ke3 Rxf2 29. Kxf2 g5 30. Bd6 Kf7 31. Bg4 Nb8 32. Ke3 Rc2 33. Kxd3 Rxb2 34. Rf1 Bxd5 35. exd5 1-0

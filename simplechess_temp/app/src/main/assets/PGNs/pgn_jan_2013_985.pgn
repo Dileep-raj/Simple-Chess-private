@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/y0l2yd3c"]
+[White "MihaSAH"]
+[Black "Norb"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "09:06:38"]
+[WhiteElo "1803"]
+[BlackElo "1346"]
+[WhiteRatingDiff "+4"]
+[BlackRatingDiff "-2"]
+[ECO "A21"]
+[Opening "English Opening: King's English Variation, Reversed Sicilian"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. c4 e5 2. Nc3 f5 3. d3 f4 4. Nf3 d6 5. e3 fxe3 6. Bxe3 c5 7. Be2 Nc6 8. O-O Qf6 9. Nd5 Qg6 10. Nc7+ Kd8 11. Nxa8 Bh3 12. Nh4 Qf6 13. gxh3 Qxh4 14. Bf3 Qxh3 15. Bg2 Qf5 16. f4 Nf6 17. fxe5 Ng4 18. Rxf5 Nxe3 19. Qf3 Nxf5 20. Qxf5 Nd4 21. Qf7 dxe5 22. Bxb7 Ne2+ 23. Kh1 Be7 24. Re1 Rf8 25. Qd5+ Ke8 26. Nc7# 1-0

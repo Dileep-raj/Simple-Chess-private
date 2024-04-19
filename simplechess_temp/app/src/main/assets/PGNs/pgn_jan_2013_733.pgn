@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/xsw84bqc"]
+[White "parsh"]
+[Black "Marzinkus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:58:31"]
+[WhiteElo "1719"]
+[BlackElo "1852"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+8"]
+[ECO "C00"]
+[Opening "French Defense: Steiner Variation"]
+[TimeControl "600+5"]
+[Termination "Normal"]
+
+1. e4 e6 2. c4 c5 3. Nc3 Nc6 4. Nf3 d6 5. Be2 Nf6 6. d3 Be7 7. h3 O-O 8. O-O e5 9. Be3 a6 10. a3 b5 11. b3 Be6 12. Nd5 Rb8 13. Nh2 bxc4 14. bxc4 Nd4 15. Bxd4 cxd4 16. f4 Bxd5 17. cxd5 h6 18. f5 Qa5 19. Rf3 Nh5 20. Rf1 Ng3 21. Rf3 Bh4 22. Nf1 Nxf1 23. Bxf1 Rb2 24. g3 Bg5 25. Kh1 Rc8 26. Rf2 Rxf2 0-1

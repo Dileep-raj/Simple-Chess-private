@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/c5672vue"]
+[White "Arabika2"]
+[Black "n_farhang"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:38:53"]
+[WhiteElo "1519"]
+[BlackElo "1398"]
+[WhiteRatingDiff "-15"]
+[BlackRatingDiff "+25"]
+[ECO "C40"]
+[Opening "King's Pawn Game: Damiano Defense"]
+[TimeControl "1200+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 f6 3. Bc4 Nh6 4. h3 Nc6 5. d3 a6 6. Bxh6 gxh6 7. Nh4 Ne7 8. Nc3 b5 9. Qh5+ Ng6 10. Nxg6 hxg6 11. Qxg6+ Ke7 12. Qf7+ Kd6 13. Qd5+ Ke7 14. Qxa8 c6 15. O-O-O Qc7 16. Nxb5 cxb5 17. Qd5 bxc4 18. dxc4 Bb7 19. Qd3 Bg7 20. Rd2 Rd8 21. Rhd1 Bc6 22. Qa3+ Ke8 23. f3 f5 24. Qxa6 Bf8 25. exf5 Ra8 26. Rxd7 Qc8 27. Qxc8+ Rxc8 28. Rh7 Be7 29. Rh8+ Bf8 30. Rh7 Be7 31. Kb1 Bg5 32. b4 Bd7 33. c5 Bxf5 34. Re1 Bxh7 35. Rxe5+ Kf7 36. b5 Bf6 37. Rd5 Ke6 38. Rd6+ Ke5 39. Rc6 Rb8 40. a4 Be7 41. b6 Bf5 42. a5 Bd7 43. Rc7 Ke6 44. a6 Bc8 45. a7 Ra8 46. c6 Bd6 47. Rxc8 Rxc8 48. b7 Rxc6 49. b8=Q Bxb8 50. axb8=Q Kd7 0-1

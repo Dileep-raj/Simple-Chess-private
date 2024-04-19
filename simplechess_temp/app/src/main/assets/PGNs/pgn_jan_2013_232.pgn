@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/xni0zij8"]
+[White "j-jorjik"]
+[Black "metrolog"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:31:12"]
+[WhiteElo "1550"]
+[BlackElo "1654"]
+[WhiteRatingDiff "-9"]
+[BlackRatingDiff "+9"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Mieses-Kotroc Variation"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Qxd5 3. Nc3 Qd8 4. Bb5+ c6 5. Bd3 b6 6. Nf3 Bg4 7. O-O e6 8. Qe1 Bxf3 9. gxf3 Nf6 10. Ne2 Bd6 11. f4 O-O 12. f3 Nh5 13. Ng3 Bxf4 14. Nxh5 Qg5+ 15. Ng3 h5 16. Kf2 h4 17. Ne4 Qh5 18. Ke2 Bxh2 19. Qf2 Be5 20. Rh1 g5 21. c3 f5 22. Nxg5 Qxg5 23. Rxh4 Bg3 24. Rg4 fxg4 25. Qxg3 gxf3+ 26. Kf2 Qxg3+ 27. Kxg3 f2 28. Bf1 Nd7 29. d3 Rae8 30. Be3 Re7 31. Bxf2 Rg7+ 32. Kh2 Rxf2+ 33. Kh3 Ne5 34. Re1 Nf3 35. Re3 Rh2# 0-1

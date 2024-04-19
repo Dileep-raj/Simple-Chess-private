@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/kjcjg00m"]
+[White "dipo_a"]
+[Black "Kyklades"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:01:06"]
+[WhiteElo "1588"]
+[BlackElo "1642"]
+[WhiteRatingDiff "+13"]
+[BlackRatingDiff "-13"]
+[ECO "C34"]
+[Opening "King's Gambit Accepted, MacLeod Defense"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 Nc6 3. Nf3 exf4 4. d4 d6 5. Bxf4 Bg4 6. Be2 Bxf3 7. Bxf3 Qf6 8. Bg3 O-O-O 9. O-O Nxd4 10. c3 Nxf3+ 11. Rxf3 Qg6 12. Nd2 h5 13. Bf2 h4 14. Bxa7 Nf6 15. Qc2 Re8 16. Re1 d5 17. e5 Ne4 18. Nxe4 dxe4 19. Rfe3 Rxe5 20. Bd4 Bc5 21. Bxe5 Bxe3+ 22. Rxe3 h3 23. g3 Rh4 24. Bf4 Rxf4 25. Qe2 Rf3 26. Rxe4 Rf1+ 27. Kxf1 Qf5+ 28. Rf4 Qb1+ 29. Kf2 b6 30. Rxf7 Kb7 31. Rxg7 Qxa2 32. Qe4+ Ka6 33. Qe2+ b5 34. Rxc7 Qd5 35. Re7 Qf5+ 36. Ke1 Qg5 37. Re6+ Ka5 38. b4+ Ka4 39. Qa2# 1-0

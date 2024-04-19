@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/3qfz9me2"]
+[White "nichiren1967"]
+[Black "cheesedout"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:10:09"]
+[WhiteElo "1673"]
+[BlackElo "1839"]
+[WhiteRatingDiff "+16"]
+[BlackRatingDiff "-16"]
+[ECO "B20"]
+[Opening "Sicilian Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. e5 e6 3. f4 f6 4. Nf3 fxe5 5. fxe5 Nc6 6. c4 Nd4 7. Nxd4 cxd4 8. Bd3 Qc7 9. Qe2 Nh6 10. O-O Nf7 11. Qh5 d6 12. exd6 Bxd6 13. Bxh7 Bd7 14. Qxf7+ Kd8 15. Qxg7 Re8 16. d3 Qc6 17. Bg5+ Kc7 18. Nd2 Qc5 19. Ne4 Qc6 20. a3 Bf8 21. Qf7 Rec8 22. b4 a6 23. b5 axb5 24. cxb5 Qxb5 25. Rfc1+ Kb6 26. Rab1 Qxb1 27. Rxb1+ Ka5 28. Qxd7 Bxa3 29. Qb5# 1-0

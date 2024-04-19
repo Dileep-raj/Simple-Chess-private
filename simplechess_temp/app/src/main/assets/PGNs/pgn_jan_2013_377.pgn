@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/xpjyw1l5"]
+[White "cheesedout"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:40:31"]
+[WhiteElo "1876"]
+[BlackElo "1520"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-4"]
+[ECO "A41"]
+[Opening "Old Indian Defense"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 d6 2. c4 d5 3. Nc3 dxc4 4. Nf3 b5 5. Bg5 b4 6. Na4 Qd6 7. Nc5 1-0

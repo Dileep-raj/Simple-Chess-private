@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/o1znf8xe"]
+[White "cheesedout"]
+[Black "xiaoqiao"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:00:32"]
+[WhiteElo "1837"]
+[BlackElo "2061"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+6"]
+[ECO "A56"]
+[Opening "Benoni Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 c5 3. Nc3 cxd4 4. Qxd4 Nc6 5. Qd1 d6 6. Nf3 g6 7. a3 Bg7 8. Qc2 O-O 9. e3 Be6 10. Bd3 Rc8 11. O-O a6 12. Qd2 Ne5 13. Nxe5 dxe5 14. Ne2 e4 15. Bb1 Bxc4 16. Re1 Bd3 17. Nd4 Bxb1 18. Rxb1 e5 19. Nb3 Qxd2 20. Nxd2 Rfd8 21. Nb3 Nd5 22. Bd2 Nb6 23. Na5 Bf8 24. Nxb7 Rxd2 25. Rbc1 Rcc2 26. Rxc2 Rxc2 27. b4 Nc4 28. Nc5 Nxa3 29. Nxe4 f5 30. Nf6+ Kf7 31. Nd7 Bxb4 32. Rd1 e4 33. Ne5+ Kg7 34. Nd7 Rd2 35. Rc1 Rxd7 36. h3 Nb5 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/rweo1wg8"]
+[White "Ben_Dover"]
+[Black "pseudoknight"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:33:24"]
+[WhiteElo "1856"]
+[BlackElo "1729"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "B27"]
+[Opening "Sicilian Defense: Hyperaccelerated Dragon"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. Nf3 g6 3. Bc4 Bg7 4. O-O e6 5. d4 Ne7 6. d5 exd5 7. exd5 d6 8. Re1 O-O 9. Bg5 f6 10. Bf4 g5 11. Bg3 Nf5 12. h4 Nxg3 13. fxg3 h6 14. Qd3 Nd7 15. Qg6 Ne5 16. Rxe5 fxe5 17. hxg5 Bf5 18. Qh5 e4 19. gxh6 exf3 20. hxg7 f2+ 21. Kf1 Rf7 22. Nc3 1-0

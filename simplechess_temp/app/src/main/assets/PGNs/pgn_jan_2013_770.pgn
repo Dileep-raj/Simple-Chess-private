@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/wvy0tdbm"]
+[White "arina1999"]
+[Black "_viper_"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:21:25"]
+[WhiteElo "2108"]
+[BlackElo "1696"]
+[WhiteRatingDiff "+2"]
+[BlackRatingDiff "-3"]
+[ECO "E04"]
+[Opening "Catalan Opening: Open Defense"]
+[TimeControl "60+3"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 e6 3. g3 d5 4. Bg2 dxc4 5. Nf3 c6 6. O-O Bd6 7. Nfd2 O-O 8. Nxc4 Bc7 9. Nc3 Nbd7 10. e4 c5 11. d5 exd5 12. exd5 Nb6 13. Ne3 Rb8 14. a4 a5 15. Nb5 Bd7 16. d6 Bxb5 17. dxc7 Qxc7 18. axb5 a4 19. Qc2 c4 20. Nf5 Rbc8 21. Bf4 Qc5 22. Bd6 Qxb5 23. Bxf8 Rxf8 24. Rfe1 Nbd5 25. Nd6 Qc6 26. Ne4 b5 27. Nxf6+ Nxf6 28. Bxc6 Rc8 29. Bxb5 Rb8 30. Bxc4 Rc8 31. Rxa4 Nd7 32. Ra7 Nb6 33. Bxf7+ Kh8 34. Qxc8+ Nxc8 35. Re8# 1-0

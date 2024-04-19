@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/zlyuk9av"]
+[White "sport"]
+[Black "cougar1"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:39:40"]
+[WhiteElo "1515"]
+[BlackElo "1671"]
+[WhiteRatingDiff "+16"]
+[BlackRatingDiff "-16"]
+[ECO "B06"]
+[Opening "Modern Defense"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 g6 2. Nf3 Bh6 3. Bc4 e6 4. d4 Bxc1 5. Qxc1 Nf6 6. e5 Nd5 7. Bxd5 exd5 8. O-O O-O 9. Qh6 f5 10. Ng5 Qe7 11. h4 Nc6 12. c3 d6 13. h5 dxe5 14. hxg6 hxg6 15. Qxg6+ Qg7 16. Qxg7+ Kxg7 17. dxe5 Nxe5 18. Re1 Kf6 19. Nh7+ Kf7 20. Nxf8 Nd3 21. Re3 Nxb2 22. Nh7 Kg6 23. Rh3 Be6 24. f4 Rh8 25. Ng5 Rxh3 26. gxh3 Bg8 27. h4 Kh5 28. Nf3 Nd3 29. Nbd2 Nxf4 30. Re1 Ne6 31. Re5 Kg4 32. Nd4 Nxd4 33. cxd4 b5 34. Re7 a5 35. Rxc7 Kxh4 36. a3 f4 37. Rb7 Be6 38. Rxb5 a4 39. Rb7 Bg4 40. Ra7 Bd1 41. Kf2 Kg4 42. Rd7 f3 43. Rxd5 Kf4 44. Rd8 Be2 45. d5 Bb5 46. d6 Ke5 47. Nxf3+ Ke6 48. Nd4+ Kd5 49. Nxb5 Kc4 50. Na7 Kb3 51. d7 Kxa3 52. Rh8 Kb2 53. d8=Q a3 54. Qd2+ Kb3 55. Rb8+ Ka4 56. Qb4# 1-0

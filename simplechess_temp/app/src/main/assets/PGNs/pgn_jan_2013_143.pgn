@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/l4j967z8"]
+[White "peter2"]
+[Black "VanillaShamanilla"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:02:03"]
+[WhiteElo "1507"]
+[BlackElo "1617"]
+[WhiteRatingDiff "+14"]
+[BlackRatingDiff "-63"]
+[ECO "C28"]
+[Opening "Bishop's Opening: Vienna Hybrid"]
+[TimeControl "480+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nc3 Nc6 3. Bc4 Nf6 4. d3 Bb4 5. Bg5 d6 6. Qd2 Qe7 7. a3 Ba5 8. b4 Bb6 9. Nd5 Qd7 10. Nxf6+ gxf6 11. Be3 Bxe3 12. Qxe3 Nd4 13. Qd2 Rg8 14. g3 b6 15. Ne2 Nxe2 16. Qxe2 Bb7 17. Qh5 O-O-O 18. Qxf7 Qxf7 19. Bxf7 Rgf8 20. Bb3 f5 21. f3 f4 22. g4 Rf6 23. h4 d5 24. Rd1 dxe4 25. dxe4 Rxd1+ 26. Kxd1 h6 27. Ke2 Ba6+ 28. Kf2 c5 29. bxc5 bxc5 30. Bd5 Bc4 31. Bxc4 1-0

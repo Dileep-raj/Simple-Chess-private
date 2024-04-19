@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/llndoc96"]
+[White "nichiren1967"]
+[Black "barriosgb2"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:13:36"]
+[WhiteElo "1756"]
+[BlackElo "1548"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+17"]
+[ECO "B10"]
+[Opening "Caro-Kann Defense"]
+[TimeControl "60+1"]
+[Termination "Normal"]
+
+1. e4 c6 2. f4 d5 3. e5 e6 4. Nf3 Be7 5. d4 f6 6. Bd3 Bd7 7. c3 c5 8. Be3 c4 9. Bc2 fxe5 10. fxe5 h6 11. Nbd2 Bg5 12. Qe2 Bxe3 13. Qxe3 Qe7 14. O-O-O Nc6 15. Rhf1 O-O-O 16. g3 Kb8 17. Nh4 Be8 18. Ng6 Bxg6 19. Bxg6 Rc8 20. h4 h5 21. Qf3 Nh6 22. Bxh5 Nf5 23. Bg6 Nh6 24. Rh1 Qc7 25. g4 Qa5 26. Kb1 Qb5 27. g5 a5 28. gxh6 gxh6 29. Qg4 a4 30. Qxe6 a3 31. b3 cxb3 32. Nxb3 Na5 33. Qd6+ Ka8 34. Qb4 Qe2 35. Qxa5+ Kb8 36. Qxd5 Qb2# 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/00xfsakz"]
+[White "Masterstheven"]
+[Black "Maklaud695"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:57:14"]
+[WhiteElo "1795"]
+[BlackElo "1769"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+12"]
+[ECO "C40"]
+[Opening "Latvian Gambit"]
+[TimeControl "180+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 f5 3. Nxe5 Nf6 4. d4 d6 5. Nc4 fxe4 6. Be2 d5 7. Ne5 Nc6 8. Bh5+ g6 9. Be2 Bf5 10. Bg5 Qd6 11. Nc3 Nxe5 12. dxe5 Qxe5 13. Bxf6 Qxf6 14. Nxd5 Qg7 15. O-O O-O-O 16. Bg4 Kb8 17. Qd2 Bd6 18. Qc3 Qh6 19. Bxf5 Qxh2# 0-1

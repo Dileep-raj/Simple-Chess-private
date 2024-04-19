@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/wt3opl0m"]
+[White "ale226571"]
+[Black "Dipankar"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:24:14"]
+[WhiteElo "1496"]
+[BlackElo "1515"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-12"]
+[ECO "C41"]
+[Opening "Philidor Defense"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d6 3. d4 Bg4 4. h3 Bxf3 5. gxf3 Qf6 6. dxe5 Qxf3 7. Qxf3 Nc6 8. Bg5 Nxe5 9. Qb3 b6 10. Bb5+ c6 11. Ba4 f6 12. Bf4 Ne7 13. Bxe5 dxe5 14. Qe6 Rc8 15. Nc3 Rc7 16. O-O-O b5 17. Bb3 c5 18. Qf7# 1-0

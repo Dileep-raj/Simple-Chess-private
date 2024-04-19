@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/9h6bpkp2"]
+[White "garlic"]
+[Black "_viper_"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:30:24"]
+[WhiteElo "1716"]
+[BlackElo "1679"]
+[WhiteRatingDiff "-13"]
+[BlackRatingDiff "+16"]
+[ECO "A00"]
+[Opening "Saragossa Opening"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. c3 e6 2. e3 d5 3. d3 Nf6 4. e4 dxe4 5. dxe4 Qxd1+ 6. Kxd1 Nxe4 7. Ke2 Nf6 8. f3 Bd6 9. b4 O-O 10. a3 c6 11. Kd2 Bd7 12. Kc2 Na6 13. Bd2 Nc7 14. Kb2 Nb5 15. Be3 Nc7 16. c4 Ncd5 17. c5 Nxe3 18. cxd6 Nxf1 19. Ne2 Ne3 20. Nbc3 Nxg2 21. Rhg1 Ne3 22. Rg3 Ned5 23. Nxd5 Nxd5 24. Rag1 g6 25. Nc3 Nxc3 26. Kxc3 Rad8 27. Kc4 Bc8 28. Kc5 b6+ 29. Kc4 Rxd6 30. f4 Ba6+ 31. Kb3 Rd3+ 32. Ka4 Rxg3 33. Rxg3 Rd8 34. h3 Bb7 35. h4 Rd4 36. h5 Rxf4 37. hxg6 fxg6 38. Re3 Rf6 39. Rd3 Rf7 40. Rd7 Rxd7 0-1

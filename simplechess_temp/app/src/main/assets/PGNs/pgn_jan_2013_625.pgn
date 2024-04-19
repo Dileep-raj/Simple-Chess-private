@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/l9ly2qp7"]
+[White "froonsan"]
+[Black "khan"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:31:07"]
+[WhiteElo "1466"]
+[BlackElo "1416"]
+[WhiteRatingDiff "+16"]
+[BlackRatingDiff "-9"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Wayward Queen Attack"]
+[TimeControl "600+15"]
+[Termination "Normal"]
+
+1. e4 e5 2. Qh5 d5 1-0

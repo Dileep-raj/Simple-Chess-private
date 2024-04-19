@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/bnwdrttz"]
+[White "Rickstar19"]
+[Black "JohnUA"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:34:11"]
+[WhiteElo "1489"]
+[BlackElo "1338"]
+[WhiteRatingDiff "-67"]
+[BlackRatingDiff "+15"]
+[ECO "C44"]
+[Opening "King's Knight Opening: Normal Variation"]
+[TimeControl "60+10"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. d3 d5 4. exd5 Qxd5 5. d4 Qe4+ 6. Be2 Bb4+ 7. Nc3 Bxc3+ 8. bxc3 exd4 9. g3 Bg4 10. Bf4 O-O-O 11. Ne5 dxc3 12. Qc1 Qxe2# 0-1

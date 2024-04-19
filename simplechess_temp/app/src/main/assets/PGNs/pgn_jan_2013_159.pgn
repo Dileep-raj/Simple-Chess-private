@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/7dn33ypj"]
+[White "djarfur"]
+[Black "blizz"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:08:05"]
+[WhiteElo "1523"]
+[BlackElo "1500"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-164"]
+[ECO "D15"]
+[Opening "Slav Defense: Geller Gambit #2"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. Nf3 Nf6 3. c4 c6 4. Nc3 dxc4 5. e4 Bg4 6. Bxc4 Bh5 7. Be2 e6 8. Bg5 Bg6 9. e5 h6 10. exf6 hxg5 11. fxg7 Bxg7 12. O-O Nd7 13. Qd2 Qc7 14. g3 Bh5 15. Nxg5 Bxe2 16. Qxe2 Bxd4 17. Qf3 Ne5 18. Qf6 c5 19. Qxh8+ Ke7 20. Qh4 f6 21. Qh7+ Kd6 22. Qxc7+ Kxc7 23. Nxe6+ 1-0

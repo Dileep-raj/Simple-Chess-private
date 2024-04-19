@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/elrxbfot"]
+[White "Shlomo"]
+[Black "namesnik"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:12:32"]
+[WhiteElo "1567"]
+[BlackElo "1544"]
+[WhiteRatingDiff "+87"]
+[BlackRatingDiff "-9"]
+[ECO "D25"]
+[Opening "Queen's Gambit Accepted: Normal Variation"]
+[TimeControl "120+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 dxc4 3. Nf3 Nf6 4. e3 b5 5. a4 a6 6. axb5 e6 7. Bxc4 Bb4+ 8. Bd2 Bxd2+ 9. Nbxd2 O-O 10. O-O Nbd7 11. bxa6 Nb6 12. Be2 Qd6 13. Ne5 Nbd5 14. Ndc4 Qe7 15. Nc6 Qd7 16. Nc4e5 Qd6 17. Qa4 Nd7 18. Rad1 Nxe5 19. dxe5 Qc5 20. Rc1 Qb6 21. e4 Nf4 22. Bb5 Bd7 23. Ne7+ Kh8 24. Bxd7 Rfd8 25. Rcd1 Rxa6 26. Qc6 Qxc6 27. Nxc6 Ra4 28. Nxd8 Rxe4 29. Nxf7+ Kg8 30. Bxe6 1-0

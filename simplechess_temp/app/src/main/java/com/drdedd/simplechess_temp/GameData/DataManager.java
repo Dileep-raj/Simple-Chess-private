@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.PGN;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,7 +29,7 @@ public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile", FENsListFile = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", gameTerminatedLabel = "gameTerminated";
-    private final String gameTerminationMessageLabel = "gameTerminationMessage", UNICODE_LABEL = "unicode";
+    private final String gameTerminationMessageLabel = "gameTerminationMessage", terminationOrdinalLabel = "gameTerminatedOrdinal", vibrationLabel = "vibration";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -93,7 +94,7 @@ public class DataManager {
         }
     }
 
-/*
+
     private boolean deleteFile(String fileName) {
         File file = new File(context.getFilesDir(), fileName);
         if (file.exists()) return file.delete();
@@ -102,10 +103,9 @@ public class DataManager {
     }
 
     public void deleteGameFiles() {
-        if (deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile))
+        if (deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile) && deleteFile(FENsListFile))
             Log.d(TAG, "deleteGameFiles: Game deleted successfully");
     }
-*/
 
     /**
      * Retrieve saved board theme
@@ -221,7 +221,7 @@ public class DataManager {
      *
      * @return <code>true|false</code>
      */
-    public Boolean invertBlackSVGEnabled() {
+    public boolean invertBlackSVGEnabled() {
         return sharedPreferences.getBoolean(invertBlackSVGLabel, false);
     }
 
@@ -273,8 +273,8 @@ public class DataManager {
     /**
      * Sets time left for each player in the game
      *
-     * @param whiteTimeLeft Time left for white
-     * @param blackTimeLeft Time left for black
+     * @param whiteTimeLeft Time left for white in ms
+     * @param blackTimeLeft Time left for black in ms
      */
     public void setWhiteBlackTimeLeft(long whiteTimeLeft, long blackTimeLeft) {
         editor.putLong(whiteTimeLeftLabel, whiteTimeLeft);
@@ -332,12 +332,21 @@ public class DataManager {
         return sharedPreferences.getString(gameTerminationMessageLabel, "");
     }
 
-    public void setUnicode(boolean useUnicode) {
-        editor.putBoolean(UNICODE_LABEL, useUnicode);
+    public void setTerminationOrdinal(int ordinal) {
+        editor.putInt(terminationOrdinalLabel, ordinal);
         editor.commit();
     }
 
-    public boolean getUnicode() {
-        return sharedPreferences.getBoolean(UNICODE_LABEL, false);
+    public int getTerminationOrdinal() {
+        return sharedPreferences.getInt(terminationOrdinalLabel, 0);
+    }
+
+    public void setVibration(boolean vibration) {
+        editor.putBoolean(vibrationLabel, vibration);
+        editor.commit();
+    }
+
+    public boolean getVibration() {
+        return sharedPreferences.getBoolean(vibrationLabel, false);
     }
 }

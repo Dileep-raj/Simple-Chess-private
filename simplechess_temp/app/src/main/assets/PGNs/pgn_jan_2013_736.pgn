@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/8743nbcx"]
+[White "BulletKiller"]
+[Black "namesnik"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:00:32"]
+[WhiteElo "1500"]
+[BlackElo "1534"]
+[WhiteRatingDiff "-159"]
+[BlackRatingDiff "+8"]
+[ECO "A00"]
+[Opening "Gedult's Opening"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. f3 d6 2. g3 e5 3. Bg2 Nc6 4. e3 Nf6 5. d3 d5 6. f4 exf4 7. exf4 Bd6 8. Qe2+ Qe7 9. Qxe7+ Bxe7 10. Nf3 O-O 11. O-O Re8 12. c3 d4 13. c4 Bc5 14. a3 Bb6 15. b4 a6 16. Bd2 Bg4 17. Nh4 h6 18. h3 Be6 19. g4 Rad8 20. f5 Bc8 21. Nf3 Ba7 22. c5 b6 23. cxb6 Bxb6 24. a4 a5 25. b5 Na7 26. Na3 Bb7 27. Nc4 Bxf3 28. Bxf3 Nc8 29. Bc6 Re7 30. Nxb6 cxb6 31. Bf4 Na7 32. Bf3 Rc8 33. Ra3 Rc2 34. Be4 Nxe4 35. dxe4 Rxe4 36. Bc7 Ree2 37. Bxb6 Rg2+ 38. Kh1 Rh2+ 39. Kg1 Rcg2# 0-1

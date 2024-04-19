@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/wkc0hzao"]
+[White "TwoKings"]
+[Black "ADRNLNNJECTD"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:08:08"]
+[WhiteElo "1465"]
+[BlackElo "1562"]
+[WhiteRatingDiff "-8"]
+[BlackRatingDiff "+8"]
+[ECO "B27"]
+[Opening "Sicilian Defense: Katalimov Variation"]
+[TimeControl "720+0"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. Nf3 b6 3. c3 Nc6 4. d4 e6 5. Be3 d6 6. Bb5 Bb7 7. Nbd2 a6 8. Bxc6+ Bxc6 9. O-O Bb5 10. Re1 c4 11. e5 d5 12. b3 Qd7 13. a4 Bc6 14. bxc4 dxc4 15. Nxc4 Be7 16. Qb3 Rb8 17. Qc2 b5 18. axb5 axb5 19. Ncd2 b4 20. cxb4 Bxb4 21. Rab1 Ne7 22. Rb2 O-O 23. Reb1 Nd5 24. Qd3 Bb5 25. Qe4 Ba3 26. Rb3 Nxe3 27. Qxe3 Be7 28. Ne1 f6 29. Nc2 fxe5 30. dxe5 Rfc8 31. Na3 Bc5 32. Qe1 Bxa3 33. Rxa3 Bd3 34. Rxb8 Rxb8 35. Rxd3 Qxd3 0-1

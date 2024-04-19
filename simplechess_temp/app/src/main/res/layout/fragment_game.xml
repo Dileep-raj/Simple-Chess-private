@@ -5,13 +5,14 @@
     android:id="@+id/game_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".fragments.GameFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -58,18 +59,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
             app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:padding="4dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@+id/boardNameLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLayout">
 
         <TextView
             android:id="@+id/pgn_textview"
@@ -84,6 +85,7 @@
         android:id="@+id/boardNameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -98,6 +100,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,28 +110,32 @@
                     android:id="@+id/blackNameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="12dp"
                     android:text="@string/black"
                     android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
                     android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/whiteCapturedPieces"
+                    <TextView
+                        android:id="@+id/blackCaptured"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
+                        android:fontFamily="@font/free_serif"
+                        android:text="@string/unicode_kw"
+                        android:textColor="@color/primary_700"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/blackValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus1"
+                        android:textColor="@color/white" />
                 </LinearLayout>
             </LinearLayout>
-
 
             <LinearLayout
                 android:id="@+id/blackTimeLayout"
@@ -166,6 +173,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -175,28 +183,33 @@
                     android:id="@+id/whiteNameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="12dp"
                     android:text="@string/white"
                     android:textSize="16sp" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="8dp"
                     android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/blackCapturedPieces"
+                    <TextView
+                        android:id="@+id/whiteCaptured"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" />
+                        android:fontFamily="@font/free_serif"
+                        android:text="@string/unicode_kb"
+                        android:textColor="@color/primary_700"
+                        android:textSize="20sp" />
 
                     <TextView
                         android:id="@+id/whiteValue"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus1"
+                        android:textColor="@color/white" />
                 </LinearLayout>
-            </LinearLayout>
 
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/whiteTimeLayout"
@@ -290,6 +303,7 @@
         android:id="@+id/gameStateLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

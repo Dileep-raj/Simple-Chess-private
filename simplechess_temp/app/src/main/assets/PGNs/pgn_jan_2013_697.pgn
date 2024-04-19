@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/w43z7otq"]
+[White "2013_January"]
+[Black "robusto"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:36:40"]
+[WhiteElo "1500"]
+[BlackElo "1762"]
+[WhiteRatingDiff "+353"]
+[BlackRatingDiff "-13"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Mieses-Kotroc Variation"]
+[TimeControl "300+16"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Qxd5 3. Nc3 Qe5+ 4. Be2 e6 5. Nf3 Qf6 6. O-O Bb4 7. Ne4 Qf5 8. d3 Nf6 9. Nd4 Qg6 10. Ng3 Bd7 11. a3 Bc5 12. Nf3 Nd5 13. Ne5 Qf6 14. d4 Bd6 15. Nh5 Qh4 16. Nxg7+ Kf8 17. g3 Qxd4 18. Qxd4 Kxg7 19. Nxd7+ e5 20. Qg4# 1-0

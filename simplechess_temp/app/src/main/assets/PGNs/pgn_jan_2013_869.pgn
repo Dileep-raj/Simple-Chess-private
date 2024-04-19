@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/qux6m96w"]
+[White "BulletPlay"]
+[Black "Aquatica"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:34:12"]
+[WhiteElo "1522"]
+[BlackElo "1253"]
+[WhiteRatingDiff "+39"]
+[BlackRatingDiff "-7"]
+[ECO "A00"]
+[Opening "Van't Kruijs Opening"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. e3 e5 2. f4 Nc6 3. f5 d5 4. g4 Nf6 5. h3 h5 6. g5 Ne4 7. h4 1-0

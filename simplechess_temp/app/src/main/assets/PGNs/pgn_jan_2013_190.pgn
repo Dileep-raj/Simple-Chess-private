@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/f0hg1zdj"]
+[White "nichiren1967"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:19:44"]
+[WhiteElo "1731"]
+[BlackElo "1830"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+9"]
+[ECO "B21"]
+[Opening "Sicilian Defense: McDonnell Attack"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. f4 e6 3. Nf3 d5 4. exd5 exd5 5. d4 Nf6 6. dxc5 Bxc5 7. c3 O-O 8. Be2 Nc6 9. Qd3 Re8 10. Bd2 Bg4 11. Na3 Ne4 12. O-O-O Nf2 13. Nb5 Nxd3+ 14. Bxd3 a6 15. Nbd4 Nxd4 16. Be4 dxe4 0-1

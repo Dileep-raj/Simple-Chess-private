@@ -1,5 +1,7 @@
 package com.drdedd.simplechess_temp;
 
+import static com.drdedd.simplechess_temp.data.Regexes.FENPattern;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
@@ -26,7 +28,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BoardModel implements Serializable, Cloneable {
     /**
@@ -36,8 +37,8 @@ public class BoardModel implements Serializable, Cloneable {
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
-    public String enPassantSquare;
-    private final boolean invertBlackSVGs, unicodeEnabled;
+    public String enPassantSquare = "";
+    private final boolean invertBlackSVGs;
     private final HashMap<String, String> unicodes = new HashMap<>();
     private static final String TAG = "BoardModel";
 
@@ -47,23 +48,18 @@ public class BoardModel implements Serializable, Cloneable {
 
         DataManager dataManager = new DataManager(context);
         invertBlackSVGs = dataManager.invertBlackSVGEnabled();
-        unicodeEnabled = dataManager.getUnicode();
 
         Resources res = context.getResources();
         String[] unicodesArray = res.getStringArray(R.array.unicodes);
-        unicodes.put("KW", unicodesArray[0]);
         unicodes.put("QW", unicodesArray[1]);
         unicodes.put("RW", unicodesArray[2]);
         unicodes.put("BW", unicodesArray[3]);
         unicodes.put("NW", unicodesArray[4]);
-        unicodes.put("PW", unicodesArray[5]);
 
-        unicodes.put("KB", unicodesArray[6]);
         unicodes.put("QB", unicodesArray[7]);
         unicodes.put("RB", unicodesArray[8]);
         unicodes.put("BB", unicodesArray[9]);
         unicodes.put("NB", unicodesArray[10]);
-        unicodes.put("PB", unicodesArray[11]);
 
         if (initializeBoard) resetBoard(res);
 
@@ -172,12 +168,13 @@ public class BoardModel implements Serializable, Cloneable {
     }
 
     /**
-     * Removes the piece from <code>{@link BoardModel#pieces}</code> set
+     * Captures the piece and removes it from board view
      *
-     * @param piece <code>Piece</code> to be removed
+     * @param piece <code>Piece</code> to be captured
      */
-    public void removePiece(Piece piece) {
+    public boolean capturePiece(Piece piece) {
         piece.setCaptured(true);
+        return piece.isCaptured();
     }
 
     /**
@@ -222,11 +219,11 @@ public class BoardModel implements Serializable, Cloneable {
      * Converts the <code>BoardModel</code> to <code>String</code> type <br>
      * <ul>
      * <li>UpperCase letter represents White Piece <br></li>
-     * <li>LowerCase letter Piece represents Black Piece <br></li>
+     * <li>LowerCase letter represents Black Piece <br></li>
      * <li>Hyphen (-) represents empty square</li>
      * </ul>
      *
-     * @return <code>String</code>
+     * @return Standard board notation
      */
     @NonNull
     @Override
@@ -238,7 +235,6 @@ public class BoardModel implements Serializable, Cloneable {
             for (j = 0; j < 8; j++) {
                 Piece tempPiece = pieceAt(i, j);
                 if (tempPiece == null) board.append("- ");
-                else if (unicodeEnabled) board.append(tempPiece).append(' ');
                 else board.append(getPieceChar(tempPiece)).append(' ');
             }
             board.append("\n");
@@ -308,8 +304,7 @@ public class BoardModel implements Serializable, Cloneable {
         if (castleRights.length() == 0) FEN[2] = " - ";
         else FEN[2] = String.valueOf(castleRights);
 
-        if (enPassantPawn != null)
-            FEN[3] = String.valueOf(GameFragment.colToChar(enPassantPawn.getCol())) + (enPassantPawn.getRow() + 1 - enPassantPawn.direction);
+        if (!enPassantSquare.isEmpty()) FEN[3] = enPassantSquare;
         return FEN;
     }
 
@@ -328,9 +323,7 @@ public class BoardModel implements Serializable, Cloneable {
     }
 
     private char getPieceChar(Piece piece) {
-        char ch;
-        if (piece.getRank() == Rank.KNIGHT) ch = 'N';
-        else ch = piece.getRank().toString().charAt(0);
+        char ch = piece.getRank() == Rank.KNIGHT ? 'N' : piece.getRank().toString().charAt(0);
         if (!piece.isWhite()) ch = Character.toLowerCase(ch);
         return ch;
     }
@@ -338,7 +331,6 @@ public class BoardModel implements Serializable, Cloneable {
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
         BoardModel boardModel = new BoardModel(context, false);
-        Pattern FENPattern = Pattern.compile("[kqbnrp1-8]+/{7}[kqbnrp1-8]+ [wb] -|[|kq]+ (-|[a-h][1-8]) [0-9]+ [0-9]+", Pattern.CASE_INSENSITIVE);
         Matcher matcher = FENPattern.matcher(FEN);
         if (!matcher.find()) {
             Log.d(TAG, "parseFEN: Invalid FEN! FEN didn't match the pattern");
@@ -354,10 +346,7 @@ public class BoardModel implements Serializable, Cloneable {
         String nextPlayer = FENTokens.nextToken();
         String castlingAvailability = FENTokens.nextToken();
         String enPassantSquare = FENTokens.nextToken();
-        String halfMoveClock, fullMoveNumber;
-
-//        Log.d(TAG, String.format(Locale.ENGLISH, "parseFEN: Tokens: %s %s %s %s", board, nextPlayer, castlingAvailability, enPassantSquare));
-
+        String halfMoveClock = "", fullMoveNumber = "";
         Player playerToPlay;
         boolean whiteShortCastle = false, whiteLongCastle = false, blackShortCastle = false, blackLongCastle = false;
 
@@ -412,12 +401,10 @@ public class BoardModel implements Serializable, Cloneable {
                         return null;
                 }
                 boardModel.addPiece(piece);
-//                Log.d(TAG, String.format(Locale.ENGLISH, "parseFEN: %s %s at %s (%d,%d)", piece.getPlayer(), piece.getRank(), piece.getPosition(), rowNo, i));
                 c++;
             }
             rowNo--;
         }
-
 //        Player to play next move
         playerToPlay = nextPlayer.equals("w") ? Player.WHITE : Player.BLACK;
 
@@ -433,10 +420,13 @@ public class BoardModel implements Serializable, Cloneable {
             boardModel.enPassantSquare = enPassantSquare;
             boardModel.enPassantPawn = (Pawn) boardModel.pieceAt(GameFragment.toRow(enPassantSquare) - (playerToPlay == Player.WHITE ? 1 : -1), GameFragment.toCol(enPassantSquare));
         }
-        Log.d(TAG, "parseFEN: Successfully parsed FEN to BoardModel");
+        Log.v(TAG, "parseFEN: Successfully parsed FEN to BoardModel");
 
-        Log.d(TAG, String.format(Locale.ENGLISH, "\nGiven FEN: %s\nConverted BoardModel:%s\nConverted BoardModel FEN: %s\nPlayer to play: %s\nWhite ShortCastle: %b\tLongCastle: %b\nBlack ShortCastle: %b\tLongCastle: %b\nEnPassantPawn: %s", FEN, boardModel, boardModel.toFENStrings()[0], playerToPlay, whiteShortCastle, whiteLongCastle, blackShortCastle, blackLongCastle, boardModel.enPassantPawn == null ? "-" : boardModel.enPassantPawn.getPosition()));
-        Log.d(TAG, "parseFEN: Valid FEN\n");
+        Log.v(TAG, String.format(Locale.ENGLISH, "\nGiven FEN: %s\nConverted BoardModel:%s\nConverted BoardModel FEN: %s\nPlayer to play: %s\nWhite ShortCastle: %b\tLongCastle: %b\nBlack ShortCastle: %b\tLongCastle: %b\nEnPassantPawn: %s", FEN, boardModel, boardModel.toFENStrings()[0], playerToPlay, whiteShortCastle, whiteLongCastle, blackShortCastle, blackLongCastle, boardModel.enPassantPawn == null ? "-" : boardModel.enPassantPawn.getPosition()));
+        if (!halfMoveClock.isEmpty() && !fullMoveNumber.isEmpty())
+            Log.v(TAG, String.format("parseFEN: Half move clock: %s, Full move count: %s", halfMoveClock, fullMoveNumber));
+
+        Log.i(TAG, "parseFEN: Valid FEN\n");
         return boardModel;
     }
 

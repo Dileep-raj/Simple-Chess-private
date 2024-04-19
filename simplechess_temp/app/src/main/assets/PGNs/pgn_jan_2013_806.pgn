@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/c1n2u39k"]
+[White "burina"]
+[Black "Dipankar"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:41:32"]
+[WhiteElo "1616"]
+[BlackElo "1496"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "A40"]
+[Opening "Horwitz Defense"]
+[TimeControl "300+2"]
+[Termination "Normal"]
+
+1. d4 e6 2. a3 c5 3. dxc5 Qc7 4. b4 a5 5. c3 axb4 6. cxb4 Nc6 7. Bb2 Ra7 8. e3 Nxb4 9. axb4 Rxa1 10. Bxa1 b6 11. Nf3 bxc5 12. bxc5 Bxc5 13. Be2 Bb4+ 14. Nbd2 Bb7 15. Bxg7 Bxf3 16. Bxf3 Qd6 17. Bxh8 f6 18. Qc2 Ke7 19. Qxh7+ Kd8 20. Qxg8+ Kc7 21. O-O Qxd2 22. Bxf6 Bd6 23. Qd8# 1-0

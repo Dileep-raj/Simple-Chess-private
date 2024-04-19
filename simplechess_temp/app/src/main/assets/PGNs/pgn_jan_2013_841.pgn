@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/4r7qdtvc"]
+[White "JohnUA"]
+[Black "arun"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:06:43"]
+[WhiteElo "1336"]
+[BlackElo "1132"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+49"]
+[ECO "C22"]
+[Opening "Center Game: Normal Variation"]
+[TimeControl "60+10"]
+[Termination "Normal"]
+
+1. e4 e5 2. d4 exd4 3. Qxd4 Nc6 4. Qd1 Bc5 5. Nc3 Qh4 6. Nf3 Qxf2# 0-1

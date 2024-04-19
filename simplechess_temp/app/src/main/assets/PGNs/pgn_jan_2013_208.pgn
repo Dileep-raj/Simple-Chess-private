@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/uglmi0pq"]
+[White "tiggran"]
+[Black "serge"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:24:12"]
+[WhiteElo "1566"]
+[BlackElo "1469"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "C55"]
+[Opening "Italian Game: Anti-Fried Liver Defense"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 h6 4. Nc3 Bc5 5. d3 Nf6 6. O-O Ng4 7. h3 Nxf2 8. Rxf2 Bxf2+ 9. Kxf2 O-O 10. Kg1 d6 11. Ne2 Re8 12. Ng3 Be6 13. Bxe6 Rxe6 14. c3 Rg6 15. Nf1 Qf6 16. Be3 b6 17. Qe2 Ne7 18. Nf1d2 c5 19. Rf1 d5 20. Nd4 Qd6 21. Nb5 Qc6 22. Qf3 Rf8 23. Nxa7 Qb7 24. Nb5 Rf6 25. Qe2 Rxf1+ 26. Qxf1 f6 27. Qf3 d4 28. Nd6 Qc6 29. Nf5 Nxf5 30. exf5 Qxf3 31. Nxf3 dxe3 32. Kf1 Rd8 33. Ke2 Rc8 34. Kxe3 Rb8 35. d4 cxd4+ 36. cxd4 Re8 37. dxe5 fxe5 38. Ke4 Ra8 39. a3 Ra4+ 40. Kxe5 Rd4 41. Nxd4 1-0

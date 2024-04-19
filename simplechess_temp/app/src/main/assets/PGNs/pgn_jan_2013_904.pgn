@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/kf4ocdbn"]
+[White "spaces"]
+[Black "FF4"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:04:12"]
+[WhiteElo "1523"]
+[BlackElo "1469"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-10"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game: Mason Attack"]
+[TimeControl "300+10"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. Bf4 Nc6 3. e3 e6 4. c3 h5 5. h3 g5 6. Bh2 Bd6 7. Bxd6 Qxd6 8. Bd3 e5 9. dxe5 Nxe5 10. Nf3 Ne7 11. Nxg5 Nxd3+ 12. Qxd3 Bf5 13. Qb5+ Bd7 14. Qxb7 O-O 15. O-O Bc6 16. Qa6 f6 17. Nf3 Rf7 18. Qd3 Rg7 19. Nbd2 Rb8 20. Rab1 Bb5 21. c4 Ba6 22. b3 dxc4 23. Qxd6 cxd6 24. bxc4 d5 25. Rfc1 dxc4 26. Rxb8+ Kf7 27. Nxc4 1-0

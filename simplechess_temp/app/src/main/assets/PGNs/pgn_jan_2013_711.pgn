@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/v2vu7lz8"]
+[White "psonio"]
+[Black "sakrat"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:45:42"]
+[WhiteElo "1867"]
+[BlackElo "1905"]
+[WhiteRatingDiff "+58"]
+[BlackRatingDiff "-12"]
+[ECO "C68"]
+[Opening "Ruy Lopez: Exchange Variation"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 dxc6 5. h3 Bd6 6. O-O h5 7. d4 Bg4 8. dxe5 Bxe5 9. Qxd8+ Rxd8 10. Nxe5 Be6 11. Nc3 Nf6 12. Bg5 Rd4 13. Nf3 Rb4 14. Rab1 Nxe4 15. Nxe4 Rxe4 16. b3 f6 17. Be3 Kf7 18. Nd4 Bc8 19. c4 Rhe8 20. Nc2 g5 21. Rbd1 Kg6 22. Rd4 Re4e5 23. Rd2 f5 24. Bd4 Re4 25. f3 Re4e6 26. Rff2 b6 27. c5 b5 28. Kh2 a5 29. g4 hxg4 30. hxg4 fxg4 31. fxg4 b4 32. Kg3 Rd8 33. Be3 Re4 34. Rxd8 Rxg4+ 35. Kh2 Rh4+ 36. Kg1 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/wreeq43f"]
+[White "adamsrj"]
+[Black "lamobot"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:41:34"]
+[WhiteElo "1516"]
+[BlackElo "1382"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-11"]
+[ECO "E61"]
+[Opening "King's Indian Defense"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. h3 d5 5. e3 c5 6. cxd5 Nxd5 7. Qb3 Nxc3 8. bxc3 cxd4 9. cxd4 Be6 10. Qxb7 Nd7 11. Bb5 O-O 12. Bxd7 Bxd7 13. Nf3 Rb8 14. Qxa7 Ra8 15. Qc5 Ba4 16. Bd2 Qd7 17. O-O Rfc8 18. Qg5 f6 19. Qg4 1-0

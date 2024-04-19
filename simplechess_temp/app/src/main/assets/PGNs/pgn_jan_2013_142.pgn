@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/j1ex4f9b"]
+[White "joecasatro"]
+[Black "t4nk"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:01:34"]
+[WhiteElo "1367"]
+[BlackElo "1555"]
+[WhiteRatingDiff "-34"]
+[BlackRatingDiff "+6"]
+[ECO "C00"]
+[Opening "French Defense: Knight Variation"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. e4 e6 2. Nf3 d6 3. c3 f6 4. d4 b6 5. e5 Qd7 6. Bf4 g5 7. exd6 gxf4 8. dxc7 Bb7 9. Nh4 Bd5 10. Bb5 Bc6 0-1

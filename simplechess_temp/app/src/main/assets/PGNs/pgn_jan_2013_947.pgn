@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/1pkjq22j"]
+[White "kinner"]
+[Black "ddj"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:30:42"]
+[WhiteElo "1656"]
+[BlackElo "1556"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-13"]
+[ECO "A10"]
+[Opening "English Opening: Great Snake Variation"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. c4 g6 2. Nc3 Bg7 3. d4 e6 4. e4 d5 5. cxd5 exd5 6. e5 Nc6 7. Nf3 Bg4 8. Be2 Nge7 9. Bg5 Bxf3 10. Bxf3 O-O 11. O-O Qd7 12. Bg4 f5 13. Bxe7 Nxe7 14. Bf3 c5 15. dxc5 Bxe5 16. Nxd5 Bxb2 17. Nxe7+ Qxe7 18. Qb3+ Rf7 19. Qxb2 Rc8 20. Bd5 Rxc5 21. Bxf7+ Kxf7 22. Rfe1 Qc7 23. Rad1 Rc2 24. Qb3+ Kg7 25. Qa4 Qc5 26. Qd4+ Qxd4 27. Rxd4 Rxa2 28. Rd7+ Kf6 29. Rxb7 a5 30. Ra7 a4 31. f4 a3 32. Ra6+ Kg7 33. Re7+ Kh6 34. Raa7 Ra1+ 35. Kf2 g5 36. Rxh7+ Kg6 37. Rhg7+ Kf6 38. fxg5+ Ke5 39. Ra5+ Kf4 40. Rga7 Ra2+ 41. Ke1 Rxg2 42. Ra4+ Ke5 43. Ra7a5+ Ke6 44. Rxa3 Rxg5 45. Rf3 Rg2 46. Rfxf5 Rxh2 47. Rh5 Rb2 48. Rh6+ Kf7 49. Ra7+ Kg8 50. Rc6 Rb1+ 51. Kd2 Rb2+ 52. Kc3 Rb8 53. Kc4 Re8 54. Kb5 Rb8+ 55. Ka6 Re8 56. Kb7 Re7+ 57. Rc7 Rxc7+ 58. Kxc7 Kf7 59. Ra5 Ke6 60. Kb6 1-0

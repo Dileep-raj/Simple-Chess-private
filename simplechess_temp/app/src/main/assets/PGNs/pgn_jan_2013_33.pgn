@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/descpsmi"]
+[White "j-jorjik"]
+[Black "jesuss"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:19:27"]
+[WhiteElo "1548"]
+[BlackElo "1415"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "C21"]
+[Opening "Center Game #2"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. d4 Qf6 3. dxe5 Qxe5 4. Qe2 Nf6 5. Nf3 Qxe4 6. Qxe4+ Nxe4 7. Nbd2 Nxd2 8. Bxd2 g6 9. Bc3 Rg8 10. Ng5 Bg7 11. Bxg7 Rxg7 12. O-O-O b6 13. Re1+ Kf8 14. Be2 Bb7 15. Bf3 Bxf3 16. Nxf3 f6 17. Nd4 Nc6 18. Nxc6 dxc6 19. Re6 Re8 20. Rxf6+ Kg8 21. Rxc6 Re2 22. Rf1 Rd7 23. b3 Rdd2 24. Rd1 Rxd1+ 25. Kxd1 Rxf2 26. Rxc7 Rxg2 27. Rxa7 Rxh2 28. Rb7 g5 29. Rxb6 g4 30. Rb4 g3 31. Rg4+ Kh8 32. Rxg3 Rh1+ 33. Kd2 h5 34. c4 h4 35. Re3 h3 36. c5 Kg7 37. c6 Kg6 38. c7 Kg5 39. c8=Q h2 40. Qh3 Kf6 41. Qf3+ Kg6 42. Qxh1 Kf5 43. Qxh2 Kf6 44. Qf2+ Kg5 45. Rg3+ Kh4 46. Qh2# 1-0

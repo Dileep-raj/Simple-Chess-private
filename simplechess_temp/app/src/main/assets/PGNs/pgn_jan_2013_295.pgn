@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/p4t6m434"]
+[White "2girls1cup"]
+[Black "Krieg"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:58:59"]
+[WhiteElo "1754"]
+[BlackElo "1708"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-9"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Mieses-Kotroc Variation"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Qxd5 3. Nc3 Qd8 4. Bc4 e6 5. f4 Be7 6. Nf3 b6 7. O-O Bb7 8. d4 c5 9. d5 exd5 10. Nxd5 Nf6 11. Nxe7 Qxd1 12. Bb5+ Bc6 13. Bxc6+ Nxc6 14. Rxd1 Nxe7 15. b3 O-O 16. Bb2 Nfd5 17. g3 Ne3 18. Rd2 Ng6 19. Re1 Nf5 20. Ne5 Nxe5 21. Bxe5 Rfd8 22. Red1 Rxd2 23. Rxd2 f6 24. Bc7 Re8 25. Kf2 Nd4 26. c3 Nf5 27. Rd8 Rxd8 28. Bxd8 g6 29. Bxf6 Kf7 30. Be5 Ne7 31. Bb8 Nd5 32. c4 Nb4 33. Bxa7 Nxa2 34. Bxb6 Nc1 35. Bxc5 Nxb3 36. Ba7 Ke6 37. Ke3 Kd6 38. Ke4 Kc6 39. Ke5 Kb7 40. Bg1 Kc6 41. h3 Nd2 42. Kf6 Nxc4 43. Kg7 Kd7 44. Kxh7 Ke6 45. Kxg6 Nd2 46. f5+ Ke7 47. Bc5+ Ke8 48. h4 Ne4 49. Ba3 Nxg3 50. f6 Ne4 51. f7+ Kd7 52. f8=Q Nd6 53. Qxd6+ Kc8 54. h5 Kb7 55. h6 Ka7 56. h7 Kb7 57. h8=Q Ka7 58. Qh7+ Ka8 59. Qf8# 1-0

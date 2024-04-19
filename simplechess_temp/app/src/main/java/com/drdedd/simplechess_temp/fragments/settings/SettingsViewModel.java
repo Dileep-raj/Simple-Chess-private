@@ -8,12 +8,10 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 
 public class SettingsViewModel extends ViewModel {
-    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, unicode;
+    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration;
     private String whiteName, blackName;
     private int minutes, seconds;
-
     private BoardTheme boardTheme;
-
     private DataManager dataManager;
 
     public void initializeData(Context context) {
@@ -22,7 +20,7 @@ public class SettingsViewModel extends ViewModel {
         cheatMode = dataManager.cheatModeEnabled();
         invertBlackSVGs = dataManager.invertBlackSVGEnabled();
         timer = dataManager.isTimerEnabled();
-        unicode = dataManager.getUnicode();
+        vibration = dataManager.getVibration();
         minutes = dataManager.getTimerMinutes();
         seconds = dataManager.getTimerSeconds();
         whiteName = dataManager.getWhite();
@@ -36,7 +34,7 @@ public class SettingsViewModel extends ViewModel {
         dataManager.setCheatMode(cheatMode);
         dataManager.setInvertBlackSVG(invertBlackSVGs);
         dataManager.setTimerEnabled(timer);
-        dataManager.setUnicode(unicode);
+        dataManager.setVibration(vibration);
         dataManager.setTimerMinutesSeconds(minutes, seconds);
         dataManager.setBoardTheme(boardTheme);
     }
@@ -113,11 +111,11 @@ public class SettingsViewModel extends ViewModel {
         this.seconds = seconds;
     }
 
-    public boolean isUnicode() {
-        return unicode;
+    public boolean getVibration() {
+        return vibration;
     }
 
-    public void setUnicode(boolean unicode) {
-        this.unicode = unicode;
+    public void setVibration(boolean vibration) {
+        this.vibration = vibration;
     }
 }

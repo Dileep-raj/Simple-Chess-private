@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/8vevyxoq"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:47:17"]
+[WhiteElo "1513"]
+[BlackElo "1868"]
+[WhiteRatingDiff "-4"]
+[BlackRatingDiff "+4"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Sicilian Invitation"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. Nf3 c5 2. d4 e6 3. d5 exd5 0-1

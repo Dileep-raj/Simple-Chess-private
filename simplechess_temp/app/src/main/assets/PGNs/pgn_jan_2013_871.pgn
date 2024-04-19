@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/ggkbkv1j"]
+[White "Eldorado"]
+[Black "patan2003"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:36:45"]
+[WhiteElo "1246"]
+[BlackElo "1294"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+12"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Wayward Queen Attack"]
+[TimeControl "420+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Qh5 Nc6 3. Bc4 d5 4. exd5 g6 5. Qf3 Nce7 6. d6 Qxd6 7. Qxf7+ Kd7 8. Qxf8 Qc6 9. d3 Qxg2 10. Qg7 Qxh1 11. Qxh8 Qxg1+ 12. Kd2 Qxf2+ 13. Kd1 Qg1+ 14. Kd2 Qxh2+ 15. Kd1 Qg1+ 16. Kd2 Qf2+ 17. Kd1 Kc6 18. Qxe5 Bg4+ 19. Qe2 Qxe2# 0-1

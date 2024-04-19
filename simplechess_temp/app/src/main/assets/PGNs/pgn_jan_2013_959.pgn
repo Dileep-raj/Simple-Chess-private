@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/4rzglkv5"]
+[White "2013_January"]
+[Black "xiaoqiao"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:43:19"]
+[WhiteElo "1500"]
+[BlackElo "2052"]
+[WhiteRatingDiff "-26"]
+[BlackRatingDiff "+2"]
+[ECO "B10"]
+[Opening "Caro-Kann Defense: Breyer Variation"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. e4 c6 2. d3 d5 3. e5 c5 4. c3 Nc6 5. d4 cxd4 6. cxd4 Bf5 7. Bb5 e6 8. Qa4 Qb6 9. Bxc6+ Qxc6 10. Qxc6+ bxc6 11. Ne2 Ne7 12. O-O Bd3 13. Bg5 Bxe2 14. Bxe7 Bxf1 15. Bxf8 Kxf8 16. Kxf1 Rb8 17. b3 Ke7 18. Nc3 Rhc8 19. Na4 Rb4 20. Nc5 Rxd4 21. a3 f6 22. exf6+ gxf6 23. b4 e5 24. Re1 Kd6 25. f4 e4 26. Kg1 f5 27. h3 a5 28. Kh2 axb4 29. axb4 Rxb4 0-1

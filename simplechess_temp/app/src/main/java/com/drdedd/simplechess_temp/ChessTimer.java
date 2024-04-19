@@ -3,7 +3,6 @@ package com.drdedd.simplechess_temp;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,7 +86,8 @@ public class ChessTimer {
             timerRunning = true;
             toggleTimer();
             Toast.makeText(gameFragment.requireContext(), "Timer started", Toast.LENGTH_SHORT).show();
-        } else stopTimer();
+        }
+//        else stopTimer();
     }
 
     /**
@@ -106,9 +106,9 @@ public class ChessTimer {
      */
     public void newTimer(long timeLeft) {
         if (timer != null) timer.cancel();
-        String TAG = "ChessTimer";
-        Log.d(TAG, (whiteTurn ? "White" : "Black") + "'s turn");
-        Log.d(TAG, "toggleTimer: Timer toggled\nWhite time left: " + formatTime(whiteTimeLeft) + "\nBlack time left: " + formatTime(blackTimeLeft) + "\nTime left param: " + formatTime(timeLeft));
+//        String TAG = "ChessTimer";
+//        Log.d(TAG, (whiteTurn ? "White" : "Black") + "'s turn");
+//        Log.d(TAG, "toggleTimer: Timer toggled\nWhite time left: " + formatTime(whiteTimeLeft) + "\nBlack time left: " + formatTime(blackTimeLeft) + "\nTime left param: " + formatTime(timeLeft));
 
         timer = new CountDownTimer(timeLeft, 100) {
             @Override
@@ -135,7 +135,7 @@ public class ChessTimer {
      * Stops the timer
      */
     public void stopTimer() {
-        timer.cancel();
+        if (timer != null) timer.cancel();
         if (whiteTimeLeft / 100 == 0 || blackTimeLeft / 100 == 0) {
             if (whiteTimeLeft > blackTimeLeft)
                 Toast.makeText(gameFragment.requireContext(), "White wins", Toast.LENGTH_SHORT).show();
@@ -153,7 +153,10 @@ public class ChessTimer {
     public void resetTimer() {
         whiteTimeLeft = INITIAL_TIME;
         blackTimeLeft = INITIAL_TIME;
-        updateLayoutColors();
+        if (timer != null) timer.cancel();
+        dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
+        whiteLayout.setBackgroundResource(defaultColor);
+        blackLayout.setBackgroundResource(defaultColor);
     }
 
     /**

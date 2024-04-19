@@ -1,16 +1,24 @@
 package com.drdedd.simplechess_temp;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.interfaces.PGNRecyclerViewInterface;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.io.File;
@@ -31,7 +39,7 @@ public class PGN implements Serializable {
      * Constant String for special moves
      */
     public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME = "Simple Chess";
-    private final String app, date;
+    private final String app, date, FEN;
     private String white, black, termination = "";
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
@@ -49,6 +57,25 @@ public class PGN implements Serializable {
         this.black = black;
         this.date = date;
         this.gameState = gameState;
+        FEN = "";
+        moves.clear();
+    }
+
+    /**
+     * @param app       Name of app
+     * @param white     Name of White player
+     * @param black     Name of Black player
+     * @param date      Date of the game
+     * @param gameState State of the game
+     * @param FEN       Starting position of the game
+     */
+    public PGN(String app, String white, String black, String date, ChessState gameState, String FEN) {
+        this.app = app;
+        this.white = white;
+        this.black = black;
+        this.date = date;
+        this.gameState = gameState;
+        this.FEN = FEN;
         moves.clear();
     }
 
@@ -140,9 +167,14 @@ public class PGN implements Serializable {
         tags.append("[Date \"").append(date).append("\"]\n");
         tags.append("[White \"").append(white).append("\"]\n");
         tags.append("[Black \"").append(black).append("\"]\n");
+        if (!FEN.isEmpty()) {
+            tags.append("[SetUp \"").append(1).append("\"]\n");
+            tags.append("[FEN \"").append(FEN).append("\"]\n");
+        }
         tags.append("[Result  \"").append(getResult()).append("\"]\n");
-        if (!termination.isEmpty())
+        if (!termination.isEmpty()) {
             tags.append("[Termination \"").append(termination).append("\"]\n");
+        }
         return tags.toString();
     }
 
@@ -201,5 +233,78 @@ public class PGN implements Serializable {
      */
     public String getTermination() {
         return termination;
+    }
+
+    /**
+     * @return Number of moves in PGN
+     */
+    public int getMoveCount() {
+        return moves.size();
+    }
+
+    public String getMoveAt(int moveNo) {
+        if (moveNo < moves.size()) return moves.get(moveNo);
+        return null;
+    }
+
+    /**
+     * RecyclerView Adapter for PGN
+     */
+    public static class PGNRecyclerViewAdapter extends RecyclerView.Adapter<PGNRecyclerViewAdapter.PGNViewHolder> {
+        private Context context;
+        private final PGN pgn;
+        private final PGNRecyclerViewInterface pgnRecyclerViewInterface;
+
+        public PGNRecyclerViewAdapter(Context context, PGN pgn, PGNRecyclerViewInterface pgnRecyclerViewInterface) {
+            this.context = context;
+            this.pgn = pgn;
+            this.pgnRecyclerViewInterface = pgnRecyclerViewInterface;
+        }
+
+        @NonNull
+        @Override
+        public PGNViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.recycler_view_pgn, parent, false);
+            return new PGNViewHolder(view, pgnRecyclerViewInterface);
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onBindViewHolder(@NonNull PGNViewHolder holder, int position) {
+            String whiteMove = pgn.getMoveAt(position * 2);
+            if (whiteMove != null) holder.whiteMove.setText(whiteMove);
+            String blackMove = pgn.getMoveAt(position * 2 + 1);
+            if (blackMove != null) holder.blackMove.setText(blackMove);
+            else holder.blackMove.setVisibility(View.GONE);
+            holder.moveNo.setText(position + 1 + ".");
+        }
+
+        @Override
+        public int getItemCount() {
+            return (int) Math.ceil((double) pgn.getMoveCount() / 2);
+        }
+
+        public static class PGNViewHolder extends RecyclerView.ViewHolder {
+            private final TextView moveNo, whiteMove, blackMove;
+
+            public PGNViewHolder(@NonNull View itemView, PGNRecyclerViewInterface pgnRecyclerViewInterface) {
+                super(itemView);
+                moveNo = itemView.findViewById(R.id.moveNo);
+                whiteMove = itemView.findViewById(R.id.whiteMove);
+                blackMove = itemView.findViewById(R.id.blackMove);
+
+                whiteMove.setOnClickListener(v -> {
+                    int adapterPosition = getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION)
+                        pgnRecyclerViewInterface.jumpToMove(adapterPosition * 2);
+                });
+                blackMove.setOnClickListener(v -> {
+                    int adapterPosition = getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION)
+                        pgnRecyclerViewInterface.jumpToMove(adapterPosition * 2 + 1);
+                });
+            }
+        }
     }
 }

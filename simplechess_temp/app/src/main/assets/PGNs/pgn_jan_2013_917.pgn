@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/g57v4fyf"]
+[White "daredevil"]
+[Black "thomasbrent"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:10:45"]
+[WhiteElo "1669"]
+[BlackElo "1516"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "C34"]
+[Opening "King's Gambit Accepted, MacLeod Defense"]
+[TimeControl "900+10"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 exf4 3. Nf3 Nc6 4. d4 Qe7 5. Nc3 b6 6. Bxf4 Bb7 7. Bc4 O-O-O 8. O-O Nf6 9. d5 Qc5+ 10. Kh1 Ne7 11. Qd3 h6 12. a4 g5 13. Be3 Qd6 14. a5 Ng4 15. g3 h5 16. axb6 axb6 17. Ba6 h4 18. Bxb7+ Kxb7 19. Qa6+ Kb8 20. Qa8# 1-0

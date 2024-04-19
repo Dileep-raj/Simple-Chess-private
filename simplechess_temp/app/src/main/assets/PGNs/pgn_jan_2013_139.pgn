@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/py8fotp2"]
+[White "schutzstaffel"]
+[Black "Batalha"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:07:03"]
+[WhiteElo "1879"]
+[BlackElo "1237"]
+[WhiteRatingDiff "+1"]
+[BlackRatingDiff "-1"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Wade Defense"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. e4 d6 2. Nf3 Bg4 3. Bc4 Bxf3 4. Qxf3 e6 5. d4 Ne7 6. O-O d5 7. exd5 exd5 8. Bd3 g6 9. c3 Bg7 10. Bg5 O-O 11. Re1 Re8 12. Nd2 Qd7 13. Bxe7 Rxe7 14. Rxe7 Qxe7 15. Qxd5 Nc6 16. Nf3 Rd8 17. Qb3 Qf6 18. Re1 b6 19. Bc4 Ne7 20. Ne5 Kf8 21. Nxf7 1-0

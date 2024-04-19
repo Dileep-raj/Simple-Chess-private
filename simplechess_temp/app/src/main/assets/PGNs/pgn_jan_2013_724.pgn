@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/70w383ny"]
+[White "_viper_"]
+[Black "arina1999"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:54:04"]
+[WhiteElo "1646"]
+[BlackElo "2159"]
+[WhiteRatingDiff "-2"]
+[BlackRatingDiff "+1"]
+[ECO "B56"]
+[Opening "Sicilian Defense: Classical Variation"]
+[TimeControl "60+3"]
+[Termination "Normal"]
+
+1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 Nc6 6. Bb5 Bd7 7. Nxc6 bxc6 8. Be2 e5 9. f4 Be7 10. O-O O-O 11. fxe5 dxe5 12. Bg5 Qb6+ 13. Kh1 Rfd8 14. b3 h6 15. Bh4 Bg4 16. Qe1 Bxe2 17. Qxe2 Qb4 18. Qe3 Qd4 19. Bf2 Ng4 20. Qf3 Nxf2+ 21. Rxf2 Rf8 22. Rd1 Qb6 23. Rfd2 Bb4 24. Rd7 Qa5 25. Na4 Rad8 26. Rxd8 Rxd8 27. Rf1 Qc7 28. c3 Bf8 29. c4 Rd2 30. Rf2 Qd7 31. Rxd2 Qxd2 32. h3 Qxa2 33. Qc3 Qb1+ 34. Kh2 Qxe4 35. Qa5 Qf4+ 36. Kh1 e4 37. Qxa7 Bd6 38. Qg1 e3 39. Nc3 Qd4 40. Ne2 Qd3 41. Nc1 Qc3 42. Qf1 Ba3 43. Ne2 Qxb3 44. Qf4 Qd1+ 45. Ng1 e2 46. Qb8+ Kh7 47. Qe5 e1=Q 48. Qf5+ Kg8 49. Qc8+ Bf8 50. Kh2 Qxg1+ 51. Kg3 Qd3+ 52. Kg4 Qxg2+ 53. Kf4 Qde4# 0-1

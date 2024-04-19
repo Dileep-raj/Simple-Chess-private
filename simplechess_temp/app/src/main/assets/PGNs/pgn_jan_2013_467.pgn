@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/3jcl8m7w"]
+[White "namesnik"]
+[Black "ptdhina"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:20:22"]
+[WhiteElo "1516"]
+[BlackElo "1539"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+12"]
+[ECO "C34"]
+[Opening "King's Gambit Accepted, King's Knight Gambit"]
+[TimeControl "120+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 exf4 3. Nf3 Bc5 4. d4 Bb6 5. Bxf4 d6 6. Bc4 Bg4 7. O-O Nf6 8. Qe1 Bxd4+ 9. Nxd4 O-O 10. Bg5 h6 11. Bxf6 gxf6 12. Qg3 d5 13. Qxg4+ Kh7 14. Bd3 dxe4 15. Bxe4+ Kh8 16. Qh5 Qxd4+ 17. Kh1 Qxe4 18. Nd2 Qg6 19. Qf3 Nc6 20. Qxf6+ Qxf6 21. Rxf6 Kg7 22. Raf1 Nd4 23. c3 Ne6 24. Ne4 Rad8 25. Nc5 Nxc5 26. b4 Nd3 27. a3 Nb2 28. Rf6f3 Nc4 29. Rg3+ Kh7 30. Rf6 Rd1+ 0-1

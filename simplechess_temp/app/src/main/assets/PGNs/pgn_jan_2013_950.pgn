@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/oj740yap"]
+[White "ale226571"]
+[Black "Dipankar"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:34:35"]
+[WhiteElo "1519"]
+[BlackElo "1492"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-10"]
+[ECO "A06"]
+[Opening "Zukertort Opening: Tennison Gambit"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 d5 2. Nf3 dxe4 3. Nh4 e5 4. g3 Qd5 5. Bg2 Bg4 6. f3 exf3 7. Bxf3 Bxf3 8. Nxf3 e4 9. Qe2 f5 10. Nc3 Qc6 11. Ne5 Qe6 12. Qb5+ Nd7 13. Nxd7 Qxd7 14. Qxb7 Rd8 15. b3 Ne7 16. Bb2 Nc6 17. O-O-O Rb8 18. Qa6 Rb6 19. Qe2 Be7 20. d3 Nd4 21. Qh5+ g6 22. Qh6 g5 23. Qh5+ Kd8 24. dxe4 Bf6 25. Nd5 Nxb3+ 26. axb3 Ra6 27. Bxf6+ Kc8 28. Nb6+ Kb7 29. Nxd7 Ra8 30. Nc5+ 1-0

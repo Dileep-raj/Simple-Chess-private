@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/d3vd0oko"]
+[White "PES69Z28"]
+[Black "Pozitiv"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:14:13"]
+[WhiteElo "1683"]
+[BlackElo "1403"]
+[WhiteRatingDiff "+4"]
+[BlackRatingDiff "-5"]
+[ECO "A03"]
+[Opening "Bird Opening: Dutch Variation"]
+[TimeControl "840+14"]
+[Termination "Normal"]
+
+1. f4 d5 2. e3 d4 3. exd4 Qxd4 4. d3 e6 5. Nf3 Qb6 6. Nc3 Bb4 7. Bd2 Nf6 8. Na4 Bxd2+ 9. Qxd2 Qb5 10. b3 O-O 11. c4 Qe8 12. Be2 e5 13. fxe5 Ng4 14. d4 Bf5 15. O-O f6 16. exf6 Rxf6 17. Nh4 Ne3 18. Rf2 Nd7 19. Nxf5 Nxf5 20. Raf1 Qe3 21. Qxe3 Nxe3 22. Rxf6 Nxf6 23. Rf3 Re8 24. Bf1 Nc2 25. d5 Re1 26. Kf2 Ng4+ 27. Kg3 Nge3 28. Bd3 Nd4 29. Rf4 Nec2 30. Bxc2 Nxc2 31. Nc5 b6 32. Ne6 c5 33. Rf8# 1-0

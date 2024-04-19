@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/vmftne9d"]
+[White "schutzstaffel"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:39:51"]
+[WhiteElo "1920"]
+[BlackElo "1516"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-2"]
+[ECO "C00"]
+[Opening "French Defense: Knight Variation"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 e6 2. Nf3 g6 3. d4 h5 4. e5 g5 5. Bxg5 Be7 6. Bxe7 Nxe7 7. Bd3 Ng8 8. O-O Nh6 9. c3 Ng4 10. h3 Nh6 11. Qd2 b6 12. Ng5 Bb7 13. Qf4 Ng8 14. Qxf7# 1-0

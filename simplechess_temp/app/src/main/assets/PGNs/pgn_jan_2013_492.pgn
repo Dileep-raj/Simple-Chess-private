@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/zv6wdxr0"]
+[White "khan"]
+[Black "kramer"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:38:05"]
+[WhiteElo "1430"]
+[BlackElo "1070"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-4"]
+[ECO "A04"]
+[Opening "Zukertort Opening: Queen's Gambit Invitation"]
+[TimeControl "300+8"]
+[Termination "Time forfeit"]
+
+1. Nf3 e6 2. d4 Bb4+ 3. Bd2 Bxd2+ 4. Qxd2 Nc6 5. e4 Qe7 6. Nc3 Qb4 7. Rb1 Nce7 8. a3 Qd6 9. e5 Qb6 10. Na4 Qc6 11. Bd3 b5 12. Nc5 b4 13. Qxb4 Nh6 14. Bb5 Qd5 15. Na6 O-O 16. Nxc7 Rb8 17. Nxd5 Nxd5 18. Qc5 Nf4 19. O-O a6 20. Bd3 Ng4 21. h3 Nxh3+ 22. gxh3 1-0

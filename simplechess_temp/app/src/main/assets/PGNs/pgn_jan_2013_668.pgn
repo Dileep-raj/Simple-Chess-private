@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/7k6mskeo"]
+[White "matru"]
+[Black "arun"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:18:24"]
+[WhiteElo "1367"]
+[BlackElo "1352"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+20"]
+[ECO "A00"]
+[Opening "Van't Kruijs Opening"]
+[TimeControl "600+10"]
+[Termination "Normal"]
+
+1. e3 e5 2. Nf3 e4 3. Ne5 d5 4. Qh5 Nh6 5. Bb5+ c6 6. Be2 g6 7. Nxf7 Nxf7 0-1

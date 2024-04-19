@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/c3j6dqoa"]
+[White "ptdhina"]
+[Black "Sokol"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:05:42"]
+[WhiteElo "1756"]
+[BlackElo "1763"]
+[WhiteRatingDiff "-10"]
+[BlackRatingDiff "+11"]
+[ECO "B06"]
+[Opening "Modern Defense"]
+[TimeControl "120+2"]
+[Termination "Normal"]
+
+1. e4 g6 2. Nf3 Bg7 3. Bc4 e6 4. d3 d5 5. exd5 exd5 6. Bb3 c6 7. O-O Ne7 8. Bg5 O-O 9. Nc3 Be6 10. Re1 Qd7 11. Ne5 Bxe5 12. Rxe5 Na6 13. Re1 Nc5 14. Bxe7 Qxe7 15. a3 Nxb3 16. cxb3 Qg5 17. Qf3 Bg4 18. Qg3 h5 19. h3 Qd2 20. hxg4 hxg4 21. Qxg4 Qxb2 22. Ne2 Qxb3 23. Nf4 Rae8 24. Nh5 Qc3 25. Nf6+ Qxf6 26. Rxe8 Rxe8 27. Qd7 Qxa1+ 28. Kh2 Re5 0-1

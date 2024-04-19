@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/lrlsj8n1"]
+[White "Masterstheven"]
+[Black "sakrat"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:15:15"]
+[WhiteElo "1775"]
+[BlackElo "1925"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+6"]
+[ECO "C45"]
+[Opening "Scotch Game: Mieses Variation"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Nf6 5. Nxc6 bxc6 6. e5 Qe7 7. Qe2 Nd5 8. c4 Nb6 9. b3 g6 10. Bb2 Bg7 11. Nd2 O-O 12. O-O-O a5 13. a4 Ba6 14. Qe3 Rab8 15. c5 Nd5 16. Qd4 Bxf1 17. Rhxf1 d6 18. cxd6 cxd6 19. f4 dxe5 20. fxe5 Rb4 21. Qa7 Qxa7 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/kbzvxfjw"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:28:53"]
+[WhiteElo "1507"]
+[BlackElo "1888"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "A00"]
+[Opening "Hungarian Opening: Sicilian Invitation"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. g3 c5 2. e3 e6 3. c3 d5 4. d3 Nf6 5. f3 Be7 6. h3 O-O 7. Ne2 Nc6 8. f4 Re8 9. g4 d4 10. g5 Nh5 11. Bg2 dxe3 12. Bxe3 Bd6 13. Bf2 Bxf4 14. Bxc6 bxc6 15. Bg3 Bxg3+ 16. Nxg3 Nxg3 17. Rg1 Nf5 18. Qg4 g6 19. h4 e5 20. h5 Ne3 0-1

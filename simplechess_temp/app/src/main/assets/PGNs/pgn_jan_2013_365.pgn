@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/223qock4"]
+[White "msun"]
+[Black "namesnik"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:31:51"]
+[WhiteElo "1461"]
+[BlackElo "1679"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+5"]
+[ECO "C68"]
+[Opening "Ruy Lopez: Exchange Variation, Lutikov Variation"]
+[TimeControl "300+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Bxc6 bxc6 5. d4 exd4 6. Nxd4 Qf6 7. Nc3 Bc5 8. Be3 Nh6 9. h3 d6 10. O-O O-O 11. Nxc6 Bxe3 12. fxe3 Qe6 13. Nd4 Qe5 14. Rf4 Bb7 15. Nf3 Qc5 16. Nd5 Bxd5 17. Qxd5 Qxe3+ 18. Kf1 Qxf4 19. Re1 Rfe8 20. Kg1 Rab8 21. b3 Rb5 22. Qc6 Rc5 23. Qd7 Rf8 0-1

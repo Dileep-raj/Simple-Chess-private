@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/a301qp92"]
+[White "sport"]
+[Black "georgek"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:20:40"]
+[WhiteElo "1489"]
+[BlackElo "1561"]
+[WhiteRatingDiff "-9"]
+[BlackRatingDiff "+9"]
+[ECO "C23"]
+[Opening "Bishop's Opening: Philidor Counterattack"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 c6 3. Nf3 d5 4. exd5 cxd5 5. Bb3 Nc6 6. Ba4 Bd6 7. O-O e4 8. Re1 Nf6 9. d3 O-O 10. dxe4 dxe4 11. Nd4 Qc7 12. g3 a6 13. Bxc6 bxc6 14. Bg5 Be5 15. Bxf6 Bxf6 16. Nb3 Bxb2 17. Nb1d2 Rd8 18. Rb1 Qe5 19. Rxe4 Qxe4 20. Nxe4 Rxd1+ 21. Rxd1 Bf5 22. Nd6 Bxc2 23. Rd2 Bxb3 24. Rxb2 Bd5 25. Nf5 g6 26. Ne7+ Kg7 27. Nxd5 cxd5 28. Kg2 d4 29. Rc2 d3 30. Rd2 Rd8 31. Kf3 a5 32. Ke3 Re8+ 33. Kxd3 Re1 34. Kc2 Rh1 35. f3 h5 36. h4 Kh6 37. Rd5 Rg1 38. Rxa5 Rxg3 39. Ra3 g5 40. hxg5+ Kxg5 41. Rd3 h4 42. f4+ Kxf4 43. Rxg3 Kxg3 0-1

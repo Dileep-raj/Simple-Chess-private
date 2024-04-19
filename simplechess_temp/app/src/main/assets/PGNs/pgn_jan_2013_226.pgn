@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/31jlxrme"]
+[White "ADRNLNNJECTD"]
+[Black "Batalha"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:28:53"]
+[WhiteElo "1570"]
+[BlackElo "1470"]
+[WhiteRatingDiff "-14"]
+[BlackRatingDiff "+19"]
+[ECO "C03"]
+[Opening "French Defense: Tarrasch Variation"]
+[TimeControl "600+10"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. Nd2 dxe4 4. Nxe4 Nf6 5. Bd3 Nxe4 6. Bxe4 f5 7. Bf3 Nc6 8. Ne2 Qf6 9. Be3 e5 10. d5 Ne7 11. O-O e4 12. Bf4 exf3 13. gxf3 Bd7 14. Bxc7 Ng6 15. d6 Rc8 16. f4 Kf7 17. Qd5+ Qe6 18. Qxe6+ Bxe6 19. Nd4 Nxf4 20. Nxe6 Kxe6 21. Rae1+ Kd7 22. Kh1 Bxd6 23. Bxd6 Kxd6 24. Rd1+ Nd5 25. f4 Rhe8 26. Rf3 b5 27. b4 Kc6 28. Rfd3 Nxb4 29. Rd6+ Kc5 30. Rd1d4 Rc6 31. Rd7 Re1+ 32. Kg2 Nxc2 33. Rd2 Ne3+ 34. Kf2 Ng2 35. Kxg2 Rg6+ 36. Kf2 Reg1 37. Rc2+ Kb6 38. a4 Rg1g2+ 39. Ke3 Rxc2 40. axb5 Kxb5 41. Rd5+ Rc5 42. Rd7 a5 43. Rb7+ Kc4 44. Rd7 Re6+ 45. Kf3 a4 46. Rxg7 a3 47. Rg1 a2 48. Ra1 Kb3 49. Kg3 Rc3+ 50. Kh4 Rg6 51. Re1 Kb2 52. Re2+ Rc2 53. Re1 Rxh2# 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/jblu9tf8"]
+[White "MihaSAH"]
+[Black "aminemaxime"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:37:28"]
+[WhiteElo "1708"]
+[BlackElo "1327"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "E61"]
+[Opening "King's Indian Defense"]
+[TimeControl "300+5"]
+[Termination "Time forfeit"]
+
+1. c4 Nf6 2. Nc3 g6 3. d4 Bg7 4. Nf3 c6 5. e3 d5 6. cxd5 cxd5 7. Be2 Bg4 8. O-O Nc6 9. h3 Bf5 10. a3 O-O 11. b4 Qc8 12. Nh2 Nd8 13. Bb2 Ne6 14. Rc1 Ng5 15. Nxd5 Nxd5 16. Rxc8 Raxc8 17. Nf3 Nxf3+ 18. Bxf3 Be6 19. Bxd5 Bxd5 20. Qd2 g5 21. Rc1 Rxc1+ 22. Qxc1 Be6 23. Qc7 g4 24. hxg4 Bxg4 25. Qxb7 a5 26. bxa5 h5 27. a4 h4 28. Qxe7 h3 29. Kh2 hxg2 30. Kxg2 Be6 31. a6 Ra8 32. a7 Bc4 33. Ba3 Bf8 34. Qxf8+ Rxf8 35. Bxf8 Bd5+ 36. f3 Kxf8 37. e4 Ba8 38. Kg3 Ke8 39. Kf4 Kd8 40. Kf5 Kc8 41. Kf6 Kb7 42. Kxf7 Kxa7 43. d5 Kb7 44. d6 Kc8 45. Ke7 Bc6 46. a5 Bd7 47. a6 Bc6 48. a7 Kb7 49. d7 Bxd7 50. Kxd7 Kxa7 51. e5 Kb6 52. e6 Kc5 53. e7 Kd4 54. e8=Q Kd3 55. f4 Kd4 56. f5 1-0

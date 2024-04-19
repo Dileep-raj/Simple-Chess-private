@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/0wav2qbp"]
+[White "oleh77"]
+[Black "IsraelCravchik"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:08:10"]
+[WhiteElo "1378"]
+[BlackElo "1320"]
+[WhiteRatingDiff "-13"]
+[BlackRatingDiff "+14"]
+[ECO "C65"]
+[Opening "Ruy Lopez Defense, Halloween Attack"]
+[TimeControl "1800+8"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. Nxe5 Nxe5 5. d4 Neg4 6. h3 Nh6 7. e5 a6 8. Bxa6 bxa6 9. exf6 Qxf6 10. Bxh6 Qxh6 11. Qe2+ Qe6 12. Qxe6+ dxe6 13. O-O Bb7 14. Nc3 O-O-O 15. b4 Bxb4 16. a3 Bxc3 17. Rab1 Rxd4 0-1

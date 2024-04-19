@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/5ysdq1vq"]
+[White "IsraelCravchik"]
+[Black "shueardm"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:21:43"]
+[WhiteElo "1334"]
+[BlackElo "1273"]
+[WhiteRatingDiff "-14"]
+[BlackRatingDiff "+24"]
+[ECO "C42"]
+[Opening "Russian Game: Three Knights Game"]
+[TimeControl "600+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nc3 a6 4. d4 Bb4 5. dxe5 Bxc3+ 6. bxc3 Nxe4 7. Ba3 Nxc3 8. Qd3 Nb5 9. O-O-O f6 10. Qe4 Nxa3 11. Bc4 Nxc4 12. Qxc4 fxe5 13. Nxe5 Rf8 14. Rhe1 Qg5+ 15. f4 Qxf4+ 16. Qxf4 Rxf4 17. Ng6+ Kf7 18. Nxf4 g5 19. Nd5 Nc6 20. Rf1+ Kg6 21. Ne7+ Nxe7 22. Rde1 Nf5 23. Re4 d5 24. Re5 d4 25. g4 Ne3 26. Rf8 Nxg4 27. Rg8+ Kf6 28. Rexg5 Nxh2 29. Rg2 Ng4 30. Rf8+ Ke7 31. Rf4 c5 32. Re4+ Kf6 33. Rg3 h6 34. Rf3+ Kg6 35. Ref4 Be6 36. Rf6+ Nxf6 0-1

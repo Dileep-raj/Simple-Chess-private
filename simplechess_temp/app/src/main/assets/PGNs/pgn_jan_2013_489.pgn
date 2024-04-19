@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/e85955u4"]
+[White "lamobot"]
+[Black "adamsrj"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:33:42"]
+[WhiteElo "1394"]
+[BlackElo "1508"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+8"]
+[ECO "B22"]
+[Opening "Sicilian Defense: Alapin Variation"]
+[TimeControl "180+3"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. c3 d6 3. d4 cxd4 4. cxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. Nf3 Be7 8. e5 dxe5 9. Nxe5 Nbd7 10. Bc4 O-O 11. O-O b5 12. Be2 Rb8 13. Nc6 Qc7 14. Nxb8 Qxb8 15. f4 h6 16. Bh4 Qd6 17. Qd3 Bd8 18. Rae1 Bb6 19. Kh1 Qc6 20. Bf3 Nd5 21. f5 Qc7 22. fxe6 Nxc3 23. exd7 Bxd7 24. Qxc3 Qf4 25. Bg3 Qg5 26. Bc6 Bxc6 27. Qxc6 Bxd4 28. Bf4 Qh4 29. g3 Qg4 30. Re4 f5 0-1

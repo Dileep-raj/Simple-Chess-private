@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/0uwf0kmy"]
+[White "Hephesto"]
+[Black "Boss92"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:10:54"]
+[WhiteElo "1851"]
+[BlackElo "1483"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-2"]
+[ECO "B06"]
+[Opening "Modern Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 g6 2. d4 e6 3. f4 Bg7 4. Nf3 Ne7 5. e5 O-O 6. Nc3 c6 7. Bc4 a6 8. a3 b5 9. Ba2 Nf5 10. O-O Qb6 11. Kh1 Nh6 12. Be3 Qc7 13. h3 d6 14. Qd2 dxe5 15. fxe5 Nf5 16. Rae1 Rd8 17. Bg5 Rd7 18. Ne2 Qb6 19. c3 Bb7 20. Nh2 h6 21. Rxf5 gxf5 22. Bxh6 Bxh6 23. Qxh6 Qd8 24. Nf4 Qf8 25. Qh4 Qg7 26. Nh5 Qg6 27. Nf6+ Kf8 28. Qh8+ Ke7 29. Qe8# 1-0

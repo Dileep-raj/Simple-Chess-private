@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/sxkjujgk"]
+[White "lamobot"]
+[Black "metrolog"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:11:09"]
+[WhiteElo "1383"]
+[BlackElo "1422"]
+[WhiteRatingDiff "+17"]
+[BlackRatingDiff "-12"]
+[ECO "B01"]
+[Opening "Scandinavian Defense"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 d5 2. Nc3 dxe4 3. Nxe4 e6 4. Bb5+ c6 5. Ba4 Nd7 6. d4 h6 7. Nf3 Ngf6 8. Nxf6+ Qxf6 9. O-O b5 10. Bb3 Bb7 11. Be3 c5 12. dxc5 Nxc5 13. c4 Nxb3 14. Qxb3 a6 15. cxb5 axb5 16. Qxb5+ Kd8 17. Qxb7 Ra5 18. Bb6+ Ke8 19. Bxa5 1-0

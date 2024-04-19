@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/8qxqjb4h"]
+[White "Naitero_Nagasaki"]
+[Black "arion_6"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:26:10"]
+[WhiteElo "1769"]
+[BlackElo "1799"]
+[WhiteRatingDiff "-9"]
+[BlackRatingDiff "+74"]
+[ECO "C52"]
+[Opening "Italian Game: Evans Gambit, Lasker Defense"]
+[TimeControl "300+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. b4 Bxb4 5. c3 Bc5 6. O-O d6 7. d4 Bb6 8. Ba3 exd4 9. cxd4 Bg4 10. Nc3 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/g5j064qn"]
+[White "pseudoknight"]
+[Black "Ben_Dover"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:26:03"]
+[WhiteElo "1720"]
+[BlackElo "1865"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+6"]
+[ECO "B02"]
+[Opening "Alekhine Defense: John Tracy Gambit"]
+[TimeControl "60+1"]
+[Termination "Normal"]
+
+1. e4 Nf6 2. Nf3 Nxe4 3. Nc3 Nxc3 4. dxc3 e6 5. Bg5 Be7 6. h4 O-O 7. Bc4 d5 8. Bd3 c5 9. b3 Nc6 10. Qd2 e5 11. Be2 e4 12. Nh2 h6 13. Bxe7 Qxe7 14. O-O-O Be6 15. Bg4 Rad8 16. Qe2 Qxh4 17. Bxe6 fxe6 18. Ng4 Qg5+ 19. Kb2 Ne5 20. Nxe5 Qxe5 21. f3 d4 22. fxe4 dxc3+ 23. Kb1 Qc7 24. Qe3 Qa5 25. Rde1 b5 26. Qxc5 Rc8 27. Qd4 Qa3 0-1

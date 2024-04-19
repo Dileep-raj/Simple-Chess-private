@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/my60xlvc"]
+[White "xiaoqiao"]
+[Black "Yeshi"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:46:53"]
+[WhiteElo "2062"]
+[BlackElo "1934"]
+[WhiteRatingDiff "-17"]
+[BlackRatingDiff "+58"]
+[ECO "A09"]
+[Opening "Reti Opening: Advance Variation"]
+[TimeControl "120+0"]
+[Termination "Normal"]
+
+1. Nf3 d5 2. c4 d4 3. g3 Bg4 4. Bg2 c6 5. Ne5 Bh5 6. b4 f6 7. Nf3 e5 8. a3 Bd6 9. Bb2 Ne7 10. c5 Bc7 11. d3 O-O 12. O-O Nd5 13. Nbd2 Nd7 14. Nc4 b5 15. cxb6 axb6 16. Qc2 Qe7 17. Rfc1 Rfc8 18. Qd2 Qe6 19. h3 b5 20. Ncxe5 fxe5 21. g4 Bg6 22. Nh4 Bf7 23. Nf5 Nf4 24. Bxc6 Rab8 25. Bg2 Nb6 26. Rc6 Qd7 27. Rac1 Bd5 28. f3 Bxc6 29. Qc2 Bd5 30. Kf2 Bd8 31. Qd2 Rxc1 32. Qxc1 Rc8 33. Qd2 Bf6 34. h4 Qc7 35. g5 Bd8 36. e3 Qc2 37. Qxc2 Rxc2+ 38. Kg3 dxe3 39. Bxe5 e2 40. Bc3 Rxc3 41. Kxf4 e1=Q 42. Nd6 Bc7 43. Kf5 Bxd6 44. f4 Qe6# 0-1

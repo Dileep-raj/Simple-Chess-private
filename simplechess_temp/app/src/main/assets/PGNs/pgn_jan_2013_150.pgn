@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/0sara2m9"]
+[White "Batalha"]
+[Black "t4nk"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:05:51"]
+[WhiteElo "1242"]
+[BlackElo "1561"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+3"]
+[ECO "A40"]
+[Opening "Horwitz Defense"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 e6 2. c4 Qe7 3. Nc3 c6 4. Qb3 b6 5. Bd2 a6 6. O-O-O c5 7. Nf3 d6 8. dxc5 Bb7 9. cxd6 Qxd6 10. Be3 Qc6 11. Qxb6 Qc7 12. Qxc7 Nc6 13. Qxb7 Rb8 14. Qxc6+ Ke7 15. Qc7+ Kf6 16. Qxb8 Ne7 17. Bg5+ Kg6 18. Qg3 f6 19. Bh4+ Kf7 0-1

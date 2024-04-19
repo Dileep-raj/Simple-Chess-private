@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/rohnoxls"]
+[White "Pozitiv"]
+[Black "spaces"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:23:17"]
+[WhiteElo "1395"]
+[BlackElo "1559"]
+[WhiteRatingDiff "+17"]
+[BlackRatingDiff "-17"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation"]
+[TimeControl "840+14"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. e5 c5 4. c3 Nc6 5. Bb5 cxd4 6. Bxc6+ bxc6 7. Qxd4 c5 8. Qa4+ Bd7 9. Qa6 Ne7 10. Nf3 Nc6 11. Bg5 Be7 12. O-O Bxg5 13. Nxg5 Qxg5 14. Qb7 O-O 15. Qxd7 Nxe5 16. Qb5 Qe7 17. f4 Ng6 18. Nd2 Rfb8 19. Qc6 Rc8 20. Qb5 Rab8 21. Qa6 Rb6 1-0

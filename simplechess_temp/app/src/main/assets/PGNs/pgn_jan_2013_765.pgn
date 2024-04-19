@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/65a7tb68"]
+[White "_viper_"]
+[Black "arina1999"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:18:23"]
+[WhiteElo "1696"]
+[BlackElo "2108"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+2"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack"]
+[TimeControl "60+3"]
+[Termination "Normal"]
+
+1. b3 f6 2. Bb2 e5 3. e3 d5 4. Bxe5 fxe5 5. Qh5+ Kd7 6. Qxe5 Nf6 7. Nc3 c6 8. e4 Bd6 9. Qg5 Qe7 10. d3 Bb4 11. Kd2 d4 12. Qf5+ Kd8 0-1

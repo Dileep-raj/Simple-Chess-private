@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/xknanfz4"]
+[White "alitadepollo"]
+[Black "DannyLucano"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:03:04"]
+[WhiteElo "1459"]
+[BlackElo "1445"]
+[WhiteRatingDiff "+14"]
+[BlackRatingDiff "-32"]
+[ECO "C57"]
+[Opening "Italian Game: Two Knights Defense, Knight Attack"]
+[TimeControl "600+8"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Nf6 4. Ng5 Bb4 5. Bxf7+ Kf8 6. Bc4 Nh5 7. Qf3+ Nf6 8. Nf7 Qe8 9. Nxh8 Nd4 10. Qd3 c6 11. O-O d5 12. exd5 cxd5 13. Bb5 Nxb5 14. c3 Ba5 15. b4 Bb6 16. Bb2 Ke7 17. Re1 Bc7 18. c4 Nd6 19. Rxe5+ Be6 20. Qe2 Qxh8 21. Rxe6+ Kd7 22. Bxf6 gxf6 23. Nc3 dxc4 24. Re7+ Kc6 25. Rb1 Nf5 26. Re6+ Kd7 27. Nd5 Nd4 28. Re7+ Kc6 29. b5+ Kxd5 30. Qe4+ Kc5 31. Rxc7+ Nc6 32. Qe3+ Kd6 33. Qf4+ Kc5 34. bxc6 bxc6 35. Qf5+ Kd6 36. Rd7# 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/gjvzapv0"]
+[White "khan"]
+[Black "vblack"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:17:58"]
+[WhiteElo "1277"]
+[BlackElo "1491"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+5"]
+[ECO "D02"]
+[Opening "Queen's Pawn Game: Zukertort Variation"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. Nf3 d5 2. d4 b6 3. e3 e6 4. Bb5+ c6 5. Bd3 a6 6. O-O h6 7. c4 Nf6 8. cxd5 cxd5 9. Ne5 Nbd7 10. Nc6 Qc7 11. Ne5 Nxe5 12. dxe5 Ne4 13. Nc3 Bb7 14. Nxe4 dxe4 15. Be2 Be7 16. b3 O-O 17. f3 Rfd8 18. Qc2 0-1

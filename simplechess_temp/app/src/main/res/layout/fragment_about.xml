@@ -72,7 +72,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="1.000"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -91,10 +90,10 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/developers"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Yet to be decided"
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>

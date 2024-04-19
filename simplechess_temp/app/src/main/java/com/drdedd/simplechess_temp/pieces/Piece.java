@@ -2,7 +2,7 @@ package com.drdedd.simplechess_temp.pieces;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplechess_temp.BoardInterface;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 
@@ -101,9 +101,12 @@ public abstract class Piece implements Serializable, Cloneable {
      * @return Standard algebraic notation of the position
      */
     public String getPosition() {
-        char ch = rank.toString().charAt(0);
-        if (rank == Rank.KNIGHT) ch = 'N';
+        char ch = rank == Rank.KNIGHT ? 'N' : rank.toString().charAt(0);
         return "" + ch + (char) ('a' + col) + (row + 1);
+    }
+
+    public String getSquare() {
+        return "" + (char) ('a' + col) + (row + 1);
     }
 
     /**

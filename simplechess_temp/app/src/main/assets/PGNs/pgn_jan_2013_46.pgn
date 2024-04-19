@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/y3m3quag"]
+[White "Jonathan_52"]
+[Black "jtkjtkful"]
+[Result "0-1"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:28:46"]
+[WhiteElo "1500"]
+[BlackElo "1511"]
+[WhiteRatingDiff "-169"]
+[BlackRatingDiff "+66"]
+[ECO "A40"]
+[Opening "Mikenas Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 Nc6 2. e3 d5 3. Bd3 Bf5 4. Bd2 e6 5. Nf3 Bxd3 6. cxd3 Bb4 7. e4 Bxd2+ 8. Kxd2 dxe4 9. dxe4 Nxd4 10. Nc3 Nxf3+ 11. Ke2 Nd4+ 12. Ke3 Nc2+ 13. Qxc2 Qd6 14. Qa4+ c6 15. Qb3 O-O-O 16. Rad1 Qc5+ 17. Rd4 Qxd4+ 18. Kf3 Qf6+ 19. Ke3 g5 20. f3 Qf4+ 21. Ke2 Qd2+ 22. Kf1 Qc1+ 23. Kf2 Qd2+ 24. Kg3 Qf4+ 25. Kf2 Rd2+ 26. Kf1 Qe3 27. Qb4 Qf2# 0-1

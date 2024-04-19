@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/vxf0f361"]
+[White "lamobot"]
+[Black "metrolog"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:46:37"]
+[WhiteElo "1357"]
+[BlackElo "1441"]
+[WhiteRatingDiff "-12"]
+[BlackRatingDiff "+8"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation #3"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 d5 2. e5 e6 3. d4 Nd7 4. Nf3 c5 5. Bg5 Be7 6. Bxe7 Nxe7 7. Bb5 a6 8. Ba4 b5 9. Bb3 c4 10. Bxc4 bxc4 11. O-O O-O 12. Nbd2 f6 13. Nh4 Nxe5 14. dxe5 fxe5 15. Ndf3 e4 16. Ng5 Nc6 17. Qh5 h6 18. Nh3 e5 19. Ng6 Rf5 20. Ng5 Rxg5 21. Qh4 Rxg6 22. Qxd8+ Nxd8 0-1

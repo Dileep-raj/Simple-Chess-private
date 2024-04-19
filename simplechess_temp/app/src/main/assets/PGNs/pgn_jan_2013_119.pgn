@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/86f04fbi"]
+[White "Kyklades"]
+[Black "Mariss"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:52:43"]
+[WhiteElo "1577"]
+[BlackElo "1755"]
+[WhiteRatingDiff "+17"]
+[BlackRatingDiff "-16"]
+[ECO "C26"]
+[Opening "Vienna Game: Stanley Variation"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nf6 3. Nc3 Bc5 4. Nf3 d6 5. d4 exd4 6. Nxd4 O-O 7. O-O Nc6 8. Be3 Nxd4 9. Bxd4 Bxd4 10. Qxd4 Qe7 11. Rfe1 Ng4 12. Rad1 Ne5 13. b3 Qg5 14. Re3 Nxc4 15. Qxc4 Be6 16. Qxc7 Rac8 17. Qa5 Rc5 18. Qb4 Rfc8 19. Nd5 Rxc2 20. Qxb7 Bxd5 21. exd5 Rc1 22. Ree1 Rc1c2 23. Rf1 Qf5 24. Rde1 Rxa2 25. Qe7 Qf6 26. Qe8+ 1-0

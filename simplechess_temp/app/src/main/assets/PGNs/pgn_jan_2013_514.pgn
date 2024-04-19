@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/z51x523y"]
+[White "namesnik"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:54:57"]
+[WhiteElo "1531"]
+[BlackElo "1897"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "B40"]
+[Opening "Sicilian Defense: Delayed Alapin Variation"]
+[TimeControl "60+0"]
+[Termination "Time forfeit"]
+
+1. e4 c5 2. Nf3 e6 3. c3 d5 4. exd5 exd5 5. d4 Nf6 6. Bb5+ Nc6 7. O-O Be7 8. Re1 O-O 9. Qe2 Re8 10. Bg5 Bd7 11. Nbd2 h6 12. Bxf6 Bxf6 13. Qd3 a6 14. Ba4 b5 15. Bc2 g6 16. dxc5 Ne5 17. Nxe5 Bxe5 18. Nf3 Bg7 19. Rxe8+ Qxe8 20. Re1 Qd8 21. Qxd5 Rc8 22. Bxg6 Qf8 23. Bc2 Be6 24. Qd6 Qxd6 25. cxd6 Bd7 26. Rd1 f5 27. Nd4 Be5 28. f4 Bxd6 29. Nf3 Rc6 30. Kf2 Bxf4 31. g3 Bd6 32. Bd3 Be6 33. Bc2 Bc5+ 0-1

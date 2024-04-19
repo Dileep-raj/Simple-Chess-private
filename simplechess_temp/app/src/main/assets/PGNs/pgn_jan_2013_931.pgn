@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/4qv7t7mc"]
+[White "patan2003"]
+[Black "Eldorado"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:21:54"]
+[WhiteElo "1319"]
+[BlackElo "1223"]
+[WhiteRatingDiff "-17"]
+[BlackRatingDiff "+16"]
+[ECO "C40"]
+[Opening "Elephant Gambit"]
+[TimeControl "420+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d5 3. Nc3 d4 4. Nb5 Na6 5. Nxe5 Nf6 6. c3 Nxe4 7. Nxd4 Qf6 8. Qh5 g6 9. Nxg6 Qxf2+ 10. Kd1 fxg6 11. Qe5+ Kd8 12. Qd5+ Bd6 13. Qxe4 Re8 14. Qxe8+ Kxe8 15. Bb5+ c6 16. Re1+ Kf7 17. Bc4+ Kg7 18. Ne6+ Kh6 19. d4+ Kh5 20. Ng7+ Kg4 21. h3+ Kg3 22. Re3+ Kh2 23. Re2 Qf1+ 24. Re1 Qxg2 25. Re2 Bxh3 26. Rxg2+ Bxg2 27. Nf5 Bf3+ 28. Ke1 Re8+ 29. Kf2 Bh5 30. Ng7 Bg3+ 31. Kf1 Re1# 0-1

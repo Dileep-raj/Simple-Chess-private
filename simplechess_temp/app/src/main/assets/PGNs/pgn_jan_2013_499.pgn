@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/bczd4izl"]
+[White "Marzinkus"]
+[Black "Alexey_K"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:41:56"]
+[WhiteElo "1820"]
+[BlackElo "1483"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "C10"]
+[Opening "French Defense: Rubinstein Variation"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. Nc3 dxe4 4. Nxe4 Nf6 5. Bd3 Nxe4 6. Bxe4 Bd6 7. Nf3 O-O 8. O-O Nd7 9. c4 Nf6 10. Bg5 h6 11. Bxf6 Qxf6 12. c5 Be7 13. Qc2 g6 14. Rad1 c6 15. Ne5 Qh4 16. Bxg6 f6 17. Bh7+ Kh8 18. Ng6+ 1-0

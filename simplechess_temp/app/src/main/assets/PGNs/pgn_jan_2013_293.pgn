@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/24o7a5mw"]
+[White "sport"]
+[Black "DangerCat"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:58:21"]
+[WhiteElo "1487"]
+[BlackElo "1640"]
+[WhiteRatingDiff "+15"]
+[BlackRatingDiff "-16"]
+[ECO "C00"]
+[Opening "French Defense #2"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 e6 2. Bc4 d5 3. exd5 exd5 4. Qe2+ Be7 5. Bb3 Nf6 6. d3 h6 7. Bxh6 gxh6 8. Nc3 Bg4 9. f3 Be6 10. O-O-O Nc6 11. d4 Qd7 12. a4 O-O-O 13. Nh3 Bxh3 14. gxh3 Qxh3 15. Kd2 Rhe8 16. Ra1 Nxd4 17. Qd3 Nxf3+ 18. Kc1 Ng5 19. Qd4 c6 20. Qxa7 Bd6 21. a5 Qf3 22. Rd1 Bxh2 23. a6 bxa6 24. Rxa6 Qf4+ 25. Kb1 Qd6 26. Bxd5 Nxd5 27. Nxd5 cxd5 28. Rxd6 Bxd6 29. Rd3 Be5 30. Rb3 f6 31. Qb7# 1-0

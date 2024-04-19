@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/1pogkma5"]
+[White "Hephesto"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:25:57"]
+[WhiteElo "1864"]
+[BlackElo "1843"]
+[WhiteRatingDiff "-13"]
+[BlackRatingDiff "+15"]
+[ECO "A43"]
+[Opening "Franco-Benoni Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. d4 e6 3. d5 exd5 4. exd5 d6 5. c4 Nf6 6. Nf3 Be7 7. Nc3 O-O 8. Bg5 Re8 9. Bxf6 Bxf6+ 10. Be2 Bg4 11. O-O Nd7 12. h3 Bh5 13. a3 Bg6 14. Bd3 h6 15. Bf5 Bxf5 16. g4 Bg6 17. Qd2 Ne5 18. Nxe5 Bxe5 19. f4 Bd4+ 20. Kh1 Qh4 21. f5 Bh7 22. Kg2 Re3 23. Rf3 Rxf3 24. Kxf3 Qxh3+ 25. Ke4 Qxg4+ 26. Qf4 Qg2+ 27. Kd3 Re8 28. Qxd6 Re3# 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/8xhe8sx6"]
+[White "cirilek"]
+[Black "flatron1"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "09:00:43"]
+[WhiteElo "1472"]
+[BlackElo "1623"]
+[WhiteRatingDiff "-9"]
+[BlackRatingDiff "+7"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation #2"]
+[TimeControl "300+1"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. e5 c5 4. c3 Qb6 5. Qb3 Nc6 6. Qxb6 axb6 7. Bb5 Bd7 8. Bxc6 Bxc6 9. Be3 Be7 10. Ne2 f6 11. O-O fxe5 12. dxe5 h6 13. Nf4 Bd7 14. Ng6 Rh7 15. Nd2 O-O-O 16. a4 Kc7 17. Ra2 Bg5 18. Rfa1 Bxe3 19. fxe3 Be8 20. Nf4 Bd7 21. b4 c4 22. a5 bxa5 23. Rxa5 g5 24. Ne2 Ne7 25. Nd4 Nc6 26. Nxc6 Bxc6 27. h3 Rf7 28. Nf3 Rg8 29. Ra8 Rgg7 30. Rh8 g4 31. Nd4 gxh3 32. Nxe6+ Kd7 33. Nxg7 Rxg7 34. Rxh6 Rxg2+ 35. Kf1 Rg3 36. Ra2 Rxe3 37. Rh2 Rxc3 38. Rh2xh3 Rc1+ 39. Ke2 d4 40. Rg3 Kc7 41. e6 d3+ 42. Kd2 Rc2+ 43. Kd1 Ba4 44. Ke1 Re2+ 45. Kf1 Rxe6 46. Rxe6 d2 47. Rg7+ Kb8 48. Rd6 d1=Q+ 49. Rxd1 Bxd1 50. Ke1 Bb3 51. Kd2 Ka7 52. Rg5 b6 53. Kc3 Ka6 54. Kd4 Kb7 55. Rg7+ Kc6 56. Rg6+ Kb5 57. Rg5+ Kxb4 0-1

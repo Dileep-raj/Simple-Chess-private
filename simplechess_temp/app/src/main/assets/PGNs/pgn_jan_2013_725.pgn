@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/0ek89da9"]
+[White "hostking"]
+[Black "jorespi"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:54:18"]
+[WhiteElo "1798"]
+[BlackElo "1735"]
+[WhiteRatingDiff "+9"]
+[BlackRatingDiff "-9"]
+[ECO "C20"]
+[Opening "English Opening: The Whale"]
+[TimeControl "540+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. c4 Nf6 3. d3 Be7 4. f4 d6 5. f5 O-O 6. Be3 c5 7. h3 Nc6 8. Be2 Nd4 9. Bxd4 cxd4 10. Nf3 Nh5 11. O-O Ng3 12. Rf2 g6 13. Kh2 Bh4 14. Nxh4 Qxh4 15. Rf3 Nxe2 16. Qxe2 Qe7 17. f6 Qd8 18. Qd2 g5 19. Qxg5+ Kh8 20. Qg7# 1-0

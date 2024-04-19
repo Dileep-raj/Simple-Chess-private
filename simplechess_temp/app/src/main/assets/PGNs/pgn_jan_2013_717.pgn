@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/fo8jpn6i"]
+[White "driverblag"]
+[Black "bjagus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "05:49:24"]
+[WhiteElo "1486"]
+[BlackElo "1742"]
+[WhiteRatingDiff "-4"]
+[BlackRatingDiff "+5"]
+[ECO "C00"]
+[Opening "French Defense: Queen's Knight"]
+[TimeControl "360+2"]
+[Termination "Normal"]
+
+1. e4 e6 2. Nc3 d5 3. exd5 exd5 4. Qe2+ Be6 5. Qb5+ Nd7 6. Qxb7 Ngf6 7. Bb5 Bc5 8. Bxd7+ Nxd7 9. h3 O-O 10. Nxd5 Re8 11. Ne2 Bxd5 12. Qxd5 Qe7 13. Qd3 Ne5 14. Qe4 Qf6 15. O-O Ng6 16. Qc4 Bd6 17. Nc3 Qe5 18. g3 Rad8 19. d3 Qh5 20. Kh2 Ne5 21. Qd4 Nf3+ 22. Kg2 Nxd4 23. Be3 Qf3+ 24. Kg1 Bxg3 25. Bxd4 Rxd4 26. fxg3 Qxg3+ 27. Kh1 Qxh3+ 28. Kg1 Qg3+ 29. Kh1 Rh4# 0-1

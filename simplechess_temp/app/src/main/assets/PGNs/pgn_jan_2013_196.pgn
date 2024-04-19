@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/hl593xt3"]
+[White "schutzstaffel"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:21:08"]
+[WhiteElo "1911"]
+[BlackElo "1558"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "B00"]
+[Opening "Barnes Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 f6 2. d4 g5 3. Qh5# 1-0

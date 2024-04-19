@@ -1,5 +1,6 @@
 package com.drdedd.simplechess_temp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,13 @@ public class AboutFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_about, container, false);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         TextView versionNumber = view.findViewById(R.id.versionNumber);
         versionNumber.setText(BuildConfig.VERSION_NAME);
+        TextView developers = view.findViewById(R.id.developers);
+        developers.setText("Yet to be decided");
     }
 }

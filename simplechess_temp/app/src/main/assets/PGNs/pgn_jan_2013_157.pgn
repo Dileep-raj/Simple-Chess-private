@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/ipj01q20"]
+[White "airtsart"]
+[Black "chess345"]
+[Result "1/2-1/2"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:07:33"]
+[WhiteElo "1869"]
+[BlackElo "1649"]
+[WhiteRatingDiff "-4"]
+[BlackRatingDiff "+73"]
+[ECO "C01"]
+[Opening "French Defense: Exchange Variation"]
+[TimeControl "180+0"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. exd5 exd5 4. Bd3 Nf6 5. Bg5 Bd6 6. Nc3 c6 7. Nge2 O-O 8. Qd2 Bg4 9. f3 Bh5 10. O-O-O Bg6 11. Rde1 b5 12. Bxg6 fxg6 13. Bf4 a5 14. Bxd6 Qxd6 15. Ng3 a4 16. Re2 b4 17. Nd1 b3 18. a3 Na6 19. Rhe1 Rfe8 20. Rxe8+ Rxe8 21. Rxe8+ Nxe8 22. Qa5 c5 23. dxc5 Nxc5 24. Nc3 bxc2 25. Kxc2 d4 26. Nce4 d3+ 27. Kd1 Nxe4 28. Nxe4 Qe6 29. Qxa4 h5 30. Ng5 Qe2+ 31. Kc1 Qe3+ 32. Kb1 Qxg5 33. Qxe8+ Kh7 34. Qe1 d2 35. Qe2 Qxg2 36. Qxg2 d1=Q+ 37. Ka2 Qd5+ 38. Ka1 Qd1+ 39. Ka2 Qd5+ 40. b3 Kh6 41. Kb2 g5 42. b4 g4 43. Qf2 Qxf3 44. Qd2+ Kg6 45. a4 h4 46. a5 g3 47. hxg3 hxg3 48. Qc2+ Qf5 49. Qc6+ Qf6+ 50. Qxf6+ Kxf6 51. a6 g2 52. a7 g1=Q 53. a8=Q Qd4+ 54. Kb3 Qd3+ 55. Ka4 Qc2+ 56. Ka3 Qc1+ 57. Kb3 Qb1+ 58. Kc4 Qc2+ 59. Kb5 Qd3+ 60. Kb6 Qc4 61. Qc6+ Qxc6+ 62. Kxc6 g5 63. b5 g4 64. b6 g3 65. b7 g2 66. b8=Q g1=Q 67. Qd8+ Ke5 68. Qe7+ Kf4 69. Qf6+ Kg3 70. Qg5+ Kf2 71. Qxg1+ Kxg1 1/2-1/2

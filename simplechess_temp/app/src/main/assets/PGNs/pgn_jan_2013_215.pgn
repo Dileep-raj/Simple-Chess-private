@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/o6mld7g0"]
+[White "rasmussenesq"]
+[Black "metrolog"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:26:06"]
+[WhiteElo "1638"]
+[BlackElo "1431"]
+[WhiteRatingDiff "+5"]
+[BlackRatingDiff "-6"]
+[ECO "D21"]
+[Opening "Queen's Gambit Accepted: Rosenthal Variation"]
+[TimeControl "120+2"]
+[Termination "Time forfeit"]
+
+1. c4 e6 2. d4 d5 3. Nf3 dxc4 4. e4 b5 5. Nc3 c6 6. Be2 Bb7 7. O-O a6 8. a3 h6 9. b4 Nf6 10. Bf4 Be7 11. Ne5 Nbd7 12. Qc2 Nxe5 13. Bxe5 Nd7 14. Rad1 Nxe5 15. dxe5 Qc7 16. Rfe1 O-O 17. f4 Qc8 18. Kh1 f6 19. exf6 Rxf6 20. Qc1 Qc7 21. e5 Rg6 22. Bh5 1-0

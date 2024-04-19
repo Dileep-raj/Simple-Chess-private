@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/200dku7m"]
+[White "_viper_"]
+[Black "Naitero_Nagasaki"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:08:34"]
+[WhiteElo "1701"]
+[BlackElo "1836"]
+[WhiteRatingDiff "+19"]
+[BlackRatingDiff "-14"]
+[ECO "C24"]
+[Opening "Bishop's Opening: Berlin Defense"]
+[TimeControl "60+2"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. Bc4 Nf6 3. d3 d6 4. Nc3 c6 5. Nf3 Be7 6. Be3 Nbd7 7. Ne2 Qc7 8. Ng3 a5 9. Nf5 b5 10. Nxg7+ Kf8 11. Bxf7 Kxg7 12. Be6 Nf8 13. Bxc8 Rxc8 14. Qd2 Ng4 15. Bg5 Ne6 16. h3 1-0

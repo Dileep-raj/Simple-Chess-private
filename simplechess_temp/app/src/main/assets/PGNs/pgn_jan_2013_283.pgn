@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/1q0memnr"]
+[White "Desmond_Wilson"]
+[Black "t4nk"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:53:44"]
+[WhiteElo "1098"]
+[BlackElo "1514"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+2"]
+[ECO "D02"]
+[Opening "Queen's Pawn Game: Zukertort Variation"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. Nf3 Qd7 3. e3 Qd6 4. Bd3 Qf6 0-1

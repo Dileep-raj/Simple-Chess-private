@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/1ronesu1"]
+[White "sport"]
+[Black "troepianiz"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:19:02"]
+[WhiteElo "1517"]
+[BlackElo "1568"]
+[WhiteRatingDiff "+13"]
+[BlackRatingDiff "-13"]
+[ECO "C41"]
+[Opening "Philidor Defense #2"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d6 3. c3 Bg4 4. h3 Bh5 5. g4 Bg6 6. d3 h6 7. Be3 a6 8. Nbd2 Nf6 9. g5 hxg5 10. Bxg5 Be7 11. Qe2 Bh5 12. O-O-O Nd5 13. Bxe7 Nxe7 14. Qe3 Nbc6 15. Rg1 g6 16. Re1 Qd7 17. Rg3 O-O-O 18. d4 Bxf3 19. Rxf3 exd4 20. cxd4 f5 21. Kb1 Rh5 22. d5 Ne5 23. Rf4 Rf8 24. Qa7 Kd8 25. Qxb7 g5 26. Rf3 Nxf3 27. Nxf3 g4 28. Nd4 Qe6 29. Bxa6 fxe4 30. Nxe6+ 1-0

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/gwt40kz8"]
+[White "Hephesto"]
+[Black "cheesedout"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:20:13"]
+[WhiteElo "1867"]
+[BlackElo "1840"]
+[WhiteRatingDiff "+12"]
+[BlackRatingDiff "-14"]
+[ECO "B40"]
+[Opening "Sicilian Defense: French Variation"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 c5 2. Nf3 e6 3. Bc4 d5 4. exd5 exd5 5. Bb3 Nc6 6. c3 Nf6 7. d4 Be7 8. Bf4 O-O 9. O-O cxd4 10. cxd4 Bg4 11. h3 Bh5 12. Nbd2 Bg6 13. Bc2 Bh5 14. Bb3 Nxd4 15. Bh2 Ne4 16. Nxe4 Nxf3+ 17. gxf3 dxe4 18. Qxd8 Raxd8 19. fxe4 Bf6 20. Bd5 Bxb2 21. Rab1 Bd4 22. Rxb7 Be2 23. Re1 Bf3 24. a4 Bc3 25. Re3 Bh5 26. Rxc3 h6 27. a5 a6 28. Ra7 Rb8 29. Kg2 Rb2 30. Rxa6 Re2 31. Re3 Rd2 32. Rc6 Rb2 33. a6 Rbb8 34. a7 Ra8 35. Ra6 Rxa7 36. Rxa7 Bg6 37. Bd6 Kh7 38. Bxf8 h5 39. Bxf7 Bxf7 40. Rxf7 Kg6 41. Rxg7+ Kf6 42. e5+ Ke6 43. Rg6+ Kd5 44. e6 Kd4 45. e7 Kc4 46. e8=Q Kd5 47. Rd6+ Kc5 48. Qc8+ Kb5 49. Re7 Kb4 50. Rb7+ Ka5 51. Ra6+ Kxa6 52. Qa8# 1-0

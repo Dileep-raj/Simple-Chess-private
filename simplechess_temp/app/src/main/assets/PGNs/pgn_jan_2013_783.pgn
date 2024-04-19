@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/26tae18h"]
+[White "psonio"]
+[Black "Atomicangel"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:27:16"]
+[WhiteElo "1888"]
+[BlackElo "1977"]
+[WhiteRatingDiff "-29"]
+[BlackRatingDiff "+8"]
+[ECO "C63"]
+[Opening "Ruy Lopez: Schliemann Defense, Exchange Variation"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. e4 Nc6 2. Nf3 e5 3. Bb5 f5 4. Bxc6 dxc6 5. Nxe5 Nf6 6. d4 fxe4 7. O-O Bd6 8. Bg5 O-O 9. c3 Kh8 10. Qb3 Qe7 11. Nd2 Bxe5 12. dxe5 Qxe5 13. Bxf6 Rxf6 14. Rae1 Bf5 15. Qxb7 Re8 16. Re3 Rh6 17. g3 Bg6 18. Rfe1 Qf5 19. Qxc6 Qh3 20. Nxe4 Qxh2+ 21. Kf1 Qh1+ 22. Ke2 Bh5+ 23. Kd2 Qxe1+ 24. Rxe1 Rxc6 25. Ke3 Rce6 26. f3 c5 27. Kf4 h6 28. Rh1 g5+ 29. Ke3 Bxf3 30. Kxf3 Rxe4 31. Rxh6+ Kg7 32. Ra6 Re8e7 33. Ra5 Kg6 34. Rxc5 Re3+ 35. Kg4 Re7e4+ 36. Kh3 Kh5 37. Kg2 Kg4 38. a4 Re2+ 39. Kf1 Re1+ 40. Kf2 Re4e2# 0-1

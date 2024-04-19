@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/zizuvipn"]
+[White "cheesedout"]
+[Black "xiaoqiao"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "03:58:42"]
+[WhiteElo "1843"]
+[BlackElo "2055"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+6"]
+[ECO "A56"]
+[Opening "Benoni Defense"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. d4 Nf6 2. c4 c5 3. Nc3 cxd4 4. Qxd4 Nc6 5. Qd1 d6 6. Nf3 g6 7. Bg5 Bg7 8. e3 O-O 9. a3 Be6 10. Bd3 Rc8 11. Qc2 Na5 12. b3 a6 13. O-O b5 14. cxb5 axb5 15. Qd2 Nxb3 16. Qb2 Nxa1 17. Qxa1 Ng4 18. Rc1 h6 19. Bf4 g5 20. Bg3 Qa5 21. h3 Bxc3 22. Qa2 Nf6 23. e4 Bxa2 0-1

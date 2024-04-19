@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/ocat27lx"]
+[White "ptdhina"]
+[Black "nichiren1967"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:03:02"]
+[WhiteElo "1514"]
+[BlackElo "1654"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+8"]
+[ECO "C41"]
+[Opening "Philidor Defense #3"]
+[TimeControl "60+1"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d6 3. Bc4 Nc6 4. d3 Bg4 5. h3 Bh5 6. Nbd2 Qd7 7. c3 O-O-O 8. a4 f5 9. exf5 Nf6 10. b4 Kb8 11. a5 Qxf5 12. b5 Ne7 13. b6 a6 14. bxc7+ Kxc7 15. Qa4 d5 16. Bb3 Qxd3 17. c4 Bxf3 18. gxf3 Kb8 19. cxd5 Nexd5 20. Bxd5 Nxd5 21. Ne4 Nc3 22. Nxc3 Qxc3+ 23. Ke2 Qd3+ 24. Ke1 Bc5 25. Bg5 Rc8 26. Rd1 Qxf3 27. Rg1 Qxf2# 0-1

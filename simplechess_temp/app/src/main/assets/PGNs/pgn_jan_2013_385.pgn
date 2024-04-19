@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/jd9mu6fm"]
+[White "t4nk"]
+[Black "cheesedout"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:44:17"]
+[WhiteElo "1516"]
+[BlackElo "1865"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+3"]
+[ECO "A00"]
+[Opening "Mieses Opening"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d3 c5 2. Nc3 e6 3. Nb1 d5 4. d4 Nf6 5. dxc5 Be7 6. c6 Bc5 7. b4 Bxb4+ 8. Nc3 Bxc3+ 9. Bd2 Bxa1 10. Qxa1 O-O 0-1

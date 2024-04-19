@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/tvo57kgr"]
+[White "schutzstaffel"]
+[Black "MARC0"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:37:20"]
+[WhiteElo "1871"]
+[BlackElo "1627"]
+[WhiteRatingDiff "+6"]
+[BlackRatingDiff "-26"]
+[ECO "C41"]
+[Opening "Philidor Defense #3"]
+[TimeControl "60+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 d6 3. Bc4 Nf6 4. Nc3 h6 5. d4 Be7 6. dxe5 dxe5 7. Qxd8+ Bxd8 8. Nxe5 Nbd7 9. Nxf7 Rf8 10. Nxd8 Kxd8 11. O-O Ne5 12. Bb3 Bg4 13. Bf4 Re8 14. f3 Bh5 15. Rad1+ Ke7 16. Bxe5 1-0

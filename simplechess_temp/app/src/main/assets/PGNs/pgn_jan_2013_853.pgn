@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/yb9kjyej"]
+[White "sakrat"]
+[Black "Masterstheven"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:18:56"]
+[WhiteElo "1931"]
+[BlackElo "1768"]
+[WhiteRatingDiff "-16"]
+[BlackRatingDiff "+16"]
+[ECO "C55"]
+[Opening "Italian Game: Two Knights Defense, Max Lange Attack"]
+[TimeControl "180+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. d4 exd4 4. Bc4 Nf6 5. O-O Bc5 6. e5 d5 7. exf6 dxc4 8. fxg7 Rg8 9. Qe2+ Be6 10. Bg5 Qd6 11. Bf6 Ne7 12. Be5 Qd7 13. Rd1 O-O-O 14. Qe4 Bd5 15. Qxh7 Nc6 16. Bxd4 Bxd4 17. Nxd4 Qg4 18. Nxc6 Qxg2# 0-1

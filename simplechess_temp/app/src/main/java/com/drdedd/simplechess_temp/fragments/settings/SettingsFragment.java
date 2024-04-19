@@ -26,7 +26,7 @@ public class SettingsFragment extends Fragment {
 
     private final static String TAG = "SettingsFragment";
     private EditText whiteName, blackName, minutesInput, secondsInput;
-    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, unicodeToggle;
+    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, vibrationToggle;
     private LinearLayout timerInputLayout;
     private Spinner themeSpinnerMenu;
     private final BoardTheme[] themes = BoardTheme.getValues();
@@ -45,9 +45,10 @@ public class SettingsFragment extends Fragment {
         cheatToggle = binding.cheatToggle;
         invertBlackSVGToggle = binding.invertBlackSVGToggle;
         timerToggle = binding.timerToggle;
+        vibrationToggle = binding.vibrationToggle;
+
         timerInputLayout = binding.timerInputLayout;
         themeSpinnerMenu = binding.themeSpinnerMenu;
-        unicodeToggle = binding.unicodeToggle;
 
         items = new String[themes.length];
         int i = 0;
@@ -59,7 +60,6 @@ public class SettingsFragment extends Fragment {
             viewModel.setTimer(isChecked);
         });
 
-        unicodeToggle.setOnCheckedChangeListener((button, b) -> viewModel.setUnicode(b));
         themeSpinnerMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -73,6 +73,7 @@ public class SettingsFragment extends Fragment {
         fullScreenToggle.setOnCheckedChangeListener((button, b) -> viewModel.setFullScreen(b));
         cheatToggle.setOnCheckedChangeListener((button, b) -> viewModel.setCheatMode(b));
         invertBlackSVGToggle.setOnCheckedChangeListener((button, b) -> viewModel.setInvertBlackSVGs(b));
+        vibrationToggle.setOnCheckedChangeListener((button, b) -> viewModel.setVibration(b));
         return binding.getRoot();
     }
 
@@ -96,7 +97,8 @@ public class SettingsFragment extends Fragment {
         cheatToggle.setChecked(viewModel.isCheatMode());
         invertBlackSVGToggle.setChecked(viewModel.isInvertBlackSVGs());
         timerToggle.setChecked(viewModel.isTimer());
-        unicodeToggle.setChecked(viewModel.isUnicode());
+        vibrationToggle.setChecked(viewModel.getVibration());
+
         minutesInput.setText(String.valueOf(viewModel.getMinutes()));
         secondsInput.setText(String.valueOf(viewModel.getSeconds()));
         if (!timerToggle.isChecked()) timerInputLayout.setVisibility(View.GONE);

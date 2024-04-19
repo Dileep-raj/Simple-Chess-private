@@ -15,12 +15,17 @@ import androidx.navigation.Navigation;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.data.GameStatistics;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
     public static final String NEW_GAME_KEY = "NewGame";
     private NavController navController;
+    private static GameStatistics gameStatistics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,8 +45,15 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.btn_settings).setOnClickListener(v -> navController.navigate(R.id.nav_settings));
 //        view.findViewById(R.id.btn_open_test).setOnClickListener(v -> navController.navigate(R.id.nav_test));
 
-        if (dataManager.readObject(DataManager.boardFile) == null || dataManager.readObject(DataManager.PGNFile) == null || dataManager.readObject(DataManager.stackFile) == null)
+        gameStatistics = new GameStatistics(requireContext());
+        long start = System.nanoTime();
+        Object boardObject = dataManager.readObject(DataManager.boardFile), PGNObject = dataManager.readObject(DataManager.PGNFile), stackObject = dataManager.readObject(DataManager.stackFile);
+        long end = System.nanoTime();
+        if (boardObject == null || PGNObject == null || stackObject == null)
             btn_continue.setVisibility(View.GONE);
+        printTime(TAG, "reading game objects", end - start, -1);
+        ArrayList<String> names = gameStatistics.getNames();
+        Log.i(TAG, "onViewCreated: Names of records: " + names.toString());
     }
 
     @Override
@@ -63,5 +75,10 @@ public class HomeFragment extends Fragment {
 
     public static String getTAG() {
         return TAG;
+    }
+
+    public static void printTime(String TAG, String message, long time, int size) {
+        Log.i("TimeCalculated", String.format(Locale.ENGLISH, "%s: Time taken for %s: %,3d ns, Size:%d", TAG, message, time, size));
+        gameStatistics.addRecord(message, time, size);
     }
 }

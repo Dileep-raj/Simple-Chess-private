@@ -32,7 +32,7 @@ public class PromoteDialog extends Dialog implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.promotion_dialog);
+        setContentView(R.layout.dialog_promotion);
         findViewById(R.id.promote_to_queen).setOnClickListener(this);
         findViewById(R.id.promote_to_rook).setOnClickListener(this);
         findViewById(R.id.promote_to_knight).setOnClickListener(this);

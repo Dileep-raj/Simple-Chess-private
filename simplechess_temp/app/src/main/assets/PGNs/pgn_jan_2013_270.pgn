@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/m85x3xbc"]
+[White "SiNiC"]
+[Black "Marzinkus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:48:08"]
+[WhiteElo "1643"]
+[BlackElo "1786"]
+[WhiteRatingDiff "-7"]
+[BlackRatingDiff "+7"]
+[ECO "C02"]
+[Opening "French Defense: Advance Variation #2"]
+[TimeControl "480+8"]
+[Termination "Normal"]
+
+1. e4 e6 2. d4 d5 3. e5 c5 4. c3 Ne7 5. f4 Nbc6 6. Bd3 Bd7 7. Nf3 cxd4 8. cxd4 Ng6 9. Be3 Bb4+ 10. Nc3 O-O 11. O-O Rc8 12. a3 Nxd4 13. Nxd4 Bxc3 14. bxc3 f6 15. Bxg6 hxg6 16. Qb3 fxe5 17. fxe5 Rxf1+ 18. Rxf1 Qc7 19. Nf3 Qxc3 20. Qxb7 Qxe3+ 21. Kh1 Rd8 22. Qc7 Qb6 23. Qc2 Rf8 24. Qxg6 Rf5 25. Rb1 0-1

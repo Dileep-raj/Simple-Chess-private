@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/4zu4576l"]
+[White "traker100"]
+[Black "ptdhina"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:26:51"]
+[WhiteElo "1756"]
+[BlackElo "1741"]
+[WhiteRatingDiff "+10"]
+[BlackRatingDiff "-10"]
+[ECO "D30"]
+[Opening "Queen's Gambit Declined"]
+[TimeControl "240+0"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. c4 e6 3. e3 Nf6 4. a3 a6 5. b4 Be7 6. Bb2 O-O 7. Nf3 Ne4 8. Bd3 f5 9. cxd5 Qxd5 10. Nc3 Qc6 11. Ne5 Nxc3 12. Nxc6 Nxd1 13. Nxe7+ Kh8 14. Kxd1 c6 15. Nxc8 Nd7 16. f3 Raxc8 17. Kd2 c5 18. Rac1 c4 19. Rxc4 Rcd8 20. Rf1 Nb6 21. Rc7 Na4 22. Ba1 e5 23. dxe5 Rd5 24. Kc2 Nb6 25. Rxb7 Nd7 26. Rc7 1-0

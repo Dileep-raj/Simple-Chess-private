@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/ks90bc3m"]
+[White "GEZ"]
+[Black "jtkjtkful"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:16:21"]
+[WhiteElo "1395"]
+[BlackElo "1485"]
+[WhiteRatingDiff "+13"]
+[BlackRatingDiff "-44"]
+[ECO "B01"]
+[Opening "Scandinavian Defense: Gubinsky-Melts Defense"]
+[TimeControl "300+1"]
+[Termination "Normal"]
+
+1. e4 d5 2. exd5 Qxd5 3. Nc3 Qd6 4. Qf3 Nc6 5. Bc4 Nf6 6. d3 Bg4 7. Qe3 h5 8. h3 Bf5 9. Nf3 g6 10. Ng5 Bh6 11. Nxf7 Rh7 12. Nxd6+ cxd6 1-0

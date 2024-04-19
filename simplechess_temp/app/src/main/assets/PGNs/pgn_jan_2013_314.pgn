@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/cph70t38"]
+[White "Kyklades"]
+[Black "sport"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:09:09"]
+[WhiteElo "1629"]
+[BlackElo "1502"]
+[WhiteRatingDiff "-15"]
+[BlackRatingDiff "+15"]
+[ECO "A40"]
+[Opening "Englund Gambit Declined, Reversed French"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. e3 e5 2. d4 e4 3. Bc4 d5 4. Bb3 Bg4 5. Qxg4 Nf6 6. Qe2 Nc6 7. Nh3 h6 8. O-O Bd6 9. f4 g5 10. fxg5 hxg5 11. Nxg5 Bxh2+ 12. Kf2 Qd6 13. Ke1 Qg3+ 14. Qf2 Qxg5 15. Bxd5 Bg3 16. Qxg3 Qxg3+ 17. Kd1 Qxg2 18. Nd2 Rh1 19. Bxc6+ bxc6 20. b3 Rxf1+ 21. Nxf1 Qxf1+ 22. Kd2 Qf2+ 23. Kc3 Rb8 24. Ba3 Ng4 25. Rh1 Qxe3+ 26. Kc4 Kd7 27. Rb1 Qf3 28. Bc5 a6 29. a4 e3 30. c3 e2 31. Rg1 Qe4 32. Re1 Nf2 33. Ba3 Nd3 34. b4 Nxe1 35. b5 Nc2 36. bxc6+ Kxc6 37. Bc5 e1=Q 38. a5 Qe4e3 39. d5+ Kd7 40. Bxe3 Nxe3+ 41. Kc5 Qxc3# 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/2joo5sd1"]
+[White "spaces"]
+[Black "Pozitiv"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:15:18"]
+[WhiteElo "1552"]
+[BlackElo "1402"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "D00"]
+[Opening "Queen's Pawn Game: Mason Attack"]
+[TimeControl "840+14"]
+[Termination "Normal"]
+
+1. d4 d5 2. Bf4 Nc6 3. e3 f6 4. Nf3 g5 5. Bg3 h5 6. h3 e6 7. Bd3 Nce7 8. O-O Nh6 9. e4 g4 10. hxg4 hxg4 11. Nh4 f5 12. exf5 Nhxf5 13. Qxg4 Nxg3 14. Bg6+ Kd7 15. Qxg3 Nxg6 16. Nxg6 Rg8 17. Ne5+ Ke7 1-0

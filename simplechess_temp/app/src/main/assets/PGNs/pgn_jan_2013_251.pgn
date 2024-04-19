@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/s9hl6ouh"]
+[White "lamobot"]
+[Black "rasmussenesq"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:37:10"]
+[WhiteElo "1281"]
+[BlackElo "1647"]
+[WhiteRatingDiff "+35"]
+[BlackRatingDiff "-20"]
+[ECO "B00"]
+[Opening "Nimzowitsch Defense: Kennedy Variation"]
+[TimeControl "120+3"]
+[Termination "Normal"]
+
+1. e4 e5 2. d4 Nc6 3. Bb5 exd4 4. Bxc6 dxc6 5. Nf3 c5 6. Bg5 Be7 7. Bxe7 Qxe7 8. O-O Nf6 9. Re1 O-O 10. e5 Nd5 11. c3 Bg4 12. cxd4 cxd4 13. Qxd4 Bxf3 14. gxf3 Rad8 15. Nc3 Nxc3 16. Qxc3 c5 17. f4 b6 18. f5 Qg5+ 19. Kh1 Qxf5 20. Qg3 Rd4 21. Rg1 g6 22. Raf1 Qe4+ 23. f3 Qf5 24. h4 h5 25. Qh2 Re8 26. Rg5 Qd3 27. Rf2 Qd1+ 28. Kg2 Rd2 29. Kh3 Rd4 30. f4 Kh7 31. f5 Rd3+ 32. Kg2 Rd2 33. fxg6+ fxg6 34. Kh3 Rxf2 35. Qxf2 Qd3+ 36. Kh2 Kg7 37. Qf6+ Kg8 38. Rxg6+ Qxg6 39. Qxg6+ Kf8 40. Qxh5 Ke7 41. Qg6 Kd8 42. Kh3 Re7 43. Qf6 Ke8 44. h5 Rf7 45. Qg6 Kf8 46. Kh4 Rg7 47. Qf6+ Rf7 48. Qh6+ Kg8 49. Qe6 Kg7 50. h6+ Kf8 51. Kh5 Re7 52. Qf6+ Rf7 53. Qh8+ Ke7 54. h7 Rf5+ 55. Kh6 Rf8 56. Qg7+ Rf7 57. Qg5+ Ke8 58. h8=Q+ Rf8 59. Qhg7 Rf7 60. Qg8+ Rf8 61. Qg5g6+ Ke7 62. Qg8g7+ Kd8 63. Qxf8+ Kc7 64. Qgd6+ Kb7 65. Qfe7+ Ka6 66. e6 Kb5 67. b3 a5 68. Qf4 c4 69. Qd7+ Kb4 70. e7 Ka3 71. Qf2 b5 72. Qxb5 a4 73. Qxa4# 1-0

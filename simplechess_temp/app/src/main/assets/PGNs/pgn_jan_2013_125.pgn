@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/k20znary"]
+[White "1000"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2012.12.31"]
+[UTCTime "23:55:28"]
+[WhiteElo "1698"]
+[BlackElo "1553"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-7"]
+[ECO "A01"]
+[Opening "Nimzo-Larsen Attack"]
+[TimeControl "0+1"]
+[Termination "Normal"]
+
+1. b3 c6 2. Bb2 a6 3. a3 a5 4. b4 a4 5. b5 Ra7 6. bxc6 Nxc6 7. d3 Ra8 8. g3 Ra7 9. Bg2 Ra8 10. Bxc6 dxc6 11. h4 Bg4 12. f3 Bh5 13. g4 Bg6 14. h5 Bxd3 15. exd3 e6 16. h6 Qf6 17. hxg7 Qxb2 18. Ra2 Qxg7 19. c4 Qd4 20. Qe2 Qe5 21. Qxe5 Bc5 22. Qxc5 b5 23. Qe5 Rb8 24. Qxb8+ Kd7 25. Qe5 c5 26. Qxh8 Nf6 27. Qxf6 Kc6 28. Qxf7 bxc4 29. Qxe6+ Kc7 30. Qxc4 Kc8 31. Qf7 h6 32. Qg8+ Kd7 33. Qh7+ Ke6 34. Qxh6+ Ke5 35. Rh5+ Kd4 36. Kd2 c4 37. Qc6 cxd3 38. Qc3# 1-0

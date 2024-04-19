@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/0odgkjea"]
+[White "daredevil"]
+[Black "uytku"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:00:32"]
+[WhiteElo "1646"]
+[BlackElo "1550"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-14"]
+[ECO "C00"]
+[Opening "French Defense: La Bourdonnais Variation"]
+[TimeControl "900+10"]
+[Termination "Normal"]
+
+1. e4 e6 2. f4 d5 3. e5 c5 4. Nf3 Nc6 5. c3 Nh6 6. d4 c4 7. b3 b5 8. a4 a6 9. axb5 axb5 10. Rxa8 Na5 11. b4 Nb3 12. Ra3 Be7 13. Nbd2 Nxd2 14. Bxd2 Ng4 15. h3 Bh4+ 16. Ke2 Nh6 17. Be1 Be7 18. g4 O-O 19. Qc2 f6 20. g5 Nf5 21. gxf6 gxf6 22. Rg1+ Kh8 23. Bh4 fxe5 24. Bxe7 Qxe7 25. dxe5 Qf7 26. Ke1 Qh5 27. Qg2 Qf7 28. Ng5 Qe7 29. Qf2 h6 30. Ra7 Bd7 31. Nf3 Rd8 32. Nd4 Nxd4 33. Qxd4 Qh4+ 34. Qf2 Qe7 35. Rg6 Kh7 36. Qg3 d4 37. cxd4 c3 38. Rc7 Rc8 39. Rxc3 Rxc3 40. Qxc3 Kxg6 41. Qd3+ Kg7 42. Qg3+ Kh8 43. Qg6 Qxb4+ 44. Ke2 Qf8 45. Kf3 b4 46. Bd3 Qg7 47. Qe4 Qf7 48. Bc4 Qh5+ 49. Kg3 Qd1 50. Bd3 Qg1+ 51. Kh4 Qg7 52. d5 Qe7+ 53. Kg3 b3 54. d6 Qg7+ 55. Kf3 Bc8 56. Qa8 Qb7+ 57. Qxb7 Bxb7+ 58. Ke3 Bc6 59. Kd2 Kg7 60. Bc4 b2 61. Kc2 Bd5 62. Bxd5 exd5 63. Kxb2 Kf7 64. Kc3 Ke6 65. Kd4 h5 66. f5+ Kd7 67. Kxd5 h4 68. e6+ Ke8 69. f6 Kd8 70. f7 Kc8 1-0

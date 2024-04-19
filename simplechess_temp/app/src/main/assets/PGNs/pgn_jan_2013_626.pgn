@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/fdjbct7p"]
+[White "Alexey_K"]
+[Black "froonsan"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:32:08"]
+[WhiteElo "1479"]
+[BlackElo "1466"]
+[WhiteRatingDiff "+11"]
+[BlackRatingDiff "-19"]
+[ECO "C44"]
+[Opening "Scotch Game"]
+[TimeControl "600+15"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nf3 Nc6 3. d4 f6 4. dxe5 Nxe5 5. Nxe5 fxe5 6. Qh5+ g6 7. Qxe5+ Qe7 8. Qxh8 Nf6 9. Bg5 Qxe4+ 10. Be2 Qxc2 11. O-O Qxe2 12. Qxf6 Qe7 13. Qxe7+ Bxe7 14. Re1 1-0

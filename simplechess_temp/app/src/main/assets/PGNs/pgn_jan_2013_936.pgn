@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/5ruwxguo"]
+[White "NikZ"]
+[Black "MihaSAH"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "08:22:51"]
+[WhiteElo "1610"]
+[BlackElo "1790"]
+[WhiteRatingDiff "-6"]
+[BlackRatingDiff "+13"]
+[ECO "C42"]
+[Opening "Russian Game: Urusov Gambit"]
+[TimeControl "420+7"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nf6 3. Nf3 Bd6 4. Ng5 O-O 5. O-O h6 6. Nxf7 Rxf7 7. Bxf7+ Kxf7 8. d3 c5 9. Nc3 Nc6 10. Qf3 Kg8 11. Be3 Nd4 12. Bxd4 cxd4 13. Ne2 Be7 14. Rad1 d6 15. h3 Be6 16. c3 dxc3 17. Nxc3 Rc8 18. Ra1 a6 19. Rfc1 b5 20. b4 d5 21. exd5 Nxd5 22. Qe4 Nxc3 23. Qxe5 Qd5 24. d4 Qxe5 25. dxe5 Nd5 26. Rcb1 Nxb4 27. Rd1 Nxa2 28. Rd2 Nb4 29. Rb2 Bc4 30. f4 Ra8 31. Rd2 a5 32. Rd7 Kf8 33. f5 a4 34. e6 a3 35. Rd2 a2 36. Kf2 Bf6 37. g4 Bxa1 0-1

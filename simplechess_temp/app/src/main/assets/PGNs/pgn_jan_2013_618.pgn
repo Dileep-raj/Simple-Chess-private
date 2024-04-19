@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/vz1rmqp1"]
+[White "froonsan"]
+[Black "khan"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:28:02"]
+[WhiteElo "1447"]
+[BlackElo "1427"]
+[WhiteRatingDiff "+19"]
+[BlackRatingDiff "-11"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Wayward Queen Attack"]
+[TimeControl "600+15"]
+[Termination "Normal"]
+
+1. e4 e5 2. Qh5 Nc6 3. Bb5 Qf6 4. Bxc6 bxc6 5. Nf3 g6 6. Qxe5+ Qxe5 7. Nxe5 Nf6 8. Nc3 d6 9. Nxc6 Be7 10. Nxe7 Kxe7 11. Nd5+ Ke6 12. Nxf6 1-0

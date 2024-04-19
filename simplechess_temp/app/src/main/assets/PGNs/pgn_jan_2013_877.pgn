@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/kbiauwbe"]
+[White "daredevil"]
+[Black "msusngi"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:40:27"]
+[WhiteElo "1654"]
+[BlackElo "1532"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "B20"]
+[Opening "Sicilian Defense: Bowdler Attack"]
+[TimeControl "900+10"]
+[Termination "Normal"]
+
+1. e4 c5 2. Bc4 Nf6 3. d3 Nc6 4. Be3 Qa5+ 5. Nc3 Qb6 6. Rb1 Nd4 7. e5 Ng8 8. f4 e6 9. Nf3 d5 10. Bb3 Nxf3+ 11. Qxf3 d4 12. Na4 Qa5+ 13. Bd2 Qd8 14. O-O f6 15. c3 fxe5 16. fxe5 b6 17. Qf7# 1-0

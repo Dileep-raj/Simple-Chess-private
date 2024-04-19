@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/wjzz9bdm"]
+[White "sport"]
+[Black "angrom"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "00:56:33"]
+[WhiteElo "1496"]
+[BlackElo "1550"]
+[WhiteRatingDiff "-9"]
+[BlackRatingDiff "+17"]
+[ECO "B20"]
+[Opening "Sicilian Defense: Bowdler Attack"]
+[TimeControl "300+3"]
+[Termination "Normal"]
+
+1. e4 c5 2. Bc4 e6 3. Nf3 a6 4. h3 Qc7 5. d4 cxd4 6. Qxd4 Nc6 7. Qc3 Bb4 8. b3 0-1

@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -27,6 +28,8 @@ import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.fragments.HomeFragment;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
@@ -40,8 +43,7 @@ import java.util.Set;
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ChessBoard extends View {
-
-    //    private static final String TAG = "ChessBoard";
+    private static final String TAG = "ChessBoard";
     public BoardInterface boardInterface;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
@@ -52,6 +54,7 @@ public class ChessBoard extends View {
     private HashMap<Piece, HashSet<Integer>> allLegalMoves;
     private HashSet<Integer> legalMoves = new HashSet<>();
     private final boolean cheatMode;
+    public boolean invalidate;
     private final Resources res = getResources();
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
@@ -70,6 +73,7 @@ public class ChessBoard extends View {
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
+        long start = System.nanoTime();
         super.onDraw(canvas);
         int width = getWidth(), height = getHeight();
         float scaleFactor = 0.95f;
@@ -89,6 +93,8 @@ public class ChessBoard extends View {
             highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
         if (Player.BLACK.isInCheck())
             highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.drawable.check);
+        long end = System.nanoTime();
+        HomeFragment.printTime(TAG, "drawing board", end - start, -1);
     }
 
     private void highlightSquare(Canvas canvas, int row, int col, int resID) {
@@ -98,7 +104,6 @@ public class ChessBoard extends View {
 
     private void loadBitmaps() {
         for (Integer id : resIDs)
-//            bitmaps.put(id, BitmapFactory.decodeResource(res, id));
             bitmaps.put(id, getBitmap(getContext(), id));
     }
 
@@ -165,6 +170,7 @@ public class ChessBoard extends View {
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int toCol, toRow;
         Piece selectedPiece;
+        if (GameFragment.isGameTerminated() || !invalidate) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 allLegalMoves = boardInterface.getLegalMoves();
@@ -229,7 +235,7 @@ public class ChessBoard extends View {
                 }
             }
             movingPiece.moveTo(toRow, toCol);
-            boardInterface.removePiece(toPiece);
+            boardInterface.capturePiece(toPiece);
             boardInterface.addToPGN(movingPiece, PGN.CAPTURE, fromRow, fromCol);
             return true;
         }
@@ -252,15 +258,14 @@ public class ChessBoard extends View {
             if (movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
-                    if (pawn.canCaptureEnPassant(boardInterface)) {
-                        boardInterface.removePiece(boardInterface.getBoardModel().enPassantPawn);
-                        movingPiece.moveTo(toRow, toCol);
-                        boardInterface.addToPGN(pawn, "", fromRow, fromCol);
-                        return true;
-                    }
-                }
-                if (movingPiece.getRank() == Rank.PAWN) {
-                    Pawn pawn = (Pawn) movingPiece;
+                    if (pawn.canCaptureEnPassant(boardInterface))
+                        if (boardInterface.getBoardModel().enPassantSquare.equals(GameFragment.toNotation(toRow, toCol))) {
+                            if (boardInterface.capturePiece(boardInterface.pieceAt(toRow - pawn.direction, toCol)))
+                                Log.d(TAG, "movePiece: EnPassant Capture");
+                            movingPiece.moveTo(toRow, toCol);
+                            boardInterface.addToPGN(pawn, PGN.CAPTURE, fromRow, fromCol);
+                            return true;
+                        }
                     if (pawn.canPromote()) {
                         boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
                         return false;

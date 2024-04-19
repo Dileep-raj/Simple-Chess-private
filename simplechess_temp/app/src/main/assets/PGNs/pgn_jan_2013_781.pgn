@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/4didrva6"]
+[White "RUS2012"]
+[Black "ddj"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:27:09"]
+[WhiteElo "1402"]
+[BlackElo "1631"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+11"]
+[ECO "C24"]
+[Opening "Bishop's Opening: Berlin Defense"]
+[TimeControl "240+1"]
+[Termination "Normal"]
+
+1. e4 e5 2. Bc4 Nf6 3. d3 Bc5 4. h3 d5 5. exd5 Nxd5 6. Nc3 Nxc3 7. bxc3 O-O 8. Ne2 Nc6 9. O-O Bd7 10. Be3 Bd6 11. f4 exf4 12. Nxf4 Bxf4 13. Bxf4 Na5 14. Bd5 Bxh3 15. Qf3 Bxg2 16. Kxg2 c6 17. Be4 f5 18. Qg3 fxe4 19. Bh6 Qe7 20. Rxf8+ Rxf8 21. Rf1 Rxf1 22. Kxf1 Qf6+ 23. Kg2 Qf3+ 24. Qxf3 exf3+ 25. Kxf3 gxh6 26. d4 Kf7 27. Ke4 Ke6 28. a4 Nc4 29. Kd3 Nd6 30. c4 b6 31. c5 Nf5 32. cxb6 axb6 33. Kc4 Ne3+ 34. Kd3 Nd5 35. c4 Nb4+ 36. Kc3 Na6 37. d5+ cxd5 38. cxd5+ Kxd5 39. Kb3 h5 0-1

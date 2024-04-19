@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/ezr4fq48"]
+[White "Dipankar"]
+[Black "bjagus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:06:31"]
+[WhiteElo "1493"]
+[BlackElo "1751"]
+[WhiteRatingDiff "-4"]
+[BlackRatingDiff "+4"]
+[ECO "C00"]
+[Opening "French Defense #2"]
+[TimeControl "120+3"]
+[Termination "Time forfeit"]
+
+1. e4 e6 2. Qh5 Nf6 3. Qe2 d5 4. e5 Nfd7 5. d4 b6 6. Qh5 c5 7. c3 Nc6 8. Nf3 cxd4 9. Nxd4 Nxd4 10. cxd4 Qc7 11. Be3 Qc2 12. Nd2 a5 13. Be2 Ba6 14. Bxa6 Rxa6 15. O-O Bb4 16. Nb3 Qg6 17. Qe2 Ra8 18. Qb5 Be7 19. Qc6 Rd8 20. Nd2 h5 21. Nf3 h4 22. h3 O-O 23. Qc1 Rc8 24. Qd2 Rc2 25. Qe1 Rfc8 26. Nxh4 Bxh4 27. Bf4 Bg5 28. Qe3 Bxf4 29. Qxf4 Rxb2 30. Rae1 Rc3 31. Re3 Rxe3 32. Qxe3 Rxa2 33. Qc3 Qg5 34. Qc8+ Nf8 35. Qc7 b5 36. Rb1 b4 37. Qc1 Qf5 38. Rb2 Rxb2 39. Qxb2 Qd3 40. Qa2 Qa3 41. Qa1 Ng6 42. Kf1 Nf4 43. Qb1 b3 44. g3 b2 0-1

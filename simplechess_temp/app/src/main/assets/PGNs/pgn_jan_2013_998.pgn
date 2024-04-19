@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/9d0ytl2q"]
+[White "traker100"]
+[Black "sempes"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "09:15:53"]
+[WhiteElo "1778"]
+[BlackElo "1672"]
+[WhiteRatingDiff "+8"]
+[BlackRatingDiff "-8"]
+[ECO "D20"]
+[Opening "Queen's Gambit Accepted: Saduleto Variation"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. d4 d5 2. c4 dxc4 3. e4 e6 4. Bxc4 h6 5. Nc3 Nf6 6. a3 Be7 7. Nf3 O-O 8. O-O Nh7 9. Be3 Nd7 10. Qd2 f5 11. exf5 Rxf5 12. Bxe6+ Kh8 13. Bxf5 Nhf6 14. Bxd7 Qxd7 15. Ne5 Qe8 16. f4 Bf5 17. h3 Ne4 18. Nxe4 Bxe4 19. Qe2 Qf8 20. Qg4 Bf5 21. Ng6+ Bxg6 22. Qxg6 Bf6 23. Rac1 Re8 24. Rfe1 c6 25. Kf2 Qd6 1-0

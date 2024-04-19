@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/n8poqu69"]
+[White "Aquatica"]
+[Black "RUS2012"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:23:01"]
+[WhiteElo "1424"]
+[BlackElo "1389"]
+[WhiteRatingDiff "-13"]
+[BlackRatingDiff "+13"]
+[ECO "C33"]
+[Opening "King's Gambit Accepted, Bishop's Gambit, Bogoljubov Variation"]
+[TimeControl "240+1"]
+[Termination "Normal"]
+
+1. e4 e5 2. f4 exf4 3. Bc4 Nf6 4. Nc3 d5 5. Nxd5 Nxd5 6. Bxd5 Bc5 7. d4 Bb6 8. Bxf4 O-O 9. Nf3 c6 10. Bc4 Bg4 11. c3 h6 12. h3 Bh5 13. g4 Bg6 14. Ne5 Bxe4 15. Bxf7+ Rxf7 16. Nxf7 Kxf7 17. Rf1 Kg8 18. Qe2 Qh4+ 19. Rf2 Bg6 20. Qe6+ Kh7 21. O-O-O Qxf2 0-1

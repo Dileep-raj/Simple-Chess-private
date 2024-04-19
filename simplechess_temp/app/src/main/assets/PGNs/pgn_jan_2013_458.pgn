@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/9934icfw"]
+[White "stech"]
+[Black "VanillaShamanilla"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "02:17:30"]
+[WhiteElo "1189"]
+[BlackElo "1554"]
+[WhiteRatingDiff "-3"]
+[BlackRatingDiff "+11"]
+[ECO "C20"]
+[Opening "King's Pawn Game: Leonardis Variation"]
+[TimeControl "540+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. d3 d5 3. exd5 Qxd5 4. Qh5 g6 5. Qf3 Qxf3 6. Nxf3 Bg7 7. Nc3 Bg4 8. Be2 Bxf3 9. Bxf3 c6 10. O-O Nd7 11. Be3 Ne7 12. Rad1 O-O 13. Na4 Nf5 14. Bc5 Nxc5 15. Nxc5 Rab8 16. Nd7 Nd4 17. Nxf8 Nxf3+ 18. gxf3 Bxf8 19. Rde1 Bg7 20. c3 c5 21. Re2 Rd8 22. Rd1 c4 23. dxc4 Rxd1+ 24. Kg2 Ra1 25. a3 Rb1 26. b4 Ra1 27. Rd2 Rxa3 28. Rd8+ Bf8 29. Rb8 b6 30. Kg3 Rxc3 31. Kg4 f5+ 32. Kg5 Kg7 33. h4 Be7# 0-1

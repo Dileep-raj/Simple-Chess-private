@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/jcob20nj"]
+[White "jsalemal-55"]
+[Black "tani_danilova"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "07:19:35"]
+[WhiteElo "1594"]
+[BlackElo "1500"]
+[WhiteRatingDiff "+7"]
+[BlackRatingDiff "-134"]
+[ECO "C34"]
+[Opening "King's Gambit Accepted, King's Knight Gambit"]
+[TimeControl "900+12"]
+[Termination "Time forfeit"]
+
+1. e4 e5 2. f4 exf4 3. Nf3 1-0

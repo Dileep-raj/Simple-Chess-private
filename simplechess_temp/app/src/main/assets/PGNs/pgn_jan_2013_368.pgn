@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/e8pc6qoy"]
+[White "peter2"]
+[Black "sanuch111"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:35:31"]
+[WhiteElo "1502"]
+[BlackElo "1720"]
+[WhiteRatingDiff "-5"]
+[BlackRatingDiff "+6"]
+[ECO "C28"]
+[Opening "Vienna Game: Stanley Variation, Three Knights Variation"]
+[TimeControl "480+0"]
+[Termination "Normal"]
+
+1. e4 e5 2. Nc3 Nf6 3. Bc4 Nc6 4. f3 g6 5. a3 Bg7 6. Nd5 Nxd5 7. Bxd5 O-O 8. Bxc6 dxc6 9. d3 c5 10. Qd2 b6 11. Qg5 Qxg5 12. Bxg5 Bb7 13. g4 f6 14. Be3 Ba6 15. h4 c4 16. d4 exd4 17. Bxd4 c5 18. Be3 Bb5 19. Ne2 Ba4 20. O-O-O Rad8 21. Rxd8 Rxd8 22. Rd1 Rxd1+ 23. Kxd1 Bd7 24. Nc3 f5 25. gxf5 Bxc3 26. bxc3 gxf5 27. exf5 Bxf5 28. Kd2 Kg7 29. a4 Kg6 30. Bf4 Bd7 31. Bb8 a6 32. Bc7 b5 33. axb5 axb5 34. Bd6 Bc6 35. Bxc5 Bxf3 36. Ke3 Bd1 37. Kd4 Bxc2 38. Bb4 Kh5 39. Kc5 Ba4 40. Kd5 Kxh4 41. Ke5 Kg3 42. Kf5 h5 43. Kg5 h4 44. Kh5 h3 45. Kg5 Kg2 46. Bd6 h2 47. Bxh2 Kxh2 48. Kf4 Kg2 0-1

@@ -1,0 +1,17 @@
+[Event "Rated Bullet game"]
+[Site "https://lichess.org/fk46kob5"]
+[White "cheesedout"]
+[Black "t4nk"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "01:25:12"]
+[WhiteElo "1879"]
+[BlackElo "1516"]
+[WhiteRatingDiff "+3"]
+[BlackRatingDiff "-3"]
+[ECO "D10"]
+[Opening "Slav Defense #3"]
+[TimeControl "0+1"]
+[Termination "Time forfeit"]
+
+1. d4 d5 2. c4 c6 3. Nc3 dxc4 4. Nf3 c5 5. Bg5 cxd4 6. Nxd4 Nc6 7. Nxc6 bxc6 8. Qxd8+ Kxd8 9. e4 h6 10. Bh4 g5 11. Bg3 f6 12. Bxc4 Bg4 13. f3 Bd7 14. O-O-O 1-0

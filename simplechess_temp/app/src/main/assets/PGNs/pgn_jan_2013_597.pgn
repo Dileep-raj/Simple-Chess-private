@@ -1,0 +1,17 @@
+[Event "Rated Classical game"]
+[Site "https://lichess.org/g91s0oxx"]
+[White "Voltvolf"]
+[Black "Marzinkus"]
+[Result "0-1"]
+[UTCDate "2013.01.01"]
+[UTCTime "04:06:09"]
+[WhiteElo "1835"]
+[BlackElo "1845"]
+[WhiteRatingDiff "-11"]
+[BlackRatingDiff "+11"]
+[ECO "C00"]
+[Opening "French Defense: La Bourdonnais Variation"]
+[TimeControl "600+5"]
+[Termination "Normal"]
+
+1. e4 e6 2. f4 d5 3. e5 c5 4. Nf3 Ne7 5. d4 Nbc6 6. Bb5 Bd7 7. O-O Nf5 8. c3 cxd4 9. Bxc6 Bxc6 10. cxd4 Be7 11. Nc3 O-O 12. Kh1 h6 13. Ne2 Rc8 14. a4 a5 15. b3 Bb4 16. Bb2 b5 17. Bc3 Ne3 18. Qd3 Nxf1 19. Bxb4 axb4 20. axb5 Nxh2 21. bxc6 Ng4 22. Rc1 Rc7 23. Kg1 Qa8 24. Qd2 Rb8 25. Ne1 Rxc6 26. Nd3 Rxc1+ 27. Nexc1 Qa1 28. Qe2 Qxd4+ 29. Kh1 h5 30. f5 Rc8 31. fxe6 Qf4 32. exf7+ Kxf7 33. Qf3 Qxf3 34. gxf3 Nh6 35. Kg2 Nf5 36. f4 Rc3 37. Kf3 Nd4+ 38. Kf2 Nxb3 39. Nxb3 Rxb3 40. Nc5 Rb2+ 41. Ke3 Rb1 42. f5 h4 43. Kf4 h3 44. Kg3 b3 45. Kxh3 b2 46. e6+ Ke7 0-1

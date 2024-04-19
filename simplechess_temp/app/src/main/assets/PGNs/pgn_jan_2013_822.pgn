@@ -1,0 +1,17 @@
+[Event "Rated Blitz game"]
+[Site "https://lichess.org/z6414m4b"]
+[White "psonio"]
+[Black "Elquesoy"]
+[Result "1-0"]
+[UTCDate "2013.01.01"]
+[UTCTime "06:43:28"]
+[WhiteElo "1847"]
+[BlackElo "1424"]
+[WhiteRatingDiff "+6"]
+[BlackRatingDiff "-4"]
+[ECO "C65"]
+[Opening "Ruy Lopez: Berlin Defense, Beverwijk Variation"]
+[TimeControl "240+0"]
+[Termination "Normal"]
+
+1. e4 { [%eval 0.21] } 1... e5 { [%eval 0.25] } 2. Nf3 { [%eval 0.3] } 2... Nc6 { [%eval 0.31] } 3. Bb5 { [%eval 0.15] } 3... Bc5 { [%eval 0.44] } 4. O-O { [%eval 0.46] } 4... Nf6 { [%eval 0.39] } 5. d3 { [%eval -0.03] } 5... O-O?! { [%eval 0.68] } 6. Bxc6 { [%eval 0.7] } 6... dxc6 { [%eval 0.91] } 7. Nxe5 { [%eval 0.88] } 7... Qd4 { [%eval 1.13] } 8. Nc4?! { [%eval 0.31] } 8... Ng4?! { [%eval 1.22] } 9. Ne3?! { [%eval 0.68] } 9... Nxe3 { [%eval 0.66] } 10. fxe3 { [%eval 0.67] } 10... Qe5? { [%eval 2.22] } 11. d4 { [%eval 2.3] } 11... Bxd4 { [%eval 2.78] } 12. exd4 { [%eval 2.74] } 12... Qxe4 { [%eval 2.63] } 13. Nc3 { [%eval 2.61] } 13... Qg6 { [%eval 2.63] } 14. Qd3?! { [%eval 1.97] } 14... Bf5?? { [%eval 6.61] } 15. Qxf5 { [%eval 6.34] } 1-0
