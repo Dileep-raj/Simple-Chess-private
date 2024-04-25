@@ -1,8 +1,8 @@
 package com.drdedd.simplechess_temp.pieces;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.util.HashSet;
 
@@ -26,7 +26,6 @@ public class Rook extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        HashSet<Integer> possibleMoves = getPossibleMoves(boardInterface);
         return possibleMoves.contains(row * 8 + col);
     }
 
@@ -36,8 +35,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
-        HashSet<Integer> possibleMoves = new HashSet<>();
+    public void updatePossibleMoves(BoardInterface boardInterface) {
+        possibleMoves.clear();
         int i, j;
 //        Column top
         for (i = getRow() + 1, j = getCol(); i < 8; i++)
@@ -51,6 +50,5 @@ public class Rook extends Piece {
 //        Row left
         for (i = getRow(), j = getCol() - 1; j >= 0; j--)
             if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
-        return possibleMoves;
     }
 }

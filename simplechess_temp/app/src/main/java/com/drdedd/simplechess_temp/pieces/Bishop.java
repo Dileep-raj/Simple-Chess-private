@@ -1,8 +1,8 @@
 package com.drdedd.simplechess_temp.pieces;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.util.HashSet;
 
@@ -25,7 +25,7 @@ public class Bishop extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        return getPossibleMoves(boardInterface).contains(row * 8 + col);
+        return possibleMoves.contains(row * 8 + col);
     }
 
     @Override
@@ -34,8 +34,8 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
-        HashSet<Integer> possibleMoves = new HashSet<>();
+    public void updatePossibleMoves(BoardInterface boardInterface) {
+        possibleMoves.clear();
         int i, j;
 //        Top right diagonal
         for (i = getRow() + 1, j = getCol() + 1; i < 8 && j < 8; i++, j++)
@@ -49,6 +49,5 @@ public class Bishop extends Piece {
 //        Top left diagonal
         for (i = getRow() + 1, j = getCol() - 1; i < 8 && j >= 0; i++, j--)
             if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
-        return possibleMoves;
     }
 }

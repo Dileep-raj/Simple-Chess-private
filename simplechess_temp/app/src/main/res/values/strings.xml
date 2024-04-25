@@ -72,6 +72,13 @@
     <string name="move_next">Move next</string>
     <string name="move_previous">Move previous</string>
 
+    <string name="draw"> \u00BD</string>
+    <string name="trophy"> \u1F3C6</string>
+    <string name="peace"> \u270C</string>
+    <string name="no_games_found">No games found</string>
+    <string name="delete_game">Delete game</string>
+    <string name="saved_games">Saved games</string>
+
     <string-array name="unicodes">
         <item>\u2654</item>
         <item>\u2655</item>

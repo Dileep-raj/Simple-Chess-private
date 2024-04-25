@@ -2,9 +2,9 @@ package com.drdedd.simplechess_temp.pieces;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,6 +19,7 @@ public abstract class Piece implements Serializable, Cloneable {
     private final Rank rank;
     protected boolean moved, captured;
     private final String unicode;
+    protected HashSet<Integer> possibleMoves = new HashSet<>();
 
     /**
      * @param player Player type (<code>WHITE|BLACK</code>)
@@ -105,10 +106,6 @@ public abstract class Piece implements Serializable, Cloneable {
         return "" + ch + (char) ('a' + col) + (row + 1);
     }
 
-    public String getSquare() {
-        return "" + (char) ('a' + col) + (row + 1);
-    }
-
     /**
      * Moves the piece to the given position
      *
@@ -136,19 +133,16 @@ public abstract class Piece implements Serializable, Cloneable {
     public abstract boolean canCapture(BoardInterface boardInterface, Piece capturingPiece);
 
     /**
-     * Finds all possible moves of the piece on the board
-     *
-     * @return <code>HashSet</code> of possible positions of the piece
-     */
-    public abstract HashSet<Integer> getPossibleMoves(BoardInterface boardInterface);
-
-    /**
      * Returns whether the {@link Piece} has moved or not
      *
      * @return <code>True|False</code>
      */
-    protected boolean hasNotMoved() {
+    public boolean hasNotMoved() {
         return !moved;
+    }
+
+    public void setMoved(boolean moved) {
+        this.moved = moved;
     }
 
     /**
@@ -199,6 +193,19 @@ public abstract class Piece implements Serializable, Cloneable {
     @Override
     public String toString() {
         return unicode;
-//        return super.toString();
+    }
+
+    /**
+     * Finds all possible moves of the piece on the board
+     *
+     * @param boardInterface BoardInterface of the current board
+     */
+    public abstract void updatePossibleMoves(BoardInterface boardInterface);
+
+    /**
+     * @return <code>HashSet</code> of possible positions of the piece
+     */
+    public HashSet<Integer> getPossibleMoves() {
+        return possibleMoves;
     }
 }

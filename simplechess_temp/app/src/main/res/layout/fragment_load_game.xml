@@ -45,12 +45,13 @@
             android:textColor="@color/white" />
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/loadedLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/btn_copy_pgn"
@@ -60,38 +61,111 @@
             android:text="@string/pgn"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy"
-            app:layout_constraintBottom_toTopOf="@+id/pgn_recyclerView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:drawableLeftCompat="@drawable/ic_copy" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pgn_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/analysisBoard"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_margin="8dp" />
 
-        <com.drdedd.simplechess_temp.ChessBoard
-            android:id="@+id/analysisBoard"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/boardLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/blackNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/black"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/blackCaptured"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/free_serif"
+                        android:text="@string/unicode_kw"
+                        android:textColor="@color/captured_piece"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/blackValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus1"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.drdedd.simplechess_temp.ChessBoard
+                android:id="@+id/analysisBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp">
+
+                <TextView
+                    android:id="@+id/whiteNameTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/whiteCaptured"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/free_serif"
+                        android:text="@string/unicode_kb"
+                        android:textColor="@color/captured_piece"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/whiteValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus1"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/GameViewOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/analysisBoard">
+            android:layout_margin="8dp">
 
             <ImageButton
                 android:id="@+id/move_previous"
@@ -123,5 +197,5 @@
                 app:layout_constraintTop_toTopOf="@+id/move_previous"
                 app:srcCompat="@drawable/ic_right" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </LinearLayout>

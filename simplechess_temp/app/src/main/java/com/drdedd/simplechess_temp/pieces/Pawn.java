@@ -2,9 +2,9 @@ package com.drdedd.simplechess_temp.pieces;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.util.HashSet;
 
@@ -12,7 +12,7 @@ import java.util.HashSet;
  * {@inheritDoc}
  */
 public class Pawn extends Piece {
-    public final int direction, lastRank;
+    public final int direction, lastRank, startingRank;
 
     /**
      * Creates a new <code>Pawn</code> piece
@@ -26,16 +26,14 @@ public class Pawn extends Piece {
         super(player, row, col, Rank.PAWN, resID, unicode);
         direction = isWhite() ? 1 : -1;
         lastRank = isWhite() ? 7 : 0;
+        startingRank = isWhite() ? 1 : 6;
         moved = false;
     }
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, @NonNull Piece capturingPiece) {
-        if (Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1) {
-            moved = true;
-            return true;
-        }
-        return false;
+        //            moved = true;
+        return Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1;
     }
 
     public boolean canCaptureEnPassant(BoardInterface boardInterface) {
@@ -46,8 +44,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
-        HashSet<Integer> possibleMoves = new HashSet<>();
+    public void updatePossibleMoves(BoardInterface boardInterface) {
+        possibleMoves.clear();
         int col = getCol(), row = getRow(), i;
         if (boardInterface.pieceAt(row + direction, col) == null)
             possibleMoves.add((row + direction) * 8 + col);
@@ -61,15 +59,15 @@ public class Pawn extends Piece {
         }
         if (canCaptureEnPassant(boardInterface))
             possibleMoves.add(boardInterface.getBoardModel().enPassantPawn.getCol() + (boardInterface.getBoardModel().enPassantPawn.getRow() + direction) * 8);
-        return possibleMoves;
+
     }
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
         if (Math.abs(col - getCol()) == 1) return canCaptureEnPassant(boardInterface);
         if (getCol() == col)
-            if ((row - getRow()) * direction == 1 || (!moved && (row - getRow()) * direction == 2 && boardInterface.pieceAt(row - direction, col) == null))
-                return moved = true;
+            return row * direction - getRow() * direction == 1 || !moved && row * direction - getRow() * direction == 2 && boardInterface.pieceAt(row - direction, col) == null;
+//                return moved = true;
         return false;
     }
 

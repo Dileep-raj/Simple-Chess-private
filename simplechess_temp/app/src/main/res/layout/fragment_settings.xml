@@ -12,9 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:drawablePadding="8dp"
         android:text="@string/full_screen"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:drawableLeftCompat="@drawable/ic_fullscreen" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/vibrationToggle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:drawablePadding="8dp"
+        android:text="@string/vibration"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:drawableLeftCompat="@drawable/ic_vibration" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider1"
@@ -102,7 +115,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ThemeMenuLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginHorizontal="8dp">
 
         <TextView
@@ -133,6 +146,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
+        android:drawablePadding="8dp"
         android:text="@string/invert_black_pieces"
         android:textColor="@color/white"
         android:textSize="18sp" />
@@ -148,9 +162,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
+        android:drawablePadding="8dp"
         android:text="@string/cheat_mode"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:drawableLeftCompat="@drawable/ic_stars" />
 
     <com.google.android.material.divider.MaterialDivider
         android:id="@+id/divider4"
@@ -159,22 +175,15 @@
         android:layout_margin="8dp" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/vibrationToggle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:text="@string/vibration"
-        android:textColor="@color/white"
-        android:textSize="18sp" />
-
-    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/timerToggle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
+        android:drawablePadding="8dp"
         android:text="@string/timer"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:drawableLeftCompat="@drawable/ic_timer" />
 
     <LinearLayout
         android:id="@+id/timerInputLayout"

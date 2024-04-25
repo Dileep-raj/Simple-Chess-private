@@ -36,7 +36,7 @@ public interface BoardInterface {
     /**
      * Remove a piece from the board
      *
-     * @return
+     * @return Result of capturing piece
      */
     boolean capturePiece(Piece piece);
 

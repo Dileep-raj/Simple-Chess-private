@@ -31,6 +31,11 @@
         android:label="@string/load_game"
         tools:layout="@layout/fragment_load_game" />
     <fragment
+        android:id="@+id/nav_saved_games"
+        android:name="com.drdedd.simplechess_temp.fragments.SavedGamesFragment"
+        android:label="@string/saved_games"
+        tools:layout="@layout/fragment_saved_games" />
+    <fragment
         android:id="@+id/nav_test"
         android:name="com.drdedd.simplechess_temp.fragments.TestFragment"
         android:label="@string/test_fragment"

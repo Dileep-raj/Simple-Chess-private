@@ -13,6 +13,7 @@ import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.pieces.Bishop;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Knight;
@@ -167,6 +168,30 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
+    public Piece searchRow(Player player, Rank rank, int row) {
+        for (Piece piece : pieces) {
+            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getRank() == rank && row == piece.getRow()) return piece;
+        }
+        return null;
+    }
+
+    public Piece searchCol(Player player, Rank rank, int col) {
+        for (Piece piece : pieces) {
+            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getRank() == rank && col == piece.getCol()) return piece;
+        }
+        return null;
+    }
+
+    public Piece searchPiece(BoardInterface boardInterface, Player player, Rank rank, int row, int col) {
+        for (Piece piece : pieces) {
+            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getRank() == rank && piece.canMoveTo(boardInterface, row, col)) return piece;
+        }
+        return null;
+    }
+
     /**
      * Captures the piece and removes it from board view
      *
@@ -304,7 +329,9 @@ public class BoardModel implements Serializable, Cloneable {
         if (castleRights.length() == 0) FEN[2] = " - ";
         else FEN[2] = String.valueOf(castleRights);
 
-        if (!enPassantSquare.isEmpty()) FEN[3] = enPassantSquare;
+        if (enPassantSquare.isEmpty()) FEN[3] = " - ";
+        else FEN[3] = enPassantSquare;
+
         return FEN;
     }
 
@@ -360,50 +387,51 @@ public class BoardModel implements Serializable, Cloneable {
         }
 
 //        Convert pieces to BoardModel
-        int i, rowNo = 7, c;
+        int i, row = 7, col;
         while (boardTokens.hasMoreTokens()) {
-            String row = boardTokens.nextToken();
-            for (i = 0, c = 0; i < row.length(); i++) {
+            String rank = boardTokens.nextToken();
+            for (i = 0, col = 0; i < rank.length(); i++) {
                 Player player;
                 Piece piece;
-                char ch = row.charAt(i);
+                char ch = rank.charAt(i);
                 if (Character.isDigit(ch)) {
-                    c += ch - '0';
+                    col += ch - '0';
                     continue;
                 }
                 if (i > 8) {
-                    Log.d(TAG, "parseFEN: Invalid FEN! found " + c + " columns in rank " + (i + 1));
+                    Log.d(TAG, "parseFEN: Invalid FEN! found " + col + " columns in rank " + (i + 1));
                     return null;
                 }
                 player = Character.isUpperCase(ch) ? Player.WHITE : Player.BLACK;
                 boolean isWhite = player == Player.WHITE;
                 switch (Character.toLowerCase(ch)) {
                     case 'k':
-                        piece = new King(player, rowNo, c, isWhite ? R.drawable.kw : R.drawable.kb, res.getString(isWhite ? R.string.unicode_kw : R.string.unicode_kb));
+                        piece = new King(player, row, col, isWhite ? R.drawable.kw : R.drawable.kb, res.getString(isWhite ? R.string.unicode_kw : R.string.unicode_kb));
                         break;
                     case 'q':
-                        piece = new Queen(player, rowNo, c, isWhite ? R.drawable.qw : R.drawable.qb, res.getString(isWhite ? R.string.unicode_qw : R.string.unicode_qb));
+                        piece = new Queen(player, row, col, isWhite ? R.drawable.qw : R.drawable.qb, res.getString(isWhite ? R.string.unicode_qw : R.string.unicode_qb));
                         break;
                     case 'r':
-                        piece = new Rook(player, rowNo, c, isWhite ? R.drawable.rw : R.drawable.rb, res.getString(isWhite ? R.string.unicode_rw : R.string.unicode_rb));
+                        piece = new Rook(player, row, col, isWhite ? R.drawable.rw : R.drawable.rb, res.getString(isWhite ? R.string.unicode_rw : R.string.unicode_rb));
                         break;
                     case 'b':
-                        piece = new Bishop(player, rowNo, c, isWhite ? R.drawable.bw : R.drawable.bb, res.getString(isWhite ? R.string.unicode_bw : R.string.unicode_bb));
+                        piece = new Bishop(player, row, col, isWhite ? R.drawable.bw : R.drawable.bb, res.getString(isWhite ? R.string.unicode_bw : R.string.unicode_bb));
                         break;
                     case 'n':
-                        piece = new Knight(player, rowNo, c, isWhite ? R.drawable.nw : R.drawable.nb, res.getString(isWhite ? R.string.unicode_nw : R.string.unicode_nb));
+                        piece = new Knight(player, row, col, isWhite ? R.drawable.nw : R.drawable.nb, res.getString(isWhite ? R.string.unicode_nw : R.string.unicode_nb));
                         break;
                     case 'p':
-                        piece = new Pawn(player, rowNo, c, isWhite ? R.drawable.pw : R.drawable.pb, res.getString(isWhite ? R.string.unicode_pw : R.string.unicode_pb));
+                        piece = new Pawn(player, row, col, isWhite ? R.drawable.pw : R.drawable.pb, res.getString(isWhite ? R.string.unicode_pw : R.string.unicode_pb));
+                        if (row != (isWhite ? 1 : 6)) piece.setMoved(true);
                         break;
                     default:
                         Log.d(TAG, "parseFEN: Invalid FEN! found invalid character " + ch);
                         return null;
                 }
                 boardModel.addPiece(piece);
-                c++;
+                col++;
             }
-            rowNo--;
+            row--;
         }
 //        Player to play next move
         playerToPlay = nextPlayer.equals("w") ? Player.WHITE : Player.BLACK;

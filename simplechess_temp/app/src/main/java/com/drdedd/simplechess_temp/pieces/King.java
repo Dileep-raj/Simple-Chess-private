@@ -1,8 +1,10 @@
 package com.drdedd.simplechess_temp.pieces;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
+import android.util.Log;
+
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.util.HashSet;
 
@@ -29,31 +31,12 @@ public class King extends Piece {
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
 //        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
-        return getPossibleMoves(boardInterface).contains(row * 8 + col);
+        return possibleMoves.contains(row * 8 + col);
     }
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, Piece capturingPiece) {
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
-    }
-
-    @Override
-    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
-        HashSet<Integer> possibleMoves = new HashSet<>();
-        int row = getRow(), col = getCol(), i, j, newRow, newCol;
-        for (i = -1; i <= 1; i++)
-            for (j = -1; j <= 1; j++) {
-                newRow = row + i;
-                newCol = col + j;
-                if (newRow == row && newCol == col || newCol < 0 || newCol > 7 || newRow < 0 || newRow > 7)
-                    continue;
-                addMove(possibleMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
-            }
-        if (!getPlayer().isInCheck() && canShortCastle(boardInterface))
-            possibleMoves.add(getRow() * 8 + getCol() + 2);
-        if (!getPlayer().isInCheck() && canLongCastle(boardInterface))
-            possibleMoves.add(getRow() * 8 + getCol() - 2);
-        return possibleMoves;
     }
 
     /**
@@ -140,7 +123,29 @@ public class King extends Piece {
         HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
         for (Piece piece : pieces)
             if (piece.getPlayer() != getPlayer() && !piece.isCaptured())
-                if (piece.canCapture(boardInterface, this)) return true;
+                if (piece.canCapture(boardInterface, this)) {
+                    Log.d("King", String.format("isChecked: %s checked by %s", getPlayer(), piece.getPosition()));
+                    return true;
+                }
         return false;
+    }
+
+    @Override
+    public void updatePossibleMoves(BoardInterface boardInterface) {
+        possibleMoves.clear();
+        int row = getRow(), col = getCol(), i, j, newRow, newCol;
+        for (i = -1; i <= 1; i++)
+            for (j = -1; j <= 1; j++) {
+                newRow = row + i;
+                newCol = col + j;
+                if (newRow == row && newCol == col || newCol < 0 || newCol > 7 || newRow < 0 || newRow > 7)
+                    continue;
+                addMove(possibleMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
+            }
+        if (!getPlayer().isInCheck() && canShortCastle(boardInterface))
+            possibleMoves.add(getRow() * 8 + getCol() + 2);
+        if (!getPlayer().isInCheck() && canLongCastle(boardInterface))
+            possibleMoves.add(getRow() * 8 + getCol() - 2);
+
     }
 }

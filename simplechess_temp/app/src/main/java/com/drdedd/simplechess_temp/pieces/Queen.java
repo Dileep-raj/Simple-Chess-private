@@ -1,10 +1,8 @@
 package com.drdedd.simplechess_temp.pieces;
 
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
-
-import java.util.HashSet;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 /**
  * {@inheritDoc}
@@ -25,7 +23,6 @@ public class Queen extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        HashSet<Integer> possibleMoves = getPossibleMoves(boardInterface);
         return possibleMoves.contains(row * 8 + col);
     }
 
@@ -34,9 +31,10 @@ public class Queen extends Piece {
         return canMoveTo(boardInterface, capturingPiece.getRow(), capturingPiece.getCol());
     }
 
+
     @Override
-    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
-        HashSet<Integer> possibleMoves = new HashSet<>();
+    public void updatePossibleMoves(BoardInterface boardInterface) {
+        possibleMoves.clear();
         int i, j;
 //        Column top
         for (i = getRow() + 1, j = getCol(); i < 8; i++)
@@ -69,6 +67,5 @@ public class Queen extends Piece {
 //        Top left diagonal
         for (i = getRow() + 1, j = getCol() - 1; i < 8 && j >= 0; i++, j--)
             if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
-        return possibleMoves;
     }
 }

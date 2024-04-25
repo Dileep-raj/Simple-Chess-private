@@ -3,16 +3,18 @@ package com.drdedd.simplechess_temp.fragments;
 import static android.content.Context.VIBRATOR_SERVICE;
 import static com.drdedd.simplechess_temp.data.Regexes.FENPattern;
 import static com.drdedd.simplechess_temp.data.Regexes.commentsRegex;
-import static com.drdedd.simplechess_temp.data.Regexes.resultsPattern;
+import static com.drdedd.simplechess_temp.data.Regexes.resultPattern;
 import static com.drdedd.simplechess_temp.data.Regexes.singleMovePattern;
 import static com.drdedd.simplechess_temp.data.Regexes.tagsPattern;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -41,6 +43,7 @@ import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.databinding.FragmentLoadGameBinding;
+import com.drdedd.simplechess_temp.dialogs.ProgressBarDialog;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.interfaces.PGNRecyclerViewInterface;
 import com.drdedd.simplechess_temp.pieces.King;
@@ -50,6 +53,7 @@ import com.drdedd.simplechess_temp.pieces.Piece;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,31 +62,32 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.regex.Matcher;
 
-public class LoadGameFragment extends Fragment {
+public class LoadGameFragment extends Fragment implements Serializable {
     private static final String TAG = "LoadGameFragment";
-    private HashMap<String, String> tagsMap;
-    private LinkedList<String> moves;
-//    HashMap<Integer, String> comments = new HashMap<>();
-
+    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN";
+    public HashMap<String, String> tagsMap;
+    public LinkedList<String> moves;
+    //    HashMap<Integer, String> comments = new HashMap<>();
     private FragmentLoadGameBinding binding;
     boolean gameLoaded = false;
     private final static int gone = View.GONE, visible = View.VISIBLE;
     private ClipboardManager clipboardManager;
     private NavController navController;
     private PGN pgn;
+    private ProgressBarDialog progressBarDialog;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLoadGameBinding.inflate(inflater, container, false);
         clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> showDialog());
+        binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> inputFEN());
         tagsMap = new HashMap<>();
         moves = new LinkedList<>();
         Bundle args = getArguments();
         if (args != null)
-            if (args.containsKey(GameFragment.LOAD_GAME_KEY) && args.containsKey(GameFragment.LOAD_PGN_KEY)) {
-                Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(GameFragment.LOAD_GAME_KEY);
-                PGN pgn = (PGN) args.getSerializable(GameFragment.LOAD_PGN_KEY);
+            if (args.containsKey(GameFragment.LOAD_GAME_KEY) && args.containsKey(LOAD_PGN_KEY)) {
+                Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(LOAD_GAME_KEY);
+                PGN pgn = (PGN) args.getSerializable(LOAD_PGN_KEY);
                 if (boardModelStack != null) try {
                     this.pgn = pgn;
                     loadGame(new ArrayList<>(boardModelStack));
@@ -98,16 +103,17 @@ public class LoadGameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        navController = Navigation.findNavController(view);
         if (gameLoaded) {
             binding.loadedLayout.setVisibility(visible);
             binding.notLoadedLayout.setVisibility(gone);
-            Log.d(TAG, "onViewCreated: Game Loaded and visible");
+            Log.d(TAG, "onViewCreated: Game Loaded");
         } else {
             binding.loadedLayout.setVisibility(gone);
             binding.notLoadedLayout.setVisibility(visible);
             binding.validateSamplePGNs.setOnClickListener(v -> validateSamplePGNs());
             try {
-                showDialog();
+                inputFEN();
             } catch (Exception e) {
                 Log.e(TAG, "onViewCreated: Error from dialog:\n", e);
                 Toast.makeText(requireContext(), "An unknown error occurred", Toast.LENGTH_SHORT).show();
@@ -116,14 +122,8 @@ public class LoadGameFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        navController = Navigation.findNavController(requireActivity(), R.id.main_fragment);
-    }
-
     void loadGame(ArrayList<BoardModel> boardModels) {
-        GameViewer gameViewer = new GameViewer(requireContext(), boardModels, binding);
+        GameViewer gameViewer = new GameViewer(requireContext(), binding, boardModels, pgn);
 
         binding.movePrevious.setOnClickListener(v -> gameViewer.movePrevious());
         binding.moveNext.setOnClickListener(v -> gameViewer.moveNext());
@@ -131,11 +131,6 @@ public class LoadGameFragment extends Fragment {
         binding.moveNext.setOnLongClickListener(v -> gameViewer.moveToLast());
 
         binding.btnCopyPgn.setOnClickListener(v -> copyPGN());
-        RecyclerView pgnRecyclerView = binding.pgnRecyclerView;
-        PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(requireContext(), pgn, gameViewer);
-        pgnRecyclerView.setAdapter(adapter);
-        pgnRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false));
-//        binding.analysisPgnTv.setText(pgn.getPGN());
     }
 
     private void copyPGN() {
@@ -168,7 +163,7 @@ public class LoadGameFragment extends Fragment {
             }
             Log.i(TAG, "Total moves count: " + moves.size());
 
-            Matcher result = resultsPattern.matcher(pgn);
+            Matcher result = resultPattern.matcher(pgn);
             if (result.find()) Log.i(TAG, "\nResult: " + result.group().trim());
             return true;
         } catch (Exception e) {
@@ -211,44 +206,13 @@ public class LoadGameFragment extends Fragment {
         }
     }
 
-    /*
-        private void loadPGN() {
-            BoardModel boardModel = new BoardModel(requireContext(), true);
-            int i;
-            Rank rank;
-            for (String move : moves) {
-                for (i = 0; i < move.length(); i++) {
-                    char ch = move.charAt(i);
-                    switch (ch) {
-                        case 'K':
-                            rank = Rank.KING;
-                            break;
-                        case 'Q':
-                            rank = Rank.QUEEN;
-                            break;
-                        case 'R':
-                            rank = Rank.ROOK;
-                            break;
-                        case 'N':
-                            rank = Rank.KNIGHT;
-                            break;
-                        case 'B':
-                            rank = Rank.BISHOP;
-                            break;
-                        default:
-                            rank = Rank.PAWN;
-                    }
-                }
-            }
-        }
-    */
-    private void showDialog() {
+    private void inputFEN() {
         Dialog dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_load_game);
         dialog.setTitle("Load Game");
 
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> {
-            getParentFragmentManager().popBackStack();
+            navController.popBackStack();
             dialog.dismiss();
         });
         dialog.findViewById(R.id.load).setOnClickListener(v -> {
@@ -257,29 +221,50 @@ public class LoadGameFragment extends Fragment {
                 pgnTxt.setError("Please enter a PGN");
                 return;
             }
-            String PGN = pgnTxt.getText().toString();
+            String pgn = pgnTxt.getText().toString();
 
-            String FEN = isFEN(PGN);
+            String FEN = isFEN(pgn);
             if (!FEN.isEmpty()) {
                 Bundle args = new Bundle();
                 args.putString(GameFragment.FEN_KEY, FEN);
                 args.putBoolean(GameFragment.NEW_GAME_KEY, false);
-                Log.v(TAG, "showDialog: Found FEN navigating to GameFragment");
+                Log.v(TAG, "inputFEN: Found FEN navigating to GameFragment");
                 dialog.dismiss();
                 navController.navigate(R.id.nav_game, args);
                 return;
             }
+
+            progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
+            progressBarDialog.show();
+
             long start = System.nanoTime();
-            boolean result = validatePGNSyntax(PGN);
+            boolean result = validatePGNSyntax(pgn);
             long end = System.nanoTime();
 
-            HomeFragment.printTime(TAG, "validating PGN syntax", end - start, PGN.length());
+            boolean newGame = true;
+            Bundle args = new Bundle();
+            if (tagsMap.containsKey(PGN.SET_UP_TAG) && tagsMap.containsKey(PGN.FEN_TAG))
+                if ("1".equals(tagsMap.get(PGN.SET_UP_TAG))) {
+                    FEN = tagsMap.get(PGN.FEN_TAG);
+                    if (FEN != null && !FEN.isEmpty()) {
+                        args.putString(GameFragment.LOAD_GAME_KEY, FEN);
+                        newGame = false;
+                    }
+                }
+            args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
+            args.putBoolean(GameFragment.LOAD_PGN_KEY, true);
+            args.putSerializable(GameFragment.LOAD_GAME_FRAGMENT_KEY, this);
+            if (navController.popBackStack())
+                Log.d(TAG, "inputFEN: Fragment popped, navigating to GameFragment");
+            navController.navigate(R.id.nav_game, args);
+
+            HomeFragment.printTime(TAG, "validating PGN syntax", end - start, pgn.length());
             if (result) {
-                Log.v(TAG, "onCreateView: No errors in PGN");
+                Log.v(TAG, "inputFEN: No errors in PGN");
                 Toast.makeText(requireContext(), "No errors in PGN", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             } else {
-                Log.v(TAG, "onCreateView: Invalid PGN!");
+                Log.v(TAG, "inputFEN: Invalid PGN!");
                 Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
                 pgnTxt.getText().clear();
             }
@@ -311,6 +296,16 @@ public class LoadGameFragment extends Fragment {
         return TAG;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (progressBarDialog != null) progressBarDialog.dismiss();
+    }
+
+    /**
+     * Game viewer to display and view game
+     * {@inheritDoc}
+     */
     static class GameViewer implements BoardInterface, PGNRecyclerViewInterface {
         private static final String TAG = "GameViewer";
         private final ArrayList<BoardModel> boardModels;
@@ -319,15 +314,46 @@ public class LoadGameFragment extends Fragment {
         private final int length;
         private final Vibrator vibrator;
         private final FragmentLoadGameBinding binding;
+        private final RecyclerView pgnRecyclerView;
         private BoardModel boardModel;
-        private int pointer;
+        private int pointer, previousPosition;
 
-        public GameViewer(Context context, ArrayList<BoardModel> boardModels, FragmentLoadGameBinding binding) {
+        /**
+         * @param context     Context
+         * @param binding     LoadGame fragment binding
+         * @param boardModels List of board models
+         * @param pgn         PGN of the game
+         */
+        public GameViewer(Context context, FragmentLoadGameBinding binding, ArrayList<BoardModel> boardModels, PGN pgn) {
             DataManager dataManager = new DataManager(context);
             this.boardModels = boardModels;
             this.binding = binding;
             boardModel = boardModels.get(0);
             analysisBoard = binding.analysisBoard;
+            pgnRecyclerView = binding.pgnRecyclerView;
+
+            String whiteName = pgn.getWhite();
+            String blackName = pgn.getBlack();
+
+            Resources resources = context.getResources();
+            String draw = resources.getString(R.string.draw);
+            String victory = resources.getString(R.string.peace);
+
+            switch (pgn.getAppendResult()) {
+                case PGN.RESULT_DRAW:
+                    whiteName += " " + draw;
+                    blackName += " " + draw;
+                    break;
+                case PGN.RESULT_WHITE_WON:
+                    whiteName += " " + victory;
+                    break;
+                case PGN.RESULT_BLACK_WON:
+                    blackName += " " + victory;
+                    break;
+            }
+
+            binding.whiteNameTV.setText(whiteName);
+            binding.blackNameTV.setText(blackName);
 
             length = boardModels.size();
             pointer = 0;
@@ -343,7 +369,11 @@ public class LoadGameFragment extends Fragment {
 
             Player.WHITE.setInCheck(false);
             Player.BLACK.setInCheck(false);
-            binding.movePrevious.setAlpha(0.5f);
+            update();
+
+            PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(context, pgn, this);
+            pgnRecyclerView.setAdapter(adapter);
+            pgnRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
         }
 
         @Override
@@ -381,6 +411,7 @@ public class LoadGameFragment extends Fragment {
 
         private void movePrevious() {
             if (pointer > 0) {
+                previousPosition = pointer;
                 pointer--;
                 update();
             }
@@ -388,18 +419,21 @@ public class LoadGameFragment extends Fragment {
 
         private void moveNext() {
             if (pointer < length - 1) {
+                previousPosition = pointer;
                 pointer++;
                 update();
             }
         }
 
         private boolean moveToFirst() {
+            previousPosition = pointer;
             pointer = 0;
             update();
             return true;
         }
 
         private boolean moveToLast() {
+            previousPosition = pointer;
             pointer = length - 1;
             update();
             return true;
@@ -408,17 +442,32 @@ public class LoadGameFragment extends Fragment {
         @Override
         public void jumpToMove(int position) {
             if (position < length - 1) {
+                previousPosition = pointer;
                 pointer = position + 1;
                 update();
             }
         }
 
         /**
-         * Updates Board, check status and other views
+         * Updates board, moves, check status and other views
          */
+        @SuppressLint("SetTextI18n")
         private void update() {
+            pgnRecyclerView.scrollToPosition(pointer == 0 ? 0 : pointer - 1);
+            RecyclerView.ViewHolder holder = pgnRecyclerView.findViewHolderForAdapterPosition(previousPosition - 1);
+            if (holder != null)
+                holder.itemView.findViewById(R.id.move).setBackgroundResource(R.drawable.pgn_move_bg);
+
+            pgnRecyclerView.post(() -> {
+                RecyclerView.ViewHolder holder1 = pgnRecyclerView.findViewHolderForAdapterPosition(pointer - 1);
+                if (holder1 != null)
+                    holder1.itemView.findViewById(R.id.move).setBackgroundResource(R.drawable.pgn_move_highlight);
+            });
+
             boardModel = boardModels.get(pointer);
             analysisBoard.invalidate();
+
+            updatePossibleMoves();
             long start = System.nanoTime();
             boolean isChecked = false;
             King whiteKing = boardModel.getWhiteKing();
@@ -447,6 +496,41 @@ public class LoadGameFragment extends Fragment {
 
             binding.movePrevious.setAlpha(pointer == 0 ? 0.5f : 1f);
             binding.moveNext.setAlpha(pointer == length - 1 ? 0.5f : 1f);
+
+            StringBuilder whiteText = new StringBuilder(), blackText = new StringBuilder();
+            int blackCapturedValue = 0, whiteCapturedValue = 0, difference;
+
+            binding.whiteCaptured.setText("");
+            binding.blackCaptured.setText("");
+
+            binding.whiteValue.setText("");
+            binding.blackValue.setText("");
+
+            ArrayList<Piece> capturedPieces = boardModel.getCapturedPieces();
+            for (Piece piece : capturedPieces) {
+                if (piece.isWhite()) {
+                    blackText.append(piece.getUnicode());
+                    blackCapturedValue += piece.getRank().getValue();
+                } else {
+                    whiteText.append(piece.getUnicode());
+                    whiteCapturedValue += piece.getRank().getValue();
+                }
+            }
+            difference = Math.abs(blackCapturedValue - whiteCapturedValue);
+
+            if (difference != 0) {
+                if (whiteCapturedValue > blackCapturedValue)
+                    binding.whiteValue.setText(" +" + difference);
+                else binding.blackValue.setText(" +" + difference);
+            }
+
+            binding.whiteCaptured.setText(whiteText);
+            binding.blackCaptured.setText(blackText);
+        }
+
+        private void updatePossibleMoves() {
+            HashSet<Piece> pieces = boardModel.pieces;
+            for (Piece piece : pieces) piece.updatePossibleMoves(this);
         }
     }
 }

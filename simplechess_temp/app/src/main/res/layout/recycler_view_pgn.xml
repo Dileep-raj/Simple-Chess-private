@@ -14,22 +14,12 @@
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/whiteMove"
+        android:id="@+id/move"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="6dp"
         android:background="@drawable/pgn_move_bg"
         android:padding="4dp"
         android:text="Qxf7+"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/blackMove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:background="@drawable/pgn_move_bg"
-        android:padding="4dp"
-        android:text="Rxf7#"
         android:textSize="16sp" />
 </LinearLayout>

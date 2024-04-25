@@ -2,14 +2,19 @@ package com.drdedd.simplechess_temp.GameData;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.PGN;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,8 +23,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Stack;
 
 /**
@@ -28,8 +36,7 @@ import java.util.Stack;
 public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile", FENsListFile = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
-    private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", gameTerminatedLabel = "gameTerminated";
-    private final String gameTerminationMessageLabel = "gameTerminationMessage", terminationOrdinalLabel = "gameTerminatedOrdinal", vibrationLabel = "vibration";
+    private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", vibrationLabel = "vibration";
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -50,9 +57,9 @@ public class DataManager {
      * @param fileName Name of the file
      * @return <code>Object|null</code>
      */
-    public Object readObject(String fileName) {
+    public @Nullable Object readObject(String fileName) {
         try {
-            FileInputStream fileInputStream = context.openFileInput(fileName);
+            FileInputStream fileInputStream = new FileInputStream(new File(context.getFilesDir(), fileName));
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             Object obj = objectInputStream.readObject();
             objectInputStream.close();
@@ -94,6 +101,37 @@ public class DataManager {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public boolean saveGame() {
+        try {
+            boolean result;
+            File filesDir = context.getFilesDir();
+            Log.d(TAG, "saveGame: Files dir: " + filesDir.getName());
+
+            File[] files = filesDir.listFiles(File::isFile);
+            SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
+            File directory = new File(filesDir.getAbsolutePath() + File.separator + date.format(new Date()));
+            result = directory.mkdir();
+            if (result) {
+                String dir = directory.getAbsolutePath() + File.separator;
+                Log.d(TAG, String.format("saveGame: Game saving in %s", dir));
+                if (files != null) for (File file : files)
+                    result = result && file.renameTo(new File(dir + file.getName()));
+            }
+            return result;
+        } catch (Exception e) {
+            Log.e(TAG, "saveGame: Error while saving game", e);
+            return false;
+        }
+    }
+
+    public ArrayList<String> savedGames() {
+        ArrayList<String> savedGames = new ArrayList<>();
+        File filesDir = context.getFilesDir();
+        File[] files = filesDir.listFiles(File::isDirectory);
+        if (files != null) for (File file : files) savedGames.add(file.getName());
+        return savedGames;
+    }
 
     private boolean deleteFile(String fileName) {
         File file = new File(context.getFilesDir(), fileName);
@@ -102,9 +140,13 @@ public class DataManager {
         return false;
     }
 
-    public void deleteGameFiles() {
-        if (deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile) && deleteFile(FENsListFile))
-            Log.d(TAG, "deleteGameFiles: Game deleted successfully");
+    public boolean deleteGameFiles(String directory) {
+        boolean deleted;
+        String dir = directory + File.separator;
+        deleted = deleteFile(dir + boardFile) && deleteFile(dir + stackFile) && deleteFile(dir + PGNFile) && deleteFile(dir + FENsListFile);
+        if (deleted) Log.d(TAG, "deleteGameFiles: Saved game deleted successfully!");
+        if (!directory.isEmpty()) deleted = deleted && deleteFile(directory);
+        return deleted;
     }
 
     /**
@@ -294,51 +336,6 @@ public class DataManager {
      */
     public long getBlackTimeLeft() {
         return sharedPreferences.getLong(blackTimeLeftLabel, 0);
-    }
-
-    /**
-     * Sets if a game is terminated
-     *
-     * @param gameTerminated Game termination flag
-     */
-    public void setGameTerminated(boolean gameTerminated) {
-        editor.putBoolean(gameTerminatedLabel, gameTerminated);
-        editor.commit();
-    }
-
-    /**
-     * Returns whether a game is terminated
-     *
-     * @return <code>true|false</code>
-     */
-    public boolean isGameTerminated() {
-        return sharedPreferences.getBoolean(gameTerminatedLabel, false);
-    }
-
-    /**
-     * Sets game termination message
-     *
-     * @param gameTerminationMessage Message for game termination
-     */
-    public void setGameTerminationMessage(String gameTerminationMessage) {
-        editor.putString(gameTerminationMessageLabel, gameTerminationMessage);
-        editor.commit();
-    }
-
-    /**
-     * @return <code>String</code> - Message for game termination
-     */
-    public String getGameTerminationMessage() {
-        return sharedPreferences.getString(gameTerminationMessageLabel, "");
-    }
-
-    public void setTerminationOrdinal(int ordinal) {
-        editor.putInt(terminationOrdinalLabel, ordinal);
-        editor.commit();
-    }
-
-    public int getTerminationOrdinal() {
-        return sharedPreferences.getInt(terminationOrdinalLabel, 0);
     }
 
     public void setVibration(boolean vibration) {

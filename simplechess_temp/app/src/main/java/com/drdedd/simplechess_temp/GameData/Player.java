@@ -5,8 +5,8 @@ package com.drdedd.simplechess_temp.GameData;
  */
 public enum Player {
     WHITE("White", false), BLACK("Black", false);
-    boolean inCheck;
-    String name;
+    private boolean inCheck;
+    private String name;
 
     Player(String name, boolean inCheck) {
         this.name = name;

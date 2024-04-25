@@ -23,7 +23,6 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
 
     private static final String TAG = "HomeFragment";
-    public static final String NEW_GAME_KEY = "NewGame";
     private NavController navController;
     private static GameStatistics gameStatistics;
 
@@ -35,7 +34,8 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DataManager dataManager = new DataManager(getContext());
+        navController = Navigation.findNavController(view);
+        DataManager dataManager = new DataManager(requireContext());
 
         Button btn_continue = view.findViewById(R.id.btn_continue_game);
 
@@ -56,15 +56,9 @@ public class HomeFragment extends Fragment {
         Log.i(TAG, "onViewCreated: Names of records: " + names.toString());
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        navController = Navigation.findNavController(requireActivity(), R.id.main_fragment);
-    }
-
     public void startGame(boolean newGame) {
         Bundle args = new Bundle();
-        args.putBoolean(NEW_GAME_KEY, newGame);
+        args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
         navController.navigate(R.id.nav_game, args);
         Log.d(TAG, "startGame: Game started");
     }

@@ -99,7 +99,8 @@ public class ChessBoard extends View {
 
     private void highlightSquare(Canvas canvas, int row, int col, int resID) {
         Bitmap b = bitmaps.get(resID);
-        canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
+        if (b != null)
+            canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
     private void loadBitmaps() {
@@ -142,14 +143,16 @@ public class ChessBoard extends View {
         if (piece != null) {
             if (!GameFragment.isGameTerminated() && GameFragment.isPieceToPlay(piece) || cheatMode) {
                 Bitmap b = bitmaps.get(piece.getResID());
-                canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
+                if (b != null)
+                    canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
             } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
         }
     }
 
     private void drawPieceAt(@NonNull Canvas canvas, int row, int col, int resID) {
         Bitmap b = bitmaps.get(resID);
-        canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
+        if (b != null)
+            canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
     private void drawGuides(Canvas canvas) {
@@ -159,7 +162,8 @@ public class ChessBoard extends View {
             Bitmap b = bitmaps.get(R.drawable.guide_blue);
             for (Integer move : legalMoves) {
                 int row = move / 8, col = move % 8;
-                canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
+                if (b != null)
+                    canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
             }
             legalMoves = null;
         }
@@ -190,10 +194,12 @@ public class ChessBoard extends View {
                 toRow = 7 - (int) ((event.getY() - offsetY) / sideLength);
                 selectedPiece = boardInterface.pieceAt(toRow, toCol);
 
-                if (selectedPiece != null) if (GameFragment.isPieceToPlay(selectedPiece)) {
-                    if (fromRow == toRow && fromCol == toCol) previousSelectedPiece = selectedPiece;
-                    if (!cheatMode) legalMoves = allLegalMoves.get(selectedPiece);
-                    invalidate();
+                if (selectedPiece != null) {
+                    if (GameFragment.isPieceToPlay(selectedPiece)) {
+                        if (fromRow == toRow && fromCol == toCol)
+                            previousSelectedPiece = selectedPiece;
+                        if (!cheatMode) legalMoves = allLegalMoves.get(selectedPiece);
+                    } else previousSelectedPiece = null;
                 }
                 if (selectedPiece != null && previousSelectedPiece != null) {
                     if (selectedPiece != previousSelectedPiece && selectedPiece.getPlayer() == previousSelectedPiece.getPlayer())
@@ -220,8 +226,10 @@ public class ChessBoard extends View {
         if (GameFragment.isGameTerminated()) return false;
 
         Piece movingPiece = boardInterface.pieceAt(fromRow, fromCol);
-        if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7)
+        if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7) {
+            Log.d(TAG, "movePiece: Moving piece is null");
             return false;
+        }
         if (!GameFragment.isPieceToPlay(movingPiece)) return false;
 
         Piece toPiece = boardInterface.pieceAt(toRow, toCol);
@@ -230,7 +238,9 @@ public class ChessBoard extends View {
             if (movingPiece.getRank() == Rank.PAWN) {
                 Pawn pawn = (Pawn) movingPiece;
                 if (pawn.canPromote()) {
+                    previousSelectedPiece = null;
                     boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
+                    Log.d(TAG, "movePiece: Pawn promotion");
                     return false;
                 }
             }
@@ -259,15 +269,17 @@ public class ChessBoard extends View {
                 if (movingPiece.getRank() == Rank.PAWN) {
                     Pawn pawn = (Pawn) movingPiece;
                     if (pawn.canCaptureEnPassant(boardInterface))
-                        if (boardInterface.getBoardModel().enPassantSquare.equals(GameFragment.toNotation(toRow, toCol))) {
-                            if (boardInterface.capturePiece(boardInterface.pieceAt(toRow - pawn.direction, toCol)))
+                        if (boardInterface.getBoardModel().enPassantSquare.equals(GameFragment.toNotation(toRow, toCol)))
+                            if (boardInterface.capturePiece(boardInterface.pieceAt(toRow - pawn.direction, toCol))) {
                                 Log.d(TAG, "movePiece: EnPassant Capture");
-                            movingPiece.moveTo(toRow, toCol);
-                            boardInterface.addToPGN(pawn, PGN.CAPTURE, fromRow, fromCol);
-                            return true;
-                        }
+                                movingPiece.moveTo(toRow, toCol);
+                                boardInterface.addToPGN(pawn, PGN.CAPTURE, fromRow, fromCol);
+                                return true;
+                            }
                     if (pawn.canPromote()) {
+                        previousSelectedPiece = null;
                         boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
+                        Log.d(TAG, "movePiece: Pawn promotion");
                         return false;
                     }
                 }
@@ -276,6 +288,7 @@ public class ChessBoard extends View {
                 return true;
             }
         }
+        Log.d(TAG, "movePiece: Illegal move");
         previousSelectedPiece = null;
         return false;   //Default return false
     }

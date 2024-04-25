@@ -208,7 +208,6 @@
                         android:text="@string/plus1"
                         android:textColor="@color/white" />
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout
@@ -254,7 +253,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_undo_move"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_restart" />
+            app:srcCompat="@drawable/ic_reset" />
 
         <ImageButton
             android:id="@+id/btn_undo_move"

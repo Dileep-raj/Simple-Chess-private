@@ -68,6 +68,11 @@ public class GameStatistics extends SQLiteOpenHelper {
         return records;
     }
 
+    public void clearAll() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME);
+    }
+
     public static class RecordsData {
         private final String name, date;
         private final long time;
