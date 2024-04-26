@@ -64,7 +64,7 @@ import java.util.regex.Matcher;
 
 public class LoadGameFragment extends Fragment implements Serializable {
     private static final String TAG = "LoadGameFragment";
-    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN";
+    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", PGN_FILE_KEY = "PGNFile";
     public HashMap<String, String> tagsMap;
     public LinkedList<String> moves;
     //    HashMap<Integer, String> comments = new HashMap<>();
@@ -75,16 +75,19 @@ public class LoadGameFragment extends Fragment implements Serializable {
     private NavController navController;
     private PGN pgn;
     private ProgressBarDialog progressBarDialog;
+    private Dialog dialog;
+    private EditText pgnTxt;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLoadGameBinding.inflate(inflater, container, false);
         clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        navController = Navigation.findNavController(container);
         binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> inputFEN());
         tagsMap = new HashMap<>();
         moves = new LinkedList<>();
         Bundle args = getArguments();
-        if (args != null)
+        if (args != null) {
             if (args.containsKey(GameFragment.LOAD_GAME_KEY) && args.containsKey(LOAD_PGN_KEY)) {
                 Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(LOAD_GAME_KEY);
                 PGN pgn = (PGN) args.getSerializable(LOAD_PGN_KEY);
@@ -95,7 +98,15 @@ public class LoadGameFragment extends Fragment implements Serializable {
                 } catch (Exception e) {
                     Log.e(TAG, "onCreateView: Error while loading game", e);
                 }
+            } else if (args.containsKey(PGN_FILE_KEY)) {
+                String pgn = args.getString(PGN_FILE_KEY);
+                progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
+                progressBarDialog.show();
+                gameLoaded = true;
+                validatePGNSyntax(pgn);
+                loadPGN();
             }
+        }
 //        comments = new HashMap<>();
         return binding.getRoot();
     }
@@ -103,7 +114,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        navController = Navigation.findNavController(view);
         if (gameLoaded) {
             binding.loadedLayout.setVisibility(visible);
             binding.notLoadedLayout.setVisibility(gone);
@@ -207,16 +217,17 @@ public class LoadGameFragment extends Fragment implements Serializable {
     }
 
     private void inputFEN() {
-        Dialog dialog = new Dialog(requireContext());
+        dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_load_game);
         dialog.setTitle("Load Game");
+        pgnTxt = dialog.findViewById(R.id.load_pgn_txt);
 
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> {
             navController.popBackStack();
             dialog.dismiss();
         });
         dialog.findViewById(R.id.load).setOnClickListener(v -> {
-            EditText pgnTxt = dialog.findViewById(R.id.load_pgn_txt);
+
             if (TextUtils.isEmpty(pgnTxt.getText())) {
                 pgnTxt.setError("Please enter a PGN");
                 return;
@@ -238,31 +249,14 @@ public class LoadGameFragment extends Fragment implements Serializable {
             progressBarDialog.show();
 
             long start = System.nanoTime();
-            boolean result = validatePGNSyntax(pgn);
+            boolean result = validatePGNSyntax(pgnTxt.getText().toString());
             long end = System.nanoTime();
-
-            boolean newGame = true;
-            Bundle args = new Bundle();
-            if (tagsMap.containsKey(PGN.SET_UP_TAG) && tagsMap.containsKey(PGN.FEN_TAG))
-                if ("1".equals(tagsMap.get(PGN.SET_UP_TAG))) {
-                    FEN = tagsMap.get(PGN.FEN_TAG);
-                    if (FEN != null && !FEN.isEmpty()) {
-                        args.putString(GameFragment.LOAD_GAME_KEY, FEN);
-                        newGame = false;
-                    }
-                }
-            args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
-            args.putBoolean(GameFragment.LOAD_PGN_KEY, true);
-            args.putSerializable(GameFragment.LOAD_GAME_FRAGMENT_KEY, this);
-            if (navController.popBackStack())
-                Log.d(TAG, "inputFEN: Fragment popped, navigating to GameFragment");
-            navController.navigate(R.id.nav_game, args);
 
             HomeFragment.printTime(TAG, "validating PGN syntax", end - start, pgn.length());
             if (result) {
                 Log.v(TAG, "inputFEN: No errors in PGN");
-                Toast.makeText(requireContext(), "No errors in PGN", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
+                loadPGN();
             } else {
                 Log.v(TAG, "inputFEN: Invalid PGN!");
                 Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
@@ -285,6 +279,27 @@ public class LoadGameFragment extends Fragment implements Serializable {
         dialog.show();
     }
 
+    private void loadPGN() {
+        boolean newGame = true;
+        Bundle args = new Bundle();
+        if (tagsMap.containsKey(PGN.SET_UP_TAG) && tagsMap.containsKey(PGN.FEN_TAG))
+            if ("1".equals(tagsMap.get(PGN.SET_UP_TAG))) {
+                String FEN = tagsMap.get(PGN.FEN_TAG);
+                if (FEN != null && !FEN.isEmpty()) {
+                    args.putString(GameFragment.LOAD_GAME_KEY, FEN);
+                    newGame = false;
+                }
+            }
+        args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
+        args.putBoolean(GameFragment.LOAD_PGN_KEY, true);
+        args.putSerializable(GameFragment.LOAD_GAME_FRAGMENT_KEY, this);
+        if (navController != null) {
+            if (navController.popBackStack())
+                Log.d(TAG, "inputFEN: Fragment popped, navigating to GameFragment");
+            navController.navigate(R.id.nav_game, args);
+        }
+    }
+
     private String isFEN(String PGN) {
         Matcher FENmatcher = FENPattern.matcher(PGN);
         String FEN = "";
@@ -300,6 +315,7 @@ public class LoadGameFragment extends Fragment implements Serializable {
     public void onDestroy() {
         super.onDestroy();
         if (progressBarDialog != null) progressBarDialog.dismiss();
+        if (dialog != null) dialog.dismiss();
     }
 
     /**
@@ -467,7 +483,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
             boardModel = boardModels.get(pointer);
             analysisBoard.invalidate();
 
-            updatePossibleMoves();
             long start = System.nanoTime();
             boolean isChecked = false;
             King whiteKing = boardModel.getWhiteKing();
@@ -526,11 +541,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
 
             binding.whiteCaptured.setText(whiteText);
             binding.blackCaptured.setText(blackText);
-        }
-
-        private void updatePossibleMoves() {
-            HashSet<Piece> pieces = boardModel.pieces;
-            for (Piece piece : pieces) piece.updatePossibleMoves(this);
         }
     }
 }

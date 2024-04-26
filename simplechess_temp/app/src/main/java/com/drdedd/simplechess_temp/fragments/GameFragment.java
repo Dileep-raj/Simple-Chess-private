@@ -64,12 +64,12 @@ import java.util.regex.Matcher;
  * Fragment to view, play, load and save chess game
  */
 @SuppressLint("NewApi")
-public class GameFragment extends Fragment implements BoardInterface, View.OnClickListener {
+public class GameFragment extends Fragment implements BoardInterface {
     private final static String TAG = "GameFragment";
     protected static final String FEN_KEY = "ARG_FEN", NEW_GAME_KEY = "NewGame", LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", LOAD_GAME_FRAGMENT_KEY = "LoadGameFragmentOBJ";
     private String FEN;
     private FragmentGameBinding binding;
-    private String white = "White", black = "Black", app, date, termination;
+    private String white = "White", black = "Black", app, date, termination, fromSquare, toSquare;
     private PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
@@ -255,6 +255,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         }
         boardModelStack = new Stack<>();
         FENs = new LinkedList<>();
+        fromSquare = "";
+        toSquare = "";
         pushToStack();
         Log.v(TAG, "reset: New PGN created " + date);
         Log.v(TAG, "reset: initial BoardModel in stack: " + boardModel);
@@ -454,6 +456,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
             }
             boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
             if (result) {
+                boardModel.fromSquare = toNotation(fromRow, fromCol);
+                boardModel.toSquare = toNotation(toRow, toCol);
                 if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2) {
                     Pawn enPassantPawn = (Pawn) movingPiece;
                     boardModel.enPassantPawn = enPassantPawn;
@@ -463,9 +467,11 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
                     boardModel.enPassantPawn = null;
                     boardModel.enPassantSquare = "";
                 }
+                fromSquare = toNotation(fromRow, fromCol);
+                toSquare = toNotation(toRow, toCol);
                 pushToStack();
                 toggleGameState();
-                if (Player.WHITE.isInCheck() || Player.BLACK.isInCheck()) printLegalMoves();
+                if (playerToPlay().isInCheck()) printLegalMoves();
             }
             return result;
         }
@@ -523,6 +529,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
                 }
             } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
             Log.v(TAG, "promote: Promoted to " + rank);
+            fromSquare = toNotation(fromRow, fromCol);
+            toSquare = toNotation(row, col);
             pushToStack();
             toggleGameState();
         });
@@ -543,6 +551,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
             promoted = true;
         }
         if (promoted) {
+            fromSquare = toNotation(fromRow, fromCol);
+            toSquare = toNotation(row, col);
             pushToStack();
             toggleGameState();
         }
@@ -580,10 +590,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     private void updateAll() {
         saveGame();
         long start, end;
-
-        start = System.nanoTime();
-        updatePossibleMoves();
-        end = System.nanoTime();
 
         count = 0;
         start = System.nanoTime();
@@ -665,19 +671,21 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
      */
     private void terminateGame(ChessState gameState) {
         saveGame();
+        if (dataManager.deleteGameFiles())
+            Log.d(TAG, "deleteGameFiles: Game files deleted successfully!");
+        if (loadingPGN) {
+            loadGame();
+            return;
+        }
+
         gameTerminated = true;
-
-        if (dataManager.saveGame() && !loadingPGN)
-            Log.d(TAG, "terminateGame: Game saved successfully!");
-
-        if (loadingPGN) loadGame();
+        if (dataManager.saveGame(pgn)) Log.d(TAG, "terminateGame: Game PGN saved successfully!");
 
         if (timerEnabled && chessTimer != null) chessTimer.stopTimer();
         chessBoard.invalidate();
         setGameState(gameState);
         btn_resign.setEnabled(false);
         Log.i(TAG, "terminateGame: Game terminated by: " + gameState);
-        chessBoard.setOnClickListener(this);
         showGameOverDialog();
     }
 
@@ -802,14 +810,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     }
 
     /**
-     * Updates possible moves of all pieces on the board
-     */
-    private void updatePossibleMoves() {
-        HashSet<Piece> pieces = boardModel.pieces;
-        for (Piece piece : pieces) piece.updatePossibleMoves(this);
-    }
-
-    /**
      * Updates all legal moves after each move
      */
     private void updateLegalMoves() {
@@ -845,7 +845,8 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         HashSet<Piece> pieces = boardModel.pieces;
         for (Piece piece : pieces) {
             if (!isPieceToPlay(piece) || piece.isCaptured()) continue;
-            HashSet<Integer> possibleMoves = piece.getPossibleMoves(), illegalMoves = new HashSet<>();
+
+            HashSet<Integer> possibleMoves = piece.getPossibleMoves(this), illegalMoves = new HashSet<>();
             for (int move : possibleMoves) {
                 if (isIllegalMove(piece, move)) illegalMoves.add(move);
                 count++;
@@ -867,6 +868,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     private boolean isIllegalMove(Piece piece, int move) {
         TempBoardInterface tempBoardInterface = new TempBoardInterface();
         tempBoardInterface.tempBoardModel = boardModel.clone();
+//        tempBoardInterface.updatePossibleMoves();
         boolean isChecked;
         int row = piece.getRow(), col = piece.getCol(), toRow = toRow(move), toCol = toCol(move);
         tempBoardInterface.movePiece(row, col, toRow, toCol);
@@ -946,6 +948,10 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
         FENs.push(boardModel.toFENStrings());
+        boardModel.fromSquare = fromSquare;
+        boardModel.toSquare = toSquare;
+        fromSquare = "";
+        toSquare = "";
     }
 
     /**
@@ -1025,7 +1031,7 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
     /**
      * Converts absolute position to Standard Notation
      */
-    static String toNotation(int position) {
+    public static String toNotation(int position) {
         return "" + (char) ('a' + position % 8) + (position / 8 + 1);
     }
 
@@ -1034,11 +1040,6 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
      */
     public static String toNotation(int row, int col) {
         return "" + (char) ('a' + col) + (row + 1);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (gameTerminated) terminateGame(gameState);
     }
 
     /**
@@ -1054,9 +1055,9 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
 
         @Override
         public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-            Piece opponentPiece = pieceAt(toRow, toCol), tempPiece = pieceAt(fromRow, fromCol);
-            if (tempPiece != null) tempPiece.moveTo(toRow, toCol);
-            else Log.e("TempBoardInterface", "movePiece: Error! tempPiece is null");
+            Piece opponentPiece = pieceAt(toRow, toCol), movingPiece = pieceAt(fromRow, fromCol);
+            if (movingPiece != null) movingPiece.moveTo(toRow, toCol);
+            else Log.e("TempBoardInterface", "movePiece: Error! movingPiece is null");
             if (opponentPiece != null) tempBoardModel.capturePiece(opponentPiece);
             return true;
         }
@@ -1082,6 +1083,11 @@ public class GameFragment extends Fragment implements BoardInterface, View.OnCli
         @Override
         public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
             return null;
+        }
+
+        public void updatePossibleMoves() {
+//            HashSet<Piece> pieces = getBoardModel().pieces;
+//            for (Piece piece : pieces) piece.updatePossibleMoves(this);
         }
     }
 

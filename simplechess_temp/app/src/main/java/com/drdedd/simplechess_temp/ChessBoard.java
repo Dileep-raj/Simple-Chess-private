@@ -47,10 +47,11 @@ public class ChessBoard extends View {
     public BoardInterface boardInterface;
     private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
-    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kbi, R.drawable.qbi, R.drawable.rbi, R.drawable.bbi, R.drawable.nbi, R.drawable.pbi, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight, R.drawable.check);
+    private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kbi, R.drawable.qbi, R.drawable.rbi, R.drawable.bbi, R.drawable.nbi, R.drawable.pbi, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight, R.drawable.check, R.drawable.move_square);
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
     private final Paint p = new Paint();
     private Piece previousSelectedPiece = null;
+    public String fromSquare, toSquare;
     private HashMap<Piece, HashSet<Integer>> allLegalMoves;
     private HashSet<Integer> legalMoves = new HashSet<>();
     private final boolean cheatMode;
@@ -82,8 +83,17 @@ public class ChessBoard extends View {
         offsetX = (width - boardSize) / 2;
         offsetY = (height - boardSize) / 2;
         drawBoard(canvas);
-        drawPieces(canvas);
         drawCoordinates(canvas);
+
+        fromSquare = boardInterface.getBoardModel().fromSquare;
+        toSquare = boardInterface.getBoardModel().toSquare;
+        Log.d(TAG, String.format("onDraw: fromSquare: %s toSquare: %s", fromSquare, toSquare));
+        if (fromSquare != null && !fromSquare.isEmpty())
+            highlightSquare(canvas, GameFragment.toRow(fromSquare), GameFragment.toCol(fromSquare), R.drawable.move_square);
+        if (toSquare != null && !toSquare.isEmpty())
+            highlightSquare(canvas, GameFragment.toRow(toSquare), GameFragment.toCol(toSquare), R.drawable.move_square);
+
+        drawPieces(canvas);
         if (!cheatMode && !GameFragment.isGameTerminated()) drawGuides(canvas);
 
         King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();

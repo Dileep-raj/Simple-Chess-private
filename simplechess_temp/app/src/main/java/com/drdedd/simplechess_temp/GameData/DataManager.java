@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +38,7 @@ public class DataManager {
     public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile", FENsListFile = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", vibrationLabel = "vibration";
+    public final String savedGameDir;
     private final Context context;
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
@@ -49,6 +51,7 @@ public class DataManager {
         BoardTheme[] themes = BoardTheme.getValues();
         for (BoardTheme theme : themes)
             themesMap.put(theme.toString(), theme);
+        savedGameDir = context.getFilesDir() + File.separator + "SavedGames" + File.separator;
     }
 
     /**
@@ -102,22 +105,21 @@ public class DataManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public boolean saveGame() {
+    public boolean saveGame(PGN pgn) {
         try {
-            boolean result;
-            File filesDir = context.getFilesDir();
-            Log.d(TAG, "saveGame: Files dir: " + filesDir.getName());
+            File dir = new File(savedGameDir);
+            if (!dir.isDirectory() && dir.mkdir())
+                Log.d(TAG, String.format("saveGame: Directory %s created", savedGameDir));
 
-            File[] files = filesDir.listFiles(File::isFile);
             SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
-            File directory = new File(filesDir.getAbsolutePath() + File.separator + date.format(new Date()));
-            result = directory.mkdir();
-            if (result) {
-                String dir = directory.getAbsolutePath() + File.separator;
-                Log.d(TAG, String.format("saveGame: Game saving in %s", dir));
-                if (files != null) for (File file : files)
-                    result = result && file.renameTo(new File(dir + file.getName()));
+            File file = new File(savedGameDir, "pgn_" + getWhite() + "vs" + getBlack() + "_" + date.format(new Date()) + ".pgn");
+            boolean result = file.createNewFile();
+
+            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                fileOutputStream.write(pgn.toString().getBytes(StandardCharsets.UTF_8));
             }
+
+            if (result) Log.d(TAG, String.format("saveGame: Game saving in %s", savedGameDir));
             return result;
         } catch (Exception e) {
             Log.e(TAG, "saveGame: Error while saving game", e);
@@ -127,8 +129,8 @@ public class DataManager {
 
     public ArrayList<String> savedGames() {
         ArrayList<String> savedGames = new ArrayList<>();
-        File filesDir = context.getFilesDir();
-        File[] files = filesDir.listFiles(File::isDirectory);
+        File filesDir = new File(savedGameDir);
+        File[] files = filesDir.listFiles();
         if (files != null) for (File file : files) savedGames.add(file.getName());
         return savedGames;
     }
@@ -140,13 +142,14 @@ public class DataManager {
         return false;
     }
 
-    public boolean deleteGameFiles(String directory) {
-        boolean deleted;
-        String dir = directory + File.separator;
-        deleted = deleteFile(dir + boardFile) && deleteFile(dir + stackFile) && deleteFile(dir + PGNFile) && deleteFile(dir + FENsListFile);
-        if (deleted) Log.d(TAG, "deleteGameFiles: Saved game deleted successfully!");
-        if (!directory.isEmpty()) deleted = deleted && deleteFile(directory);
-        return deleted;
+    public boolean deleteGameFiles() {
+        return deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile) && deleteFile(FENsListFile);
+    }
+
+    public boolean deleteGame(String fileName) {
+        File file = new File(savedGameDir, fileName);
+        if (file.exists()) return file.delete();
+        return false;
     }
 
     /**

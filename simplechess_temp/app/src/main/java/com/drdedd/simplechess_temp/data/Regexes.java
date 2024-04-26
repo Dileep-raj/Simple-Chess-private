@@ -9,7 +9,7 @@ public class Regexes {
     public static final String commentsRegex = "(\\{[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\}(\\s?[0-9]*\\.{3})?)|(;\\s[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\s[0-9]*\\.{3})";
 
     /* ******************************************* Verify ******************************************* */
-    public static final String singleMoveRegex = "[KQRNBP]?[a-h1-8]?x?[a-h][1-8](=[QRNB])?[+#]?|O-O|O-O-O";
+    public static final String singleMoveRegex = "[KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=[QRNB])?[+#]?|O-O|O-O-O";
     public static final Pattern singleMovePattern = Pattern.compile(singleMoveRegex);
 
     public static final String resultRegex = "(1/2-1/2|\\*|0-1|1-0)\\s*$";
@@ -17,6 +17,12 @@ public class Regexes {
 
     public static final String resultTagRegex = "\\[Result \"(1/2-1/2|\\*|0-1|1-0)\"]";
     public static final Pattern resultTagPattern = Pattern.compile(resultTagRegex);
+
+    public static final String terminationTagRegex = "\\[Termination \"([-\\w.,/* ]*)\"]";
+    public static final Pattern terminationTagPattern = Pattern.compile(terminationTagRegex);
+
+    public static final String dateTagRegex = "\\[Date \"\\d{4}\\.\\d{1,2}\\.\\d{1,2}\"]";
+    public static final Pattern dateTagPattern = Pattern.compile(dateTagRegex);
 
     public static final String FENRegex = "^([kqbnrp1-8]+/){7}[kqbnrp1-8]+ [wb] (-|[kq]+) (-|[a-h][1-8])( (-|[0-9]+) (-|[0-9]*))?";
     public static final Pattern FENPattern = Pattern.compile(FENRegex, Pattern.CASE_INSENSITIVE);

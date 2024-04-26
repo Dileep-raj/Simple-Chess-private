@@ -30,8 +30,7 @@ public class King extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-//        return Math.abs(row - getRow()) <= 1 && Math.abs(col - getCol()) <= 1;
-        return possibleMoves.contains(row * 8 + col);
+        return getPossibleMoves(boardInterface).contains(row * 8 + col);
     }
 
     @Override
@@ -120,19 +119,20 @@ public class King extends Piece {
      * @return <code>True|False</code>
      */
     public boolean isChecked(BoardInterface boardInterface) {
+        String TAG = "King";
         HashSet<Piece> pieces = boardInterface.getBoardModel().pieces;
         for (Piece piece : pieces)
             if (piece.getPlayer() != getPlayer() && !piece.isCaptured())
                 if (piece.canCapture(boardInterface, this)) {
-                    Log.d("King", String.format("isChecked: %s checked by %s", getPlayer(), piece.getPosition()));
+                    Log.d(TAG, String.format("isChecked: %s checked by %s", getPlayer(), piece.getPosition()));
                     return true;
                 }
         return false;
     }
 
     @Override
-    public void updatePossibleMoves(BoardInterface boardInterface) {
-        possibleMoves.clear();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int row = getRow(), col = getCol(), i, j, newRow, newCol;
         for (i = -1; i <= 1; i++)
             for (j = -1; j <= 1; j++) {
@@ -146,6 +146,6 @@ public class King extends Piece {
             possibleMoves.add(getRow() * 8 + getCol() + 2);
         if (!getPlayer().isInCheck() && canLongCastle(boardInterface))
             possibleMoves.add(getRow() * 8 + getCol() - 2);
-
+        return possibleMoves;
     }
 }

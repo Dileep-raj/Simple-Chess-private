@@ -38,7 +38,7 @@ public class BoardModel implements Serializable, Cloneable {
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
-    public String enPassantSquare = "";
+    public String enPassantSquare = "", fromSquare = "",toSquare="";
     private final boolean invertBlackSVGs;
     private final HashMap<String, String> unicodes = new HashMap<>();
     private static final String TAG = "BoardModel";

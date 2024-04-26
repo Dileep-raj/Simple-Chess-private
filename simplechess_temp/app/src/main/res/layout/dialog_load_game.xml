@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="450dp"
+    android:maxHeight="500dp"
     android:minHeight="300dp"
     android:orientation="vertical"
     android:padding="8dp">
@@ -36,11 +36,12 @@
 
     <ImageButton
         android:id="@+id/paste_from_clipboard"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_margin="8dp"
-        android:background="@color/dark_bg"
+        android:background="@color/btn_background"
         android:contentDescription="@string/paste_from_clipboard"
+        android:padding="4dp"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/load_pgn_txt"
         app:layout_constraintTop_toTopOf="@+id/load_pgn_txt"

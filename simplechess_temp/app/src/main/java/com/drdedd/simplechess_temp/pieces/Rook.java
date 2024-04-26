@@ -26,7 +26,7 @@ public class Rook extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        return possibleMoves.contains(row * 8 + col);
+        return getPossibleMoves(boardInterface).contains(row * 8 + col);
     }
 
     @Override
@@ -35,8 +35,8 @@ public class Rook extends Piece {
     }
 
     @Override
-    public void updatePossibleMoves(BoardInterface boardInterface) {
-        possibleMoves.clear();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int i, j;
 //        Column top
         for (i = getRow() + 1, j = getCol(); i < 8; i++)
@@ -50,5 +50,6 @@ public class Rook extends Piece {
 //        Row left
         for (i = getRow(), j = getCol() - 1; j >= 0; j--)
             if (!addMove(possibleMoves, boardInterface.pieceAt(i, j), i, j)) break;
+        return possibleMoves;
     }
 }

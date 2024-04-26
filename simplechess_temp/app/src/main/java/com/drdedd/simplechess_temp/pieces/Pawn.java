@@ -44,8 +44,8 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void updatePossibleMoves(BoardInterface boardInterface) {
-        possibleMoves.clear();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int col = getCol(), row = getRow(), i;
         if (boardInterface.pieceAt(row + direction, col) == null)
             possibleMoves.add((row + direction) * 8 + col);
@@ -59,7 +59,7 @@ public class Pawn extends Piece {
         }
         if (canCaptureEnPassant(boardInterface))
             possibleMoves.add(boardInterface.getBoardModel().enPassantPawn.getCol() + (boardInterface.getBoardModel().enPassantPawn.getRow() + direction) * 8);
-
+        return possibleMoves;
     }
 
     @Override

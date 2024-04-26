@@ -65,7 +65,7 @@
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="load">Load</string>
     <string name="sample_time">10:00.0</string>
-    <string name="vibration">Vibration</string>
+    <string name="vibrate">Vibrate</string>
     <string name="plus1">+1</string>
     <string name="game_over">Game Over</string>
     <string name="view_full_game">View full game</string>
@@ -78,6 +78,7 @@
     <string name="no_games_found">No games found</string>
     <string name="delete_game">Delete game</string>
     <string name="saved_games">Saved games</string>
+    <string name="delete_all">Delete all</string>
 
     <string-array name="unicodes">
         <item>\u2654</item>

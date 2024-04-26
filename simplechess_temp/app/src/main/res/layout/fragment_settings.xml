@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:drawablePadding="8dp"
-        android:text="@string/vibration"
+        android:text="@string/vibrate"
         android:textColor="@color/white"
         android:textSize="18sp"
         app:drawableLeftCompat="@drawable/ic_vibration" />

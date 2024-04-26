@@ -34,8 +34,8 @@ public class Knight extends Piece {
     }
 
     @Override
-    public void updatePossibleMoves(BoardInterface boardInterface) {
-        possibleMoves.clear();
+    public HashSet<Integer> getPossibleMoves(BoardInterface boardInterface) {
+        HashSet<Integer> possibleMoves = new HashSet<>();
         int row = getRow(), col = getCol(), i, j, newRow, newCol;
         for (i = -1; i <= 1; i += 2)
             for (j = -2; j <= 2; j += 4) {
@@ -49,6 +49,6 @@ public class Knight extends Piece {
                 if (newCol >= 0 && newCol <= 7 && newRow >= 0 && newRow <= 7)
                     addMove(possibleMoves, boardInterface.pieceAt(newRow, newCol), newRow, newCol);
             }
-
+        return possibleMoves;
     }
 }

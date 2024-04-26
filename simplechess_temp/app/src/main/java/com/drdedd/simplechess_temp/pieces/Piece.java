@@ -19,7 +19,6 @@ public abstract class Piece implements Serializable, Cloneable {
     private final Rank rank;
     protected boolean moved, captured;
     private final String unicode;
-    protected HashSet<Integer> possibleMoves = new HashSet<>();
 
     /**
      * @param player Player type (<code>WHITE|BLACK</code>)
@@ -181,16 +180,6 @@ public abstract class Piece implements Serializable, Cloneable {
 
     @NonNull
     @Override
-    public Piece clone() {
-        try {
-            return (Piece) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError();
-        }
-    }
-
-    @NonNull
-    @Override
     public String toString() {
         return unicode;
     }
@@ -199,13 +188,17 @@ public abstract class Piece implements Serializable, Cloneable {
      * Finds all possible moves of the piece on the board
      *
      * @param boardInterface BoardInterface of the current board
-     */
-    public abstract void updatePossibleMoves(BoardInterface boardInterface);
-
-    /**
      * @return <code>HashSet</code> of possible positions of the piece
      */
-    public HashSet<Integer> getPossibleMoves() {
-        return possibleMoves;
+    public abstract HashSet<Integer> getPossibleMoves(BoardInterface boardInterface);
+
+    @NonNull
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
