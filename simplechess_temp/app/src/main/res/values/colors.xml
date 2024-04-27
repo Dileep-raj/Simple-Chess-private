@@ -45,7 +45,7 @@
     <color name="pgn_move_highlight">#189A8C</color>
     <color name="captured_piece">#626262</color>
     <color name="legal_move_guide">#46F8FF</color>
-    <color name="move">#4512E0EF</color>
+    <color name="move">#502575F5</color>
 
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>

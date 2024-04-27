@@ -66,10 +66,10 @@ import java.util.regex.Matcher;
 @SuppressLint("NewApi")
 public class GameFragment extends Fragment implements BoardInterface {
     private final static String TAG = "GameFragment";
-    protected static final String FEN_KEY = "ARG_FEN", NEW_GAME_KEY = "NewGame", LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", LOAD_GAME_FRAGMENT_KEY = "LoadGameFragmentOBJ";
-    private String FEN;
+    protected static final String FEN_KEY = "ARG_FEN", NEW_GAME_KEY = "NewGame", LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN";
+    protected static final String TAGS_MAP_KEY = "tagsMap", MOVES_LIST_KEY = "moves";
     private FragmentGameBinding binding;
-    private String white = "White", black = "Black", app, date, termination, fromSquare, toSquare;
+    private String FEN, white = "White", black = "Black", app, date, termination, fromSquare, toSquare;
     private PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
@@ -88,8 +88,9 @@ public class GameFragment extends Fragment implements BoardInterface {
     private ChessTimer chessTimer;
     private Vibrator vibrator;
     private int count;
-    private LoadGameFragment loadGameFragment;
     private NavController navController;
+    public HashMap<String, String> tagsMap;
+    public LinkedList<String> moves;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,6 +99,7 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle args = requireArguments();
@@ -131,12 +133,11 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         if (args.containsKey(LOAD_PGN_KEY)) {
             loadingPGN = true;
-            loadGameFragment = (LoadGameFragment) args.getSerializable(LOAD_GAME_FRAGMENT_KEY);
-            HashMap<String, String> tags = loadGameFragment.tagsMap;
-            tags.get(PGN.APP_TAG);
-            white = tags.get(PGN.WHITE_TAG);
-            black = tags.get(PGN.BLACK_TAG);
-            date = tags.get(PGN.DATE_TAG);
+            tagsMap = (HashMap<String, String>) args.getSerializable(TAGS_MAP_KEY);
+            moves = (LinkedList<String>) args.getSerializable(MOVES_LIST_KEY);
+            white = tagsMap.get(PGN.WHITE_TAG);
+            black = tagsMap.get(PGN.BLACK_TAG);
+            date = tagsMap.get(PGN.DATE_TAG);
         }
         if (args.containsKey(FEN_KEY)) {
             FEN = args.getString(FEN_KEY);
@@ -147,7 +148,6 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         binding.btnSaveExit.setOnClickListener(v -> getParentFragmentManager().popBackStack());
         binding.btnCopyPgn.setOnClickListener(v -> copyPGN());
-        binding.btnExportPgn.setOnClickListener(v -> exportPGN());
         binding.btnReset.setOnClickListener(v -> reset());
         binding.btnCopyFen.setOnClickListener(v -> copyFEN());
 
@@ -164,11 +164,10 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         if (loadingPGN) {
             long start = System.nanoTime();
-            boolean result = loadPGN();
+            boolean result = parsePGN();
             long end = System.nanoTime();
 
-            Log.d(TAG, "onViewCreated: Dialog dismissed");
-            HomeFragment.printTime(TAG, "loading PGN moves", end - start, loadGameFragment.moves.size());
+            HomeFragment.printTime(TAG, "loading PGN moves", end - start, moves.size());
             if (result) Toast.makeText(requireContext(), "Game Valid", Toast.LENGTH_SHORT).show();
         }
     }
@@ -196,10 +195,10 @@ public class GameFragment extends Fragment implements BoardInterface {
             chessTimer = new ChessTimer(this, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
 
         if (!newGame) {
-            boardModel = (BoardModel) dataManager.readObject(DataManager.boardFile);
-            pgn = (PGN) dataManager.readObject(DataManager.PGNFile);
-            boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.stackFile);
-            FENs = (LinkedList<String[]>) dataManager.readObject(DataManager.FENsListFile);
+            boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
+            pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
+            boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.STACK_FILE);
+            FENs = (LinkedList<String[]>) dataManager.readObject(DataManager.FENS_LIST_FILE);
         }
 
         if (boardModel == null || pgn == null) {
@@ -214,7 +213,6 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         gameState = pgn.getGameState();         //Get previous state from PGN
         pgn.setWhiteBlack(white, black);        //Set the white and the black players' names
-        PGN_textView.setText(pgn.getPGN());     //Update PGN in TextView
 
         whiteName.setText(white);
         blackName.setText(black);
@@ -224,9 +222,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         chessBoard.invalidate = true;
 
         vibrator = (Vibrator) requireContext().getSystemService(VIBRATOR_SERVICE);
-//        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-//            permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//        else permissions = new String[]{Manifest.permission.READ_MEDIA_IMAGES};
     }
 
     public void reset() {
@@ -259,15 +254,12 @@ public class GameFragment extends Fragment implements BoardInterface {
         toSquare = "";
         pushToStack();
         Log.v(TAG, "reset: New PGN created " + date);
-        Log.v(TAG, "reset: initial BoardModel in stack: " + boardModel);
-        PGN_textView.setText(pgn.getPGN());
         updateAll();
     }
 
-    private boolean loadPGN() {
-        LinkedList<String> moves = loadGameFragment.moves;
+    private boolean parsePGN() {
         char ch;
-        int i, startRow, startCol, destRow, destCol, c = 0, size = moves.size();
+        int i, startRow, startCol, destRow, destCol;
         boolean promotion;
         Rank rank = null, promotionRank;
         Piece piece;
@@ -280,6 +272,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             destCol = -1;
             promotion = false;
             promotionRank = null;
+            piece = null;
             player = playerToPlay();
 
             try {
@@ -290,7 +283,7 @@ public class GameFragment extends Fragment implements BoardInterface {
                     continue;
                 } else if (move.equals(PGN.LONG_CASTLE)) {
                     King king = gameState == ChessState.WHITE_TO_PLAY ? boardModel.getWhiteKing() : boardModel.getBlackKing();
-                    if (king.canShortCastle(this))
+                    if (king.canLongCastle(this))
                         movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 3);
                     continue;
                 }
@@ -380,37 +373,34 @@ public class GameFragment extends Fragment implements BoardInterface {
 
                 if (startRow != -1 && startCol != -1) {
                     piece = boardModel.pieceAt(startRow, startCol);
-                    Log.d(TAG, String.format("loadPGN: piece found at %s", toNotation(startRow, startCol)));
+                    Log.d(TAG, String.format("loadPGN: piece at %s piece: %s", toNotation(startRow, startCol), piece));
                 } else if (startCol != -1) {
                     piece = boardModel.searchCol(player, rank, startCol);
-                    Log.d(TAG, "loadPGN: searched col: " + startCol);
+                    Log.d(TAG, String.format("loadPGN: searched col: %d piece:%s", startCol, piece));
                 } else if (startRow != -1) {
                     piece = boardModel.searchRow(player, rank, startRow);
-                    Log.d(TAG, "loadPGN: searched row:" + startRow);
-                } else {
+                    Log.d(TAG, String.format("loadPGN: searched row: %d piece: %s", startRow, piece));
+                }
+
+                if (piece == null) {
                     piece = boardModel.searchPiece(this, player, rank, destRow, destCol);
                     Log.d(TAG, "loadPGN: piece searched");
                 }
 
-                if (promotion) {
-                    Pawn pawn = (Pawn) pieceAt(startRow, startCol);
+                if (piece != null && promotion) {
+                    Pawn pawn = (Pawn) piece;
                     if (promote(pawn, destRow, destCol, startRow, startCol, promotionRank))
                         Log.d(TAG, String.format("loadPGN: Promoted to %s at %s", promotionRank, toNotation(destRow, destCol)));
                 }
 
-//                Log.d(TAG, String.format("loadPGN: Player: %s Rank: %s Start square: (%d,%d), End square: (%d,%d) move: %s legal: %b", player, rank, piece.getRow(), piece.getCol(), destRow, destCol, move, piece.canMoveTo(this, destRow, destCol)));
-//                if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
-//                    Log.d(TAG, "loadPGN: Move success");
-//                else {
-//                    Log.d(TAG, String.format("loadPGN: Move invalid %s->%s", piece.getPosition(), toNotation(destRow, destCol)));
-//                    return false;
-//                }
-                if (piece != null) movePiece(piece.getRow(), piece.getCol(), destRow, destCol);
-                else {
-                    Log.d(TAG, String.format("loadPGN: Move invalid! Piece not found! %s move: %s", toNotation(destRow, destCol), move));
+                if (piece != null) {
+                    if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
+                        Log.d(TAG, String.format("loadPGN: Move success %s", move));
+                } else {
+                    Log.d(TAG, String.format("loadPGN: Move invalid! Piece not found! piece: %s %s %s (%d,%d) -> %s move: %s", piece, player, rank, startRow, startCol, toNotation(destRow, destCol), move));
+                    Toast.makeText(requireContext(), "Invalid move " + move, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                c++;
             } catch (Exception e) {
                 Toast.makeText(requireContext(), "Error occurred after move " + move, Toast.LENGTH_LONG).show();
                 Log.e(TAG, "loadPGN: Error occurred after move " + move, e);
@@ -418,8 +408,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             }
         }
 
-        if (loadGameFragment.tagsMap.containsKey(PGN.RESULT_TAG))
-            pgn.setAppendResult(loadGameFragment.tagsMap.get(PGN.RESULT_TAG));
+        if (tagsMap.containsKey(PGN.RESULT_TAG)) pgn.setAppendResult(tagsMap.get(PGN.RESULT_TAG));
         loadGame();
         return true;
     }
@@ -479,6 +468,7 @@ public class GameFragment extends Fragment implements BoardInterface {
 
     public void saveGame() {
         if (gameTerminated) return;
+        if (loadingPGN) return;
         dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
     }
 
@@ -671,15 +661,18 @@ public class GameFragment extends Fragment implements BoardInterface {
      */
     private void terminateGame(ChessState gameState) {
         saveGame();
-        if (dataManager.deleteGameFiles())
+        if (!loadingPGN && dataManager.deleteGameFiles())
             Log.d(TAG, "deleteGameFiles: Game files deleted successfully!");
         if (loadingPGN) {
             loadGame();
             return;
         }
-
         gameTerminated = true;
-        if (dataManager.saveGame(pgn)) Log.d(TAG, "terminateGame: Game PGN saved successfully!");
+
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
+        String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
+        if (dataManager.savePGN(pgn, name))
+            Log.d(TAG, "terminateGame: Game PGN saved successfully!");
 
         if (timerEnabled && chessTimer != null) chessTimer.stopTimer();
         chessBoard.invalidate();
@@ -879,25 +872,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         return isChecked;
     }
 
-    /**
-     * Export PGN to a file with <code>.pgn</code> extension
-     */
-    private void exportPGN() {
-        Toast.makeText(getContext(), "Coming soon", Toast.LENGTH_SHORT).show();
-//        if (checkSelfPermission(permissions[0]) == PackageManager.PERMISSION_GRANTED) {
-//            try {
-//                String dir = pgn.exportPGN();
-//                Toast.makeText(this, "PGN saved in " + dir, Toast.LENGTH_LONG).show();
-//            } catch (IOException e) {
-//                Toast.makeText(this, "File not saved!", Toast.LENGTH_SHORT).show();
-//                Log.e(TAG, "exportPGN: \n", e);
-//            }
-//        } else {
-//            Toast.makeText(this, "Write permission is required to export PGN", Toast.LENGTH_SHORT).show();
-//            ActivityCompat.requestPermissions(this, permissions, 0);
-//        }
-    }
-
     private void copyFEN() {
         clipboard.setPrimaryClip(ClipData.newPlainText("FEN", boardModel.toFEN()));
         Toast.makeText(requireContext(), "FEN copied", Toast.LENGTH_SHORT).show();
@@ -1083,11 +1057,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         @Override
         public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
             return null;
-        }
-
-        public void updatePossibleMoves() {
-//            HashSet<Piece> pieces = getBoardModel().pieces;
-//            for (Piece piece : pieces) piece.updatePossibleMoves(this);
         }
     }
 

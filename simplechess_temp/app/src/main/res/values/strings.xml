@@ -79,6 +79,7 @@
     <string name="delete_game">Delete game</string>
     <string name="saved_games">Saved games</string>
     <string name="delete_all">Delete all</string>
+    <string name="autoplay_moves">Autoplay moves</string>
 
     <string-array name="unicodes">
         <item>\u2654</item>

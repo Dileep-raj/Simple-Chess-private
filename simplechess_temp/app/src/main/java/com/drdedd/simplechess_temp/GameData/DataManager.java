@@ -2,14 +2,11 @@ package com.drdedd.simplechess_temp.GameData;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.icu.text.SimpleDateFormat;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.PGN;
@@ -25,17 +22,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Stack;
 
 /**
  * A class to store and retrieve the game data using files or <code>SharedPreferences</code>
  */
 public class DataManager {
-    public static final String TAG = "DataManager", boardFile = "boardFile", PGNFile = "PGNFile", stackFile = "stackFile", FENsListFile = "FENsListFile";
+    public static final String TAG = "DataManager", BOARD_FILE = "boardFile", PGN_FILE = "PGNFile", STACK_FILE = "stackFile", FENS_LIST_FILE = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", vibrationLabel = "vibration";
     public final String savedGameDir;
@@ -69,13 +64,10 @@ public class DataManager {
             fileInputStream.close();
             return obj;
         } catch (FileNotFoundException e) {
-//            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
             Log.d(TAG, fileName + " not found" + "\n" + e);
         } catch (IOException e) {
-            Toast.makeText(context, "Couldn't load file", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Couldn't load " + fileName + "\n" + e);
         } catch (ClassNotFoundException e) {
-            Toast.makeText(context, "File corrupted", Toast.LENGTH_SHORT).show();
             Log.d(TAG, fileName + " corrupted " + "\n" + e);
         }
         return null;
@@ -104,15 +96,13 @@ public class DataManager {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public boolean saveGame(PGN pgn) {
+    public boolean savePGN(PGN pgn, String name) {
         try {
             File dir = new File(savedGameDir);
             if (!dir.isDirectory() && dir.mkdir())
                 Log.d(TAG, String.format("saveGame: Directory %s created", savedGameDir));
 
-            SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
-            File file = new File(savedGameDir, "pgn_" + getWhite() + "vs" + getBlack() + "_" + date.format(new Date()) + ".pgn");
+            File file = new File(savedGameDir, name);
             boolean result = file.createNewFile();
 
             try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
@@ -143,7 +133,7 @@ public class DataManager {
     }
 
     public boolean deleteGameFiles() {
-        return deleteFile(boardFile) && deleteFile(stackFile) && deleteFile(PGNFile) && deleteFile(FENsListFile);
+        return deleteFile(BOARD_FILE) && deleteFile(STACK_FILE) && deleteFile(PGN_FILE) && deleteFile(FENS_LIST_FILE);
     }
 
     public boolean deleteGame(String fileName) {
@@ -179,11 +169,10 @@ public class DataManager {
     }
 
     public void saveData(BoardModel boardModel, PGN pgn, Stack<BoardModel> boardModelStack, LinkedList<String[]> FENs) {
-        saveObject(DataManager.boardFile, boardModel);
-        saveObject(DataManager.PGNFile, pgn);
-        saveObject(DataManager.stackFile, boardModelStack);
-        saveObject(DataManager.FENsListFile, FENs);
-//        editor.putString(boardThemeLabel, boardTheme.toString());
+        saveObject(DataManager.BOARD_FILE, boardModel);
+        saveObject(DataManager.PGN_FILE, pgn);
+        saveObject(DataManager.STACK_FILE, boardModelStack);
+        saveObject(DataManager.FENS_LIST_FILE, FENs);
         editor.commit();
     }
 

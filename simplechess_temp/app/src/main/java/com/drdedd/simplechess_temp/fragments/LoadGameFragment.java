@@ -8,15 +8,17 @@ import static com.drdedd.simplechess_temp.data.Regexes.singleMovePattern;
 import static com.drdedd.simplechess_temp.data.Regexes.tagsPattern;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -50,19 +53,18 @@ import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Stack;
 import java.util.regex.Matcher;
 
-public class LoadGameFragment extends Fragment implements Serializable {
+@RequiresApi(api = Build.VERSION_CODES.N)
+public class LoadGameFragment extends Fragment {
     private static final String TAG = "LoadGameFragment";
     protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", PGN_FILE_KEY = "PGNFile";
     public HashMap<String, String> tagsMap;
@@ -79,6 +81,7 @@ public class LoadGameFragment extends Fragment implements Serializable {
     private EditText pgnTxt;
 
     @Override
+    @SuppressWarnings("unchecked")
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentLoadGameBinding.inflate(inflater, container, false);
         clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -93,18 +96,16 @@ public class LoadGameFragment extends Fragment implements Serializable {
                 PGN pgn = (PGN) args.getSerializable(LOAD_PGN_KEY);
                 if (boardModelStack != null) try {
                     this.pgn = pgn;
-                    loadGame(new ArrayList<>(boardModelStack));
+                    loadGameView(new ArrayList<>(boardModelStack));
                     gameLoaded = true;
                 } catch (Exception e) {
                     Log.e(TAG, "onCreateView: Error while loading game", e);
                 }
             } else if (args.containsKey(PGN_FILE_KEY)) {
                 String pgn = args.getString(PGN_FILE_KEY);
-                progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
-                progressBarDialog.show();
                 gameLoaded = true;
                 validatePGNSyntax(pgn);
-                loadPGN();
+                parsePGN();
             }
         }
 //        comments = new HashMap<>();
@@ -121,7 +122,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
         } else {
             binding.loadedLayout.setVisibility(gone);
             binding.notLoadedLayout.setVisibility(visible);
-            binding.validateSamplePGNs.setOnClickListener(v -> validateSamplePGNs());
             try {
                 inputFEN();
             } catch (Exception e) {
@@ -129,90 +129,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
                 Toast.makeText(requireContext(), "An unknown error occurred", Toast.LENGTH_SHORT).show();
                 getParentFragmentManager().popBackStack();
             }
-        }
-    }
-
-    void loadGame(ArrayList<BoardModel> boardModels) {
-        GameViewer gameViewer = new GameViewer(requireContext(), binding, boardModels, pgn);
-
-        binding.movePrevious.setOnClickListener(v -> gameViewer.movePrevious());
-        binding.moveNext.setOnClickListener(v -> gameViewer.moveNext());
-        binding.movePrevious.setOnLongClickListener(v -> gameViewer.moveToFirst());
-        binding.moveNext.setOnLongClickListener(v -> gameViewer.moveToLast());
-
-        binding.btnCopyPgn.setOnClickListener(v -> copyPGN());
-    }
-
-    private void copyPGN() {
-        clipboardManager.setPrimaryClip(ClipData.newPlainText("PGN", pgn.toString()));
-        Toast.makeText(requireContext(), "PGN copied", Toast.LENGTH_SHORT).show();
-    }
-
-    private boolean validatePGNSyntax(String pgn) {
-        tagsMap = new HashMap<>();
-        moves = new LinkedList<>();
-//        comments = new HashMap<>();
-        try {
-            Matcher tags = tagsPattern.matcher(pgn);
-            while (tags.find()) {
-                String tag = tags.group();
-                String tagName = tag.substring(1, tag.indexOf(' '));
-                String tagValue = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
-                tagsMap.put(tagName, tagValue);
-            }
-            Log.i(TAG, "Total tags: " + tagsMap.size());
-
-//            Log.v(TAG, "PGN before removing comments:\n************************Start************************\n" + pgn + "\n************************End************************\n");
-            pgn = pgn.replaceAll(commentsRegex, "");
-//            Log.v(TAG, "PGN after removing comments:\n************************Start************************\n" + pgn + "\n************************End************************\n");
-
-            Matcher singleMoves = singleMovePattern.matcher(pgn);
-            while (singleMoves.find()) {
-                String singleMove = singleMoves.group();
-                moves.add(singleMove);
-            }
-            Log.i(TAG, "Total moves count: " + moves.size());
-
-            Matcher result = resultPattern.matcher(pgn);
-            if (result.find()) Log.i(TAG, "\nResult: " + result.group().trim());
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "validatePGN: Error while validating PGN\n", e);
-            Toast.makeText(requireContext(), "Error while loading PGN", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-    }
-
-    private void validateSamplePGNs() {
-        AssetManager assets = requireContext().getAssets();
-        ArrayList<String> failedPGNs = new ArrayList<>();
-        try {
-            String[] files = assets.list("PGNs");
-            if (files != null) {
-                long totalStart = System.nanoTime();
-                for (String file : files) {
-                    if (!file.endsWith(".pgn")) continue;
-
-                    InputStream open = assets.open("PGNs/" + file);
-                    BufferedInputStream bis = new BufferedInputStream(open);
-                    ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                    for (int result = bis.read(); result != -1; result = bis.read())
-                        buf.write((byte) result);
-                    String PGN = buf.toString("UTF-8");
-
-                    long start = System.nanoTime();
-                    boolean result = validatePGNSyntax(PGN);
-                    long end = System.nanoTime();
-                    if (!result) failedPGNs.add(file);
-
-                    HomeFragment.printTime(TAG, "validating PGN", end - start, PGN.length());
-                }
-                long totalEnd = System.nanoTime();
-                HomeFragment.printTime(TAG, "validating all sample PGNs", totalEnd - totalStart, files.length);
-                Log.d(TAG, "validateSamplePGNs: Failed PGNs: " + failedPGNs.size());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "validateSamplePGNs: Error while validating sample PGNs", e);
         }
     }
 
@@ -245,9 +161,6 @@ public class LoadGameFragment extends Fragment implements Serializable {
                 return;
             }
 
-            progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
-            progressBarDialog.show();
-
             long start = System.nanoTime();
             boolean result = validatePGNSyntax(pgnTxt.getText().toString());
             long end = System.nanoTime();
@@ -256,7 +169,7 @@ public class LoadGameFragment extends Fragment implements Serializable {
             if (result) {
                 Log.v(TAG, "inputFEN: No errors in PGN");
                 dialog.dismiss();
-                loadPGN();
+                parsePGN();
             } else {
                 Log.v(TAG, "inputFEN: Invalid PGN!");
                 Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
@@ -279,7 +192,83 @@ public class LoadGameFragment extends Fragment implements Serializable {
         dialog.show();
     }
 
-    private void loadPGN() {
+    private void loadGameView(ArrayList<BoardModel> boardModels) {
+        GameViewer gameViewer = new GameViewer(requireActivity(), binding, boardModels, pgn);
+        binding.movePrevious.setOnClickListener(v -> {
+            gameViewer.movePrevious();
+            if (gameViewer.autoplayRunning) gameViewer.stopAutoplay();
+        });
+        binding.moveNext.setOnClickListener(v -> {
+            gameViewer.moveNext();
+            if (gameViewer.autoplayRunning) gameViewer.stopAutoplay();
+        });
+        binding.movePrevious.setOnLongClickListener(v -> {
+            if (gameViewer.autoplayRunning) gameViewer.stopAutoplay();
+            return gameViewer.moveToFirst();
+        });
+        binding.moveNext.setOnLongClickListener(v -> {
+            if (gameViewer.autoplayRunning) gameViewer.stopAutoplay();
+            return gameViewer.moveToLast();
+        });
+        binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", pgn.toString()));
+        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameViewer.boardModel.toFEN()));
+        binding.btnSavePgn.setOnClickListener(v -> savePGN());
+    }
+
+    private void savePGN() {
+        DataManager dataManager = new DataManager(requireContext());
+        String white = tagsMap.containsKey(PGN.WHITE_TAG) ? tagsMap.get(PGN.WHITE_TAG) : "White";
+        String black = tagsMap.containsKey(PGN.BLACK_TAG) ? tagsMap.get(PGN.BLACK_TAG) : "Black";
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
+        String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
+        if (dataManager.savePGN(pgn, name))
+            Toast.makeText(requireContext(), "Saved PGN", Toast.LENGTH_SHORT).show();
+        binding.btnSavePgn.setVisibility(View.GONE);
+    }
+
+    private void copyToClipboard(String label, String content) {
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, content));
+        Toast.makeText(requireContext(), label + " copied", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean validatePGNSyntax(String pgn) {
+        tagsMap = new HashMap<>();
+        moves = new LinkedList<>();
+//        comments = new HashMap<>();
+        try {
+            Matcher tags = tagsPattern.matcher(pgn);
+            while (tags.find()) {
+                String tag = tags.group();
+                String tagName = tag.substring(1, tag.indexOf(' '));
+                String tagValue = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
+                tagsMap.put(tagName, tagValue);
+            }
+            Log.i(TAG, "Total tags: " + tagsMap.size());
+
+            Log.v(TAG, "PGN before removing comments:\n************************Start************************\n" + pgn + "\n************************End************************\n");
+            pgn = pgn.replaceAll(commentsRegex, "");
+            Log.v(TAG, "PGN after removing comments:\n************************Start************************\n" + pgn + "\n************************End************************\n");
+
+            Matcher singleMoves = singleMovePattern.matcher(pgn);
+            while (singleMoves.find()) {
+                String singleMove = singleMoves.group();
+                moves.add(singleMove);
+            }
+            Log.i(TAG, "Total moves count: " + moves.size());
+
+            Matcher result = resultPattern.matcher(pgn);
+            if (result.find()) Log.i(TAG, "\nResult: " + result.group().trim());
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "validatePGN: Error while validating PGN\n", e);
+            Toast.makeText(requireContext(), "Error while loading PGN", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private void parsePGN() {
+        progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
+        progressBarDialog.show();
         boolean newGame = true;
         Bundle args = new Bundle();
         if (tagsMap.containsKey(PGN.SET_UP_TAG) && tagsMap.containsKey(PGN.FEN_TAG))
@@ -292,10 +281,10 @@ public class LoadGameFragment extends Fragment implements Serializable {
             }
         args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
         args.putBoolean(GameFragment.LOAD_PGN_KEY, true);
-        args.putSerializable(GameFragment.LOAD_GAME_FRAGMENT_KEY, this);
+        args.putSerializable(GameFragment.MOVES_LIST_KEY, moves);
+        args.putSerializable(GameFragment.TAGS_MAP_KEY, tagsMap);
         if (navController != null) {
-            if (navController.popBackStack())
-                Log.d(TAG, "inputFEN: Fragment popped, navigating to GameFragment");
+            navController.popBackStack();
             navController.navigate(R.id.nav_game, args);
         }
     }
@@ -333,15 +322,18 @@ public class LoadGameFragment extends Fragment implements Serializable {
         private final RecyclerView pgnRecyclerView;
         private BoardModel boardModel;
         private int pointer, previousPosition;
+        private final ImageButton moveAutoplay;
+        private boolean autoplayRunning;
+        private final long delay = 800;
+        private CountDownTimer countDownTimer;
 
         /**
-         * @param context     Context
          * @param binding     LoadGame fragment binding
          * @param boardModels List of board models
          * @param pgn         PGN of the game
          */
-        public GameViewer(Context context, FragmentLoadGameBinding binding, ArrayList<BoardModel> boardModels, PGN pgn) {
-            DataManager dataManager = new DataManager(context);
+        public GameViewer(Activity activity, FragmentLoadGameBinding binding, ArrayList<BoardModel> boardModels, PGN pgn) {
+            DataManager dataManager = new DataManager(activity);
             this.boardModels = boardModels;
             this.binding = binding;
             boardModel = boardModels.get(0);
@@ -351,11 +343,19 @@ public class LoadGameFragment extends Fragment implements Serializable {
             String whiteName = pgn.getWhite();
             String blackName = pgn.getBlack();
 
-            Resources resources = context.getResources();
+            Resources resources = activity.getResources();
             String draw = resources.getString(R.string.draw);
             String victory = resources.getString(R.string.peace);
 
-            switch (pgn.getAppendResult()) {
+            String result;
+            result = pgn.getAppendResult();
+
+            if (result.isEmpty()) {
+                Matcher matcher = resultPattern.matcher(pgn.toString());
+                if (matcher.find()) result = matcher.group();
+            }
+
+            switch (result) {
                 case PGN.RESULT_DRAW:
                     whiteName += " " + draw;
                     blackName += " " + draw;
@@ -374,22 +374,49 @@ public class LoadGameFragment extends Fragment implements Serializable {
             length = boardModels.size();
             pointer = 0;
 
-            vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            vibrator = (Vibrator) activity.getSystemService(VIBRATOR_SERVICE);
             vibrationEnabled = dataManager.getVibration();
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                analysisBoard.boardInterface = this;
-                analysisBoard.setTheme(dataManager.getBoardTheme());
-                analysisBoard.invalidate = false;
-            }
-
-            Player.WHITE.setInCheck(false);
-            Player.BLACK.setInCheck(false);
+            analysisBoard.boardInterface = this;
+            analysisBoard.setTheme(dataManager.getBoardTheme());
+            analysisBoard.invalidate = false;
             update();
 
-            PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(context, pgn, this);
+            PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(activity, pgn, this);
             pgnRecyclerView.setAdapter(adapter);
-            pgnRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+            pgnRecyclerView.setLayoutManager(new LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false));
+
+            autoplayRunning = false;
+            moveAutoplay = binding.moveAutoplay;
+            moveAutoplay.setOnClickListener(v -> {
+                if (autoplayRunning) stopAutoplay();
+                else {
+                    countDownTimer = new CountDownTimer(Long.MAX_VALUE, delay) {
+                        @Override
+                        public void onTick(long l) {
+                            moveNext();
+                            Log.d(TAG, "GameViewer: Autoplayed move");
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            Toast.makeText(activity, "Maximum time limit reached!", Toast.LENGTH_SHORT).show();
+                            cancel();
+                        }
+                    }.start();
+                    autoplayRunning = true;
+                    moveAutoplay.setImageResource(R.drawable.ic_pause);
+                    Log.d(TAG, "GameViewer: Autoplay started");
+                }
+            });
+        }
+
+        public void stopAutoplay() {
+            if (!autoplayRunning) return;
+            autoplayRunning = false;
+            moveAutoplay.setImageResource(R.drawable.ic_play);
+            if (countDownTimer != null) countDownTimer.cancel();
+            Log.d(TAG, "stopAutoplay: Autoplay stopped");
         }
 
         @Override
@@ -438,7 +465,7 @@ public class LoadGameFragment extends Fragment implements Serializable {
                 previousPosition = pointer;
                 pointer++;
                 update();
-            }
+            } else stopAutoplay();
         }
 
         private boolean moveToFirst() {

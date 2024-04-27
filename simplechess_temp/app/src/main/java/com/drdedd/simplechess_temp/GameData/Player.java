@@ -22,6 +22,7 @@ public enum Player {
 
     /**
      * Set Player's name
+     *
      * @param name Name of the player
      */
     public void setName(String name) {

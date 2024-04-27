@@ -7,6 +7,9 @@ import com.drdedd.simplechess_temp.pieces.Piece;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Interface for chess board and game logic
+ */
 public interface BoardInterface {
     /**
      * Searches for piece at given row and column <br>

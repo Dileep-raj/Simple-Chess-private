@@ -2,17 +2,13 @@ package com.drdedd.simplechess_temp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.icu.text.SimpleDateFormat;
 import android.os.Build;
-import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
@@ -21,13 +17,8 @@ import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.interfaces.PGNRecyclerViewInterface;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.LinkedList;
-import java.util.Locale;
 
 /**
  * <p>PGN (Portable Game Notation) is a standard text format used to record Chess game moves with standard notations</p>
@@ -80,33 +71,6 @@ public class PGN implements Serializable {
         this.gameState = gameState;
         this.FEN = FEN;
         moves.clear();
-    }
-
-    /**
-     * Exports current PGN into a text file with <code>.pgn</code> extension
-     *
-     * @return <code>String</code> - Directory of the file
-     */
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public String exportPGN() throws IOException {
-        final String TAG = "PGN";
-
-        SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH);
-        String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Simple chess/";
-        Log.d(TAG, "exportPGN: Directory: " + dir);
-
-        if (new File(dir).mkdir()) Log.d(TAG, "exportPGN:" + dir + " Folder created");
-
-        File file = new File(dir, "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn");
-
-        if (file.createNewFile())
-            Log.d(TAG, "exportPGN: File \"" + file.getName() + "\" saved successfully");
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-//      Convert String to UTF-8 CharacterSet
-        fileOutputStream.write(toString().getBytes());
-//        fileOutputStream.write(toString().getBytes(StandardCharsets.UTF_8));
-        fileOutputStream.close();
-        return dir;
     }
 
     public void addToPGN(Piece piece, String move) {

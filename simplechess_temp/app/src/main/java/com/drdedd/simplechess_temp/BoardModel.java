@@ -38,7 +38,7 @@ public class BoardModel implements Serializable, Cloneable {
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
-    public String enPassantSquare = "", fromSquare = "",toSquare="";
+    public String enPassantSquare = "", fromSquare = "", toSquare = "";
     private final boolean invertBlackSVGs;
     private final HashMap<String, String> unicodes = new HashMap<>();
     private static final String TAG = "BoardModel";
@@ -170,7 +170,7 @@ public class BoardModel implements Serializable, Cloneable {
 
     public Piece searchRow(Player player, Rank rank, int row) {
         for (Piece piece : pieces) {
-            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getPlayer() != player || piece.isCaptured()) continue;
             if (piece.getRank() == rank && row == piece.getRow()) return piece;
         }
         return null;
@@ -178,7 +178,7 @@ public class BoardModel implements Serializable, Cloneable {
 
     public Piece searchCol(Player player, Rank rank, int col) {
         for (Piece piece : pieces) {
-            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getPlayer() != player || piece.isCaptured()) continue;
             if (piece.getRank() == rank && col == piece.getCol()) return piece;
         }
         return null;
@@ -186,7 +186,7 @@ public class BoardModel implements Serializable, Cloneable {
 
     public Piece searchPiece(BoardInterface boardInterface, Player player, Rank rank, int row, int col) {
         for (Piece piece : pieces) {
-            if (piece.isCaptured() || piece.getPlayer() != player) continue;
+            if (piece.getPlayer() != player || piece.isCaptured()) continue;
             if (piece.getRank() == rank && piece.canMoveTo(boardInterface, row, col)) return piece;
         }
         return null;

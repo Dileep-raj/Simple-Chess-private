@@ -34,15 +34,6 @@
             android:text="@string/load_game"
             android:textAllCaps="false"
             android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/validateSamplePGNs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/start"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
     </LinearLayout>
 
     <LinearLayout
@@ -53,15 +44,54 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_copy_pgn"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:text="@string/pgn"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy" />
+            android:layout_margin="8dp">
+
+            <Button
+                android:id="@+id/btn_copy_pgn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/pgn"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:drawableLeftCompat="@drawable/ic_copy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_copy_fen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_copy_fen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/fen"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:drawableLeftCompat="@drawable/ic_copy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_save_pgn"
+                app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_save_pgn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/save_pgn"
+                android:text="@string/pgn"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:drawableLeftCompat="@drawable/ic_save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pgn_recyclerView"
@@ -165,36 +195,49 @@
             android:id="@+id/GameViewOptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="8dp"
+            android:padding="8dp">
 
             <ImageButton
                 android:id="@+id/move_previous"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginVertical="8dp"
                 android:background="@color/btn_background"
                 android:contentDescription="@string/move_previous"
                 android:padding="4dp"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/move_next"
+                app:layout_constraintEnd_toStartOf="@+id/move_autoplay"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_left" />
 
             <ImageButton
+                android:id="@+id/move_autoplay"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/btn_background"
+                android:contentDescription="@string/autoplay_moves"
+                android:padding="4dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/move_next"
+                app:layout_constraintStart_toEndOf="@id/move_previous"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_play" />
+
+            <ImageButton
                 android:id="@+id/move_next"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginVertical="8dp"
                 android:background="@color/btn_background"
                 android:contentDescription="@string/move_next"
                 android:padding="4dp"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/move_previous"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/move_previous"
-                app:layout_constraintTop_toTopOf="@+id/move_previous"
+                app:layout_constraintStart_toEndOf="@+id/move_autoplay"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_right" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

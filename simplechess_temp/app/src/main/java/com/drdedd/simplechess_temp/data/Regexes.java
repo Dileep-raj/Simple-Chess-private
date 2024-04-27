@@ -6,9 +6,9 @@ public class Regexes {
     public static final String tagsRegex = "\\[(\\w*) \"([-\\w.,/* ]*)\"]";
     public static final Pattern tagsPattern = Pattern.compile(tagsRegex);
 
-    public static final String commentsRegex = "(\\{[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\}(\\s?[0-9]*\\.{3})?)|(;\\s[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\s[0-9]*\\.{3})";
+    //    public static final String commentsRegex = "(\\{[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\}(\\s?[0-9]*\\.{3})?)|(;\\s[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\s[0-9]*\\.{3})";
+    public static final String commentsRegex = "\\{.*?\\}(\\s?\\([\\w\\s+=#-]*\\))?(\\s?[0-9]*\\.{3})?";
 
-    /* ******************************************* Verify ******************************************* */
     public static final String singleMoveRegex = "[KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=[QRNB])?[+#]?|O-O|O-O-O";
     public static final Pattern singleMovePattern = Pattern.compile(singleMoveRegex);
 

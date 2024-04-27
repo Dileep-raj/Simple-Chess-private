@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,10 +48,13 @@ public class HomeFragment extends Fragment {
 
         gameStatistics = new GameStatistics(requireContext());
         long start = System.nanoTime();
-        Object boardObject = dataManager.readObject(DataManager.boardFile), PGNObject = dataManager.readObject(DataManager.PGNFile), stackObject = dataManager.readObject(DataManager.stackFile);
+        Object boardObject = dataManager.readObject(DataManager.BOARD_FILE), PGNObject = dataManager.readObject(DataManager.PGN_FILE), stackObject = dataManager.readObject(DataManager.STACK_FILE);
         long end = System.nanoTime();
-        if (boardObject == null || PGNObject == null || stackObject == null)
+        if (boardObject == null || PGNObject == null || stackObject == null) {
+            Toast.makeText(requireContext(), "Couldn't load previous game", Toast.LENGTH_SHORT).show();
+            dataManager.deleteGameFiles();
             btn_continue.setVisibility(View.GONE);
+        }
         printTime(TAG, "reading game objects", end - start, -1);
         ArrayList<String> names = gameStatistics.getNames();
         Log.i(TAG, "onViewCreated: Names of records: " + names.toString());

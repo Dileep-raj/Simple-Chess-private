@@ -21,6 +21,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:max="100"
         android:paddingVertical="16dp" />
 </LinearLayout>

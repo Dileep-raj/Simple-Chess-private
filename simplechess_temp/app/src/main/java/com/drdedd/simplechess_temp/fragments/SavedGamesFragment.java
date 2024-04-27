@@ -196,7 +196,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
             }
 
             holder.name.setText(name);
-            if (result != null && !result.isEmpty()) holder.result.setText(result);
+            if (result != null) holder.result.setText(result);
         }
 
         @Override
