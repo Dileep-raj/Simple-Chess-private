@@ -6,11 +6,29 @@ import com.drdedd.simplechess_temp.R;
  * Board color for light and dark squares
  */
 public enum BoardTheme {
+    /**
+     * Default color of board
+     */
+    DEFAULT("Default", R.color.theme_default_light, R.color.theme_default_dark),
+    /**
+     * Black and white board theme
+     */
     GREY("Grey", R.color.theme_grey_light, R.color.theme_grey_dark),
+    /**
+     * Green theme like in chess.com
+     */
     GREEN("Green", R.color.theme_green_light, R.color.theme_green_dark),
-    DEFAULT_BROWN("Default Brown", R.color.theme_default_brown_light, R.color.theme_default_brown_dark),
+    /**
+     * Vibrant brown theme
+     */
+    BROWN("Brown", R.color.theme_brown_light, R.color.theme_brown_dark),
+    /**
+     * Lichess board theme
+     */
     LICHESS("Lichess", R.color.theme_lichess_light, R.color.theme_lichess_dark),
-    LICHESS_DARK("Lichess dark", R.color.theme_lichess2_light, R.color.theme_lichess2_dark),
+    /**
+     * Blue board theme
+     */
     BLUE("Blue", R.color.theme_blue_light, R.color.theme_blue_dark);
     final int lightColor, darkColor;
     private static final BoardTheme[] values = values();

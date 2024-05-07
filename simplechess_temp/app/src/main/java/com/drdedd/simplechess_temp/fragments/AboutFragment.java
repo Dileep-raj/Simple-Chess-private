@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,20 +12,26 @@ import androidx.fragment.app.Fragment;
 
 import com.drdedd.simplechess_temp.BuildConfig;
 import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.databinding.FragmentAboutBinding;
 
 public class AboutFragment extends Fragment {
+    private FragmentAboutBinding binding;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_about, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentAboutBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView versionNumber = view.findViewById(R.id.versionNumber);
-        versionNumber.setText(BuildConfig.VERSION_NAME);
-        TextView developers = view.findViewById(R.id.developers);
-        developers.setText("Yet to be decided");
+        binding.versionNumber.setText(BuildConfig.VERSION_NAME);
+        StringBuilder stringBuilder = new StringBuilder();
+        String[] developersList = requireContext().getResources().getStringArray(R.array.developers);
+        for (String developer : developersList)
+            stringBuilder.append(developer).append("\n");
+        binding.developers.setText(stringBuilder);
     }
 }

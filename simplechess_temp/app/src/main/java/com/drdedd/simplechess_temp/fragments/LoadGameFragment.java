@@ -86,7 +86,7 @@ public class LoadGameFragment extends Fragment {
         binding = FragmentLoadGameBinding.inflate(inflater, container, false);
         clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         navController = Navigation.findNavController(container);
-        binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> inputFEN());
+        binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> inputPGN());
         tagsMap = new HashMap<>();
         moves = new LinkedList<>();
         Bundle args = getArguments();
@@ -123,7 +123,7 @@ public class LoadGameFragment extends Fragment {
             binding.loadedLayout.setVisibility(gone);
             binding.notLoadedLayout.setVisibility(visible);
             try {
-                inputFEN();
+                inputPGN();
             } catch (Exception e) {
                 Log.e(TAG, "onViewCreated: Error from dialog:\n", e);
                 Toast.makeText(requireContext(), "An unknown error occurred", Toast.LENGTH_SHORT).show();
@@ -132,7 +132,7 @@ public class LoadGameFragment extends Fragment {
         }
     }
 
-    private void inputFEN() {
+    private void inputPGN() {
         dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_load_game);
         dialog.setTitle("Load Game");
@@ -146,6 +146,7 @@ public class LoadGameFragment extends Fragment {
 
             if (TextUtils.isEmpty(pgnTxt.getText())) {
                 pgnTxt.setError("Please enter a PGN");
+                pgnTxt.requestFocus();
                 return;
             }
             String pgn = pgnTxt.getText().toString();
@@ -182,10 +183,13 @@ public class LoadGameFragment extends Fragment {
         if (clipboardManager.hasPrimaryClip())
             if (Objects.requireNonNull(clipboardManager.getPrimaryClipDescription()).hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
                 hasContent = true;
-        if (!hasContent) paste.setVisibility(gone);
+        if (!hasContent) {
+            paste.setEnabled(false);
+            paste.setAlpha(0.5f);
+        }
         paste.setOnClickListener(v -> {
             ClipData.Item item = Objects.requireNonNull(clipboardManager.getPrimaryClip()).getItemAt(0);
-            ((EditText) dialog.findViewById(R.id.load_pgn_txt)).setText(item.getText());
+            pgnTxt.setText(item.getText());
         });
         int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
         Objects.requireNonNull(dialog.getWindow()).setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -347,8 +351,7 @@ public class LoadGameFragment extends Fragment {
             String draw = resources.getString(R.string.draw);
             String victory = resources.getString(R.string.peace);
 
-            String result;
-            result = pgn.getAppendResult();
+            String result = pgn.getResult();
 
             if (result.isEmpty()) {
                 Matcher matcher = resultPattern.matcher(pgn.toString());

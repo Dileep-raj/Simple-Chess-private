@@ -80,6 +80,7 @@
     <string name="saved_games">Saved games</string>
     <string name="delete_all">Delete all</string>
     <string name="autoplay_moves">Autoplay moves</string>
+    <string name="move_animation">Move animation</string>
 
     <string-array name="unicodes">
         <item>\u2654</item>
@@ -94,5 +95,9 @@
         <item>\u265D</item>
         <item>\u265E</item>
         <item>\u265F</item>
+    </string-array>
+
+    <string-array name="developers">
+        <item>Yet to be decided</item>
     </string-array>
 </resources>

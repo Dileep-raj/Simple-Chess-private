@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
@@ -266,6 +267,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         Player player;
 
         for (String move : moves) {
+            Log.d(TAG, "parsePGN: Move: " + move);
             startRow = -1;
             startCol = -1;
             destRow = -1;
@@ -284,7 +286,7 @@ public class GameFragment extends Fragment implements BoardInterface {
                 } else if (move.equals(PGN.LONG_CASTLE)) {
                     King king = gameState == ChessState.WHITE_TO_PLAY ? boardModel.getWhiteKing() : boardModel.getBlackKing();
                     if (king.canLongCastle(this))
-                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 3);
+                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2);
                     continue;
                 }
 
@@ -373,42 +375,43 @@ public class GameFragment extends Fragment implements BoardInterface {
 
                 if (startRow != -1 && startCol != -1) {
                     piece = boardModel.pieceAt(startRow, startCol);
-                    Log.d(TAG, String.format("loadPGN: piece at %s piece: %s", toNotation(startRow, startCol), piece));
+                    Log.d(TAG, String.format("parsePGN: piece at %s piece: %s", toNotation(startRow, startCol), piece));
                 } else if (startCol != -1) {
                     piece = boardModel.searchCol(player, rank, startCol);
-                    Log.d(TAG, String.format("loadPGN: searched col: %d piece:%s", startCol, piece));
+                    Log.d(TAG, String.format("parsePGN: searched col: %d piece:%s", startCol, piece));
                 } else if (startRow != -1) {
                     piece = boardModel.searchRow(player, rank, startRow);
-                    Log.d(TAG, String.format("loadPGN: searched row: %d piece: %s", startRow, piece));
+                    Log.d(TAG, String.format("parsePGN: searched row: %d piece: %s", startRow, piece));
                 }
 
                 if (piece == null) {
                     piece = boardModel.searchPiece(this, player, rank, destRow, destCol);
-                    Log.d(TAG, "loadPGN: piece searched");
+                    Log.d(TAG, "parsePGN: piece searched");
                 }
 
                 if (piece != null && promotion) {
                     Pawn pawn = (Pawn) piece;
                     if (promote(pawn, destRow, destCol, startRow, startCol, promotionRank))
-                        Log.d(TAG, String.format("loadPGN: Promoted to %s at %s", promotionRank, toNotation(destRow, destCol)));
+                        Log.d(TAG, String.format("parsePGN: Promoted to %s at %s", promotionRank, toNotation(destRow, destCol)));
                 }
 
                 if (piece != null) {
                     if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
-                        Log.d(TAG, String.format("loadPGN: Move success %s", move));
+                        Log.d(TAG, String.format("parsePGN: Move success %s", move));
                 } else {
-                    Log.d(TAG, String.format("loadPGN: Move invalid! Piece not found! piece: %s %s %s (%d,%d) -> %s move: %s", piece, player, rank, startRow, startCol, toNotation(destRow, destCol), move));
+                    Log.d(TAG, String.format("parsePGN: Move invalid! Piece not found! %s %s (%d,%d) -> %s move: %s", player, rank, startRow, startCol, toNotation(destRow, destCol), move));
                     Toast.makeText(requireContext(), "Invalid move " + move, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             } catch (Exception e) {
                 Toast.makeText(requireContext(), "Error occurred after move " + move, Toast.LENGTH_LONG).show();
-                Log.e(TAG, "loadPGN: Error occurred after move " + move, e);
+                Log.e(TAG, "parsePGN: Error occurred after move " + move, e);
                 return false;
             }
         }
 
-        if (tagsMap.containsKey(PGN.RESULT_TAG)) pgn.setAppendResult(tagsMap.get(PGN.RESULT_TAG));
+        Set<String> tags = tagsMap.keySet();
+        for (String tag : tags) pgn.addTag(tag, tagsMap.get(tag));
         loadGame();
         return true;
     }
@@ -709,24 +712,37 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     private boolean drawByInsufficientMaterial() {
-        boolean draw = false;
-        int whiteValue = 0, blackValue = 0, totalValue;
-        for (Piece piece : boardModel.pieces) {
-            if (piece.isKing()) continue;
-            if (piece.isWhite()) {
-                if (piece.getRank() == Rank.PAWN) whiteValue += 9;
-                else whiteValue += piece.getRank().getValue();
-            } else {
-                if (piece.getRank() == Rank.PAWN) blackValue += 9;
-                blackValue += piece.getRank().getValue();
-            }
+        boolean KB = false, kb = false, BLight = false, bLight = false;
+        LinkedHashSet<Piece> pieces = boardModel.pieces;
+        HashSet<Piece> whitePieces = new HashSet<>(), blackPieces = new HashSet<>();
+        for (Piece piece : pieces) {
+            if (piece.isCaptured()) continue;
+            if (piece.isWhite()) whitePieces.add(piece);
+            else blackPieces.add(piece);
         }
-        totalValue = whiteValue + blackValue;
-        if (whiteValue <= 3 && blackValue <= 3 && totalValue <= 7) {
-            draw = true;
-            Log.i(TAG, "Draw by insufficient material");
+
+        if (whitePieces.size() == 1 && blackPieces.size() == 1) return true;
+        else if (whitePieces.size() <= 2 && blackPieces.size() == 1 || whitePieces.size() == 1 && blackPieces.size() <= 2) {
+            for (Piece whitePiece : whitePieces)
+                if (whitePiece.getRank() == Rank.BISHOP || whitePiece.getRank() == Rank.KNIGHT)
+                    return true;
+            for (Piece blackPiece : blackPieces)
+                if (blackPiece.getRank() == Rank.BISHOP || blackPiece.getRank() == Rank.KNIGHT)
+                    return true;
+        } else if (whitePieces.size() <= 2 && blackPieces.size() <= 2) {
+            for (Piece whitePiece : whitePieces)
+                if (whitePiece.getRank() == Rank.BISHOP) {
+                    KB = true;
+                    BLight = (whitePiece.getRow() + whitePiece.getCol()) % 2 == 0;
+                }
+            for (Piece blackPiece : blackPieces)
+                if (blackPiece.getRank() == Rank.BISHOP) {
+                    kb = true;
+                    bLight = (blackPiece.getRow() + blackPiece.getCol()) % 2 == 0;
+                }
+            return KB && kb && BLight == bLight;
         }
-        return draw;
+        return false;
     }
 
     private boolean drawByRepetition() {
@@ -835,7 +851,7 @@ public class GameFragment extends Fragment implements BoardInterface {
      */
     private HashMap<Piece, HashSet<Integer>> computeLegalMoves() {
         legalMoves = new HashMap<>();
-        HashSet<Piece> pieces = boardModel.pieces;
+        LinkedHashSet<Piece> pieces = boardModel.pieces;
         for (Piece piece : pieces) {
             if (!isPieceToPlay(piece) || piece.isCaptured()) continue;
 
@@ -1058,6 +1074,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
             return null;
         }
+
     }
 
     public static String getTAG() {

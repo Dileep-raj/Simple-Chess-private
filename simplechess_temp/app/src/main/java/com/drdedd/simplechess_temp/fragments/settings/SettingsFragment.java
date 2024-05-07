@@ -26,7 +26,7 @@ public class SettingsFragment extends Fragment {
 
     private final static String TAG = "SettingsFragment";
     private EditText whiteName, blackName, minutesInput, secondsInput;
-    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, vibrationToggle;
+    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, vibrationToggle, animationToggle;
     private LinearLayout timerInputLayout;
     private Spinner themeSpinnerMenu;
     private final BoardTheme[] themes = BoardTheme.getValues();
@@ -46,6 +46,7 @@ public class SettingsFragment extends Fragment {
         invertBlackSVGToggle = binding.invertBlackSVGToggle;
         timerToggle = binding.timerToggle;
         vibrationToggle = binding.vibrationToggle;
+        animationToggle = binding.animationToggle;
 
         timerInputLayout = binding.timerInputLayout;
         themeSpinnerMenu = binding.themeSpinnerMenu;
@@ -74,6 +75,7 @@ public class SettingsFragment extends Fragment {
         cheatToggle.setOnCheckedChangeListener((button, b) -> viewModel.setCheatMode(b));
         invertBlackSVGToggle.setOnCheckedChangeListener((button, b) -> viewModel.setInvertBlackSVGs(b));
         vibrationToggle.setOnCheckedChangeListener((button, b) -> viewModel.setVibration(b));
+        animationToggle.setOnCheckedChangeListener((button, b) -> viewModel.setAnimation(b));
         return binding.getRoot();
     }
 
@@ -98,6 +100,7 @@ public class SettingsFragment extends Fragment {
         invertBlackSVGToggle.setChecked(viewModel.isInvertBlackSVGs());
         timerToggle.setChecked(viewModel.isTimer());
         vibrationToggle.setChecked(viewModel.getVibration());
+        animationToggle.setChecked(viewModel.getAnimation());
 
         minutesInput.setText(String.valueOf(viewModel.getMinutes()));
         secondsInput.setText(String.valueOf(viewModel.getSeconds()));

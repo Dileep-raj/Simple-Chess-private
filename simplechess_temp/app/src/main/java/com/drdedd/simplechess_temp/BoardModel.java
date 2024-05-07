@@ -25,7 +25,7 @@ import com.drdedd.simplechess_temp.pieces.Rook;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
@@ -34,7 +34,7 @@ public class BoardModel implements Serializable, Cloneable {
     /**
      * Set of all the pieces on the board
      */
-    public HashSet<Piece> pieces = new HashSet<>();
+    public LinkedHashSet<Piece> pieces = new LinkedHashSet<>();
     public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
@@ -273,7 +273,7 @@ public class BoardModel implements Serializable, Cloneable {
     public BoardModel clone() {
         try {
             BoardModel boardModelClone = (BoardModel) super.clone();
-            boardModelClone.pieces = new HashSet<>();
+            boardModelClone.pieces = new LinkedHashSet<>();
             for (Piece piece : pieces) boardModelClone.pieces.add(piece.clone());
 
             if (enPassantPawn != null) boardModelClone.enPassantPawn = (Pawn) enPassantPawn.clone();

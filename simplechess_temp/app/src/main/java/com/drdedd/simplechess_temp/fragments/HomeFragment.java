@@ -17,6 +17,7 @@ import androidx.navigation.Navigation;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.data.GameStatistics;
+import com.drdedd.simplechess_temp.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -26,10 +27,12 @@ public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private NavController navController;
     private static GameStatistics gameStatistics;
+    private FragmentHomeBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentHomeBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @Override
@@ -38,21 +41,21 @@ public class HomeFragment extends Fragment {
         navController = Navigation.findNavController(view);
         DataManager dataManager = new DataManager(requireContext());
 
-        Button btn_continue = view.findViewById(R.id.btn_continue_game);
+        Button btn_continue = binding.btnContinueGame;
 
         btn_continue.setOnClickListener(v -> startGame(false));
-        view.findViewById(R.id.btn_new_game).setOnClickListener(v -> startGame(true));
-        view.findViewById(R.id.btn_exit_app).setOnClickListener(v -> exit_app());
-        view.findViewById(R.id.btn_settings).setOnClickListener(v -> navController.navigate(R.id.nav_settings));
-//        view.findViewById(R.id.btn_open_test).setOnClickListener(v -> navController.navigate(R.id.nav_test));
+        binding.btnNewGame.setOnClickListener(v -> startGame(true));
+        binding.btnExitApp.setOnClickListener(v -> exit_app());
+        binding.btnSettings.setOnClickListener(v -> navController.navigate(R.id.nav_settings));
+//        binding.btnOpenTest.setOnClickListener(v -> navController.navigate(R.id.nav_test));
 
         gameStatistics = new GameStatistics(requireContext());
         long start = System.nanoTime();
         Object boardObject = dataManager.readObject(DataManager.BOARD_FILE), PGNObject = dataManager.readObject(DataManager.PGN_FILE), stackObject = dataManager.readObject(DataManager.STACK_FILE);
         long end = System.nanoTime();
         if (boardObject == null || PGNObject == null || stackObject == null) {
-            Toast.makeText(requireContext(), "Couldn't load previous game", Toast.LENGTH_SHORT).show();
-            dataManager.deleteGameFiles();
+            if (dataManager.deleteGameFiles())
+                Toast.makeText(requireContext(), "Couldn't load previous game", Toast.LENGTH_SHORT).show();
             btn_continue.setVisibility(View.GONE);
         }
         printTime(TAG, "reading game objects", end - start, -1);

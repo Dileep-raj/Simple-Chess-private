@@ -2,11 +2,11 @@ package com.drdedd.simplechess_temp.GameData;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.PGN;
@@ -33,6 +33,7 @@ public class DataManager {
     public static final String TAG = "DataManager", BOARD_FILE = "boardFile", PGN_FILE = "PGNFile", STACK_FILE = "stackFile", FENS_LIST_FILE = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", vibrationLabel = "vibration";
+    private final String animationLabel = "animation";
     public final String savedGameDir;
     private final Context context;
     private final SharedPreferences sharedPreferences;
@@ -150,10 +151,11 @@ public class DataManager {
     public BoardTheme getBoardTheme() {
         BoardTheme boardTheme;
         try {
-            boardTheme = themesMap.get(sharedPreferences.getString(boardThemeLabel, "DEFAULT_BROWN"));
+            boardTheme = themesMap.get(sharedPreferences.getString(boardThemeLabel, "DEFAULT"));
+            if (boardTheme == null) boardTheme = BoardTheme.DEFAULT;
         } catch (Exception e) {
             Log.d(TAG, "getBoardTheme: Error in finding BoardTheme");
-            return BoardTheme.DEFAULT_BROWN;
+            return BoardTheme.DEFAULT;
         }
         return boardTheme;
     }
@@ -337,5 +339,14 @@ public class DataManager {
 
     public boolean getVibration() {
         return sharedPreferences.getBoolean(vibrationLabel, false);
+    }
+
+    public void setAnimation(boolean animation) {
+        editor.putBoolean(animationLabel, animation);
+        editor.commit();
+    }
+
+    public boolean getAnimation() {
+        return sharedPreferences.getBoolean(animationLabel, false);
     }
 }

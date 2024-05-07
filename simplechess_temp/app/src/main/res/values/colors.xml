@@ -47,23 +47,23 @@
     <color name="legal_move_guide">#46F8FF</color>
     <color name="move">#502575F5</color>
 
+    <color name="theme_default_light">#dcc4aa</color>
+    <color name="theme_default_dark">#A07655</color>
+
+    <color name="theme_grey_light">#e9e9e9</color>
+    <color name="theme_grey_dark">#666666</color>
+
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>
 
-    <color name="theme_default_brown_light">#f1cca2</color>
-    <color name="theme_default_brown_dark">#aa6b40</color>
+    <color name="theme_brown_light">#f1cca2</color>
+    <color name="theme_brown_dark">#aa6b40</color>
 
     <color name="theme_brown2_light">#FFEDDE</color>
     <color name="theme_brown2_dark">#997151</color>
 
     <color name="theme_lichess_light">#F0D9B5</color>
     <color name="theme_lichess_dark">#B58863</color>
-
-    <color name="theme_lichess2_light">#dcc4aa</color>
-    <color name="theme_lichess2_dark">#A07655</color>
-
-    <color name="theme_grey_light">#e9e9e9</color>
-    <color name="theme_grey_dark">#666666</color>
 
     <color name="theme_blue_light">#CEE3F5</color>
     <color name="theme_blue_dark">#3F698F</color>
