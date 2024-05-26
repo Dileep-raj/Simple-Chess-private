@@ -8,58 +8,49 @@
     android:orientation="vertical"
     tools:context=".fragments.GameFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/btn_copy_pgn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:layout_marginHorizontal="16dp"
             android:text="@string/pgn"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_copy_fen"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:drawableLeftCompat="@drawable/ic_copy" />
 
         <Button
             android:id="@+id/btn_copy_fen"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:layout_marginHorizontal="16dp"
             android:text="@string/fen"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_export_pgn"
-            app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:drawableLeftCompat="@drawable/ic_copy" />
 
         <Button
             android:id="@+id/btn_export_pgn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/export_pgn"
+            android:layout_marginHorizontal="16dp"
             android:text="@string/pgn"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:drawableLeftCompat="@drawable/ic_save" />
+    </LinearLayout>
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
@@ -165,10 +156,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/whiteDetailsLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -236,7 +224,7 @@
         android:id="@+id/game_options_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/gameStateLayout"
+        app:layout_constraintBottom_toTopOf="@+id/gameStateView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boardNameLayout">
@@ -264,10 +252,24 @@
             android:padding="6dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_resign"
+            app:layout_constraintEnd_toStartOf="@+id/btn_draw"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_undo" />
+
+        <ImageButton
+            android:id="@+id/btn_draw"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@color/btn_background"
+            android:contentDescription="@string/offer_draw"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_resign"
+            app:layout_constraintStart_toEndOf="@id/btn_undo_move"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/handshake" />
 
         <ImageButton
             android:id="@+id/btn_resign"
@@ -279,7 +281,7 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_save_exit"
-            app:layout_constraintStart_toEndOf="@id/btn_undo_move"
+            app:layout_constraintStart_toEndOf="@id/btn_draw"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/resign_flag" />
 
@@ -298,22 +300,14 @@
             app:srcCompat="@drawable/ic_exit" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/gameStateLayout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/gameStateView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="center"
+        android:text="@string/game"
+        android:textAlignment="center"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/gameStateView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/game"
-            android:textAlignment="gravity"
-            android:textSize="16sp" />
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

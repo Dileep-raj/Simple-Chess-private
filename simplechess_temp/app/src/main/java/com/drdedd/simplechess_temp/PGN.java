@@ -35,10 +35,11 @@ public class PGN implements Serializable {
     public static final String RESULT_DRAW = "1/2-1/2", RESULT_WHITE_WON = "1-0", RESULT_BLACK_WON = "0-1", RESULT_ONGOING = "*";
     public static final String APP_TAG = "App", WHITE_TAG = "White", DATE_TAG = "Date", BLACK_TAG = "Black", SET_UP_TAG = "SetUp", FEN_TAG = "FEN", RESULT_TAG = "Result", TERMINATION_TAG = "Termination";
     private final String FEN;
-    private String white, black, termination = "";
+    private String termination = "";
     private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
     private final LinkedHashMap<String, String> allTags = new LinkedHashMap<>();
+    public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
 
     /**
      * @param app       Name of app
@@ -55,6 +56,9 @@ public class PGN implements Serializable {
         this.gameState = gameState;
         FEN = "";
         moves.clear();
+        commentsMap = new LinkedHashMap<>();
+        moveAnnotationMap = new LinkedHashMap<>();
+        alternateMoveSequence = new LinkedHashMap<>();
     }
 
     /**
@@ -73,6 +77,9 @@ public class PGN implements Serializable {
         this.gameState = gameState;
         this.FEN = FEN;
         moves.clear();
+        commentsMap = new LinkedHashMap<>();
+        moveAnnotationMap = new LinkedHashMap<>();
+        alternateMoveSequence = new LinkedHashMap<>();
     }
 
     public void addToPGN(Piece piece, String move) {
@@ -94,24 +101,27 @@ public class PGN implements Serializable {
 
     /**
      * Set White and Black player names
+     *
+     * @param white Name of white player
+     * @param black Name of black player
      */
     public void setWhiteBlack(String white, String black) {
-        this.white = white;
-        this.black = black;
+        allTags.put(WHITE_TAG, white);
+        allTags.put(BLACK_TAG, black);
     }
 
     /**
      * @return <code>String</code> - White player name
      */
     public String getWhite() {
-        return white;
+        return allTags.get(WHITE_TAG);
     }
 
     /**
      * @return <code>String</code> - Black player name
      */
     public String getBlack() {
-        return black;
+        return allTags.get(BLACK_TAG);
     }
 
     /**
@@ -122,11 +132,11 @@ public class PGN implements Serializable {
     @NonNull
     @Override
     public String toString() {
-        return getTags() + getPGN();
+        return getTags() + getPGNCommented();
     }
 
     /**
-     * Returns PGN tags with their values
+     * PGN tags with their values
      *
      * @return String - PGN Tags text
      */
@@ -139,15 +149,18 @@ public class PGN implements Serializable {
             allTags.put(FEN_TAG, FEN);
         }
         Set<String> tagSet = allTags.keySet();
-        for (String tag : tagSet)
-            tags.append(String.format("[%s \"%s\"]\n", tag, allTags.get(tag)));
+        for (String tag : tagSet) {
+            String value = allTags.get(tag);
+            if (value == null || value.isEmpty()) value = "?";
+            tags.append(String.format("[%s \"%s\"]\n", tag, value));
+        }
         return tags.toString();
     }
 
     /**
      * Returns result of the game
      *
-     * @return <code>* | 0-1 | 1-0 | 1/2-1/2</code>
+     * @return <code> * | 0-1 | 1-0 | 1/2-1/2 </code>
      */
     public String getResult() {
         if (allTags.containsKey(RESULT_TAG)) return allTags.get(RESULT_TAG);
@@ -170,9 +183,7 @@ public class PGN implements Serializable {
     }
 
     /**
-     * Returns PGN without tags and just moves
-     *
-     * @return <code>String</code> - PGN text
+     * @return <code>String</code> - PGN moves without tags
      */
     public String getPGN() {
         StringBuilder pgn = new StringBuilder();
@@ -180,6 +191,24 @@ public class PGN implements Serializable {
         for (int i = 0; i < length; i++) {
             if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
             pgn.append(moves.get(i)).append(' ');
+        }
+        return pgn.toString();
+    }
+
+    /**
+     * @return <code>String</code> - PGN moves with comments and annotation
+     */
+    public String getPGNCommented() {
+        StringBuilder pgn = new StringBuilder();
+        int length = moves.size();
+        for (int i = 0; i < length; i++) {
+            if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
+            pgn.append(moves.get(i));
+            if (moveAnnotationMap.containsKey(i)) pgn.append(moveAnnotationMap.get(i));
+            pgn.append(' ');
+            if (commentsMap.containsKey(i)) pgn.append(commentsMap.get(i)).append(' ');
+            if (alternateMoveSequence.containsKey(i))
+                pgn.append(alternateMoveSequence.get(i)).append(' ');
         }
         return pgn.toString();
     }
@@ -218,6 +247,18 @@ public class PGN implements Serializable {
         allTags.put(tag, value);
     }
 
+    public void setCommentsMap(LinkedHashMap<Integer, String> commentsMap) {
+        this.commentsMap = commentsMap;
+    }
+
+    public void setMoveAnnotationMap(LinkedHashMap<Integer, String> moveAnnotationMap) {
+        this.moveAnnotationMap = moveAnnotationMap;
+    }
+
+    public void setAlternateMoveSequence(LinkedHashMap<Integer, String> alternateMoveSequence) {
+        this.alternateMoveSequence = alternateMoveSequence;
+    }
+
     /**
      * RecyclerView Adapter for PGN
      */
@@ -244,6 +285,7 @@ public class PGN implements Serializable {
         @Override
         public void onBindViewHolder(@NonNull PGNViewHolder holder, int position) {
             holder.moveNo.setVisibility(View.VISIBLE);
+            holder.move.setBackgroundResource(position == pgnRecyclerViewInterface.getPosition() ? R.drawable.pgn_move_highlight : R.drawable.pgn_move_bg);
             if (position % 2 == 0) holder.moveNo.setText(position / 2 + 1 + ".");
             else holder.moveNo.setVisibility(View.GONE);
             holder.move.setText(pgn.getMoveAt(position));

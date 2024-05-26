@@ -57,6 +57,7 @@ public class ChessBoard extends View {
     private final boolean cheatMode;
     public boolean invalidate;
     private final Resources res = getResources();
+    public int annotation = -1;
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -103,14 +104,15 @@ public class ChessBoard extends View {
             highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
         if (Player.BLACK.isInCheck())
             highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.drawable.check);
+        if (annotation != -1)
+            drawAnnotation(canvas, GameFragment.toRow(toSquare), GameFragment.toCol(toSquare), annotation);
         long end = System.nanoTime();
         HomeFragment.printTime(TAG, "drawing board", end - start, -1);
     }
 
-    private void highlightSquare(Canvas canvas, int row, int col, int resID) {
-        Bitmap b = bitmaps.get(resID);
-        if (b != null)
-            canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
+    public void setTheme(BoardTheme theme) {
+        lightColor = res.getColor(theme.getLightColor());
+        darkColor = res.getColor(theme.getDarkColor());
     }
 
     private void loadBitmaps() {
@@ -118,9 +120,10 @@ public class ChessBoard extends View {
             bitmaps.put(id, getBitmap(getContext(), id));
     }
 
-    public void setTheme(BoardTheme theme) {
-        lightColor = res.getColor(theme.getLightColor());
-        darkColor = res.getColor(theme.getDarkColor());
+    private void highlightSquare(Canvas canvas, int row, int col, int resID) {
+        Bitmap b = bitmaps.get(resID);
+        if (b != null)
+            canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
     private void drawBoard(Canvas canvas) {
@@ -177,6 +180,12 @@ public class ChessBoard extends View {
             }
             legalMoves = null;
         }
+    }
+
+    private void drawAnnotation(Canvas canvas, int row, int col, int annotation) {
+        Bitmap b = BitmapFactory.decodeResource(res, annotation);
+        if (b != null)
+            canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * (col + 0.6f), offsetY + sideLength * (7 - row - 0.1f), offsetX + sideLength * (col + 1.1f), offsetY + sideLength * (7 - row + 0.4f)), p);
     }
 
     @SuppressLint("ClickableViewAccessibility")

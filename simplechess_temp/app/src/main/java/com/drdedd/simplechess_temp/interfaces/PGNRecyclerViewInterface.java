@@ -10,4 +10,9 @@ public interface PGNRecyclerViewInterface {
      * @param position position of the selected move
      */
     void jumpToMove(int position);
+
+    /**
+     * @return Position of the current move
+     */
+    int getPosition();
 }

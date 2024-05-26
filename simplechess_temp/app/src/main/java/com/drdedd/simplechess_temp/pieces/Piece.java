@@ -8,6 +8,7 @@ import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Locale;
 
 /**
  * Abstract class for chess piece
@@ -101,8 +102,16 @@ public abstract class Piece implements Serializable, Cloneable {
      * @return Standard algebraic notation of the position
      */
     public String getPosition() {
-        char ch = rank == Rank.KNIGHT ? 'N' : rank.toString().charAt(0);
-        return "" + ch + (char) ('a' + col) + (row + 1);
+        return String.format(Locale.ENGLISH, "%s%s%d", getRankChar(), (char) ('a' + col), row + 1);
+    }
+
+    /**
+     * Character of rank of the piece
+     *
+     * @return <code>K|Q|R|B|N|P</code>
+     */
+    public char getRankChar() {
+        return rank == Rank.KNIGHT ? 'N' : rank.toString().charAt(0);
     }
 
     /**

@@ -27,6 +27,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,10 +54,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -68,13 +72,13 @@ import java.util.regex.Matcher;
 public class GameFragment extends Fragment implements BoardInterface {
     private final static String TAG = "GameFragment";
     protected static final String FEN_KEY = "ARG_FEN", NEW_GAME_KEY = "NewGame", LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN";
-    protected static final String TAGS_MAP_KEY = "tagsMap", MOVES_LIST_KEY = "moves";
+    protected static final String TAGS_MAP_KEY = "tagsMap", MOVES_LIST_KEY = "moves", ANNOTATION_MAP_KEY = "annotationsMap", ALTERNATE_MOVE_SEQUENCE_KEY = "alternateMoveSequence", COMMENTS_KEY = "comments";
     private FragmentGameBinding binding;
     private String FEN, white = "White", black = "Black", app, date, termination, fromSquare, toSquare;
     private PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
-    private ImageButton btn_undo_move, btn_resign;
+    private ImageButton btn_undo_move, btn_resign, btn_draw;
     public TextView PGN_textView, gameStateView, whiteName, blackName, whiteCaptured, blackCaptured, whiteValue, blackValue, whiteTimeTV, blackTimeTV;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
@@ -83,7 +87,7 @@ public class GameFragment extends Fragment implements BoardInterface {
     protected Stack<BoardModel> boardModelStack;
     protected ClipboardManager clipboard;
     protected HashMap<Piece, HashSet<Integer>> legalMoves;
-    private LinkedList<String[]> FENs;
+    private LinkedList<String> FENs;
     private boolean timerEnabled, vibrationEnabled, newGame, loadingPGN;
     public LinearLayout whiteTimeLayout, blackTimeLayout;
     private ChessTimer chessTimer;
@@ -92,6 +96,7 @@ public class GameFragment extends Fragment implements BoardInterface {
     private NavController navController;
     public HashMap<String, String> tagsMap;
     public LinkedList<String> moves;
+    public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -103,12 +108,17 @@ public class GameFragment extends Fragment implements BoardInterface {
     @SuppressWarnings("unchecked")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.hide();
+        }
         Bundle args = requireArguments();
         navController = Navigation.findNavController(view);
 
         chessBoard = binding.chessBoard;
         btn_undo_move = binding.btnUndoMove;
         btn_resign = binding.btnResign;
+        btn_draw = binding.btnDraw;
         PGN_textView = binding.pgnTextview;
         gameStateView = binding.gameStateView;
         whiteName = binding.whiteNameTV;
@@ -136,6 +146,11 @@ public class GameFragment extends Fragment implements BoardInterface {
             loadingPGN = true;
             tagsMap = (HashMap<String, String>) args.getSerializable(TAGS_MAP_KEY);
             moves = (LinkedList<String>) args.getSerializable(MOVES_LIST_KEY);
+
+            commentsMap = (LinkedHashMap<Integer, String>) args.getSerializable(COMMENTS_KEY);
+            moveAnnotationMap = (LinkedHashMap<Integer, String>) args.getSerializable(ANNOTATION_MAP_KEY);
+            alternateMoveSequence = (LinkedHashMap<Integer, String>) args.getSerializable(ALTERNATE_MOVE_SEQUENCE_KEY);
+
             white = tagsMap.get(PGN.WHITE_TAG);
             black = tagsMap.get(PGN.BLACK_TAG);
             date = tagsMap.get(PGN.DATE_TAG);
@@ -152,7 +167,14 @@ public class GameFragment extends Fragment implements BoardInterface {
         binding.btnReset.setOnClickListener(v -> reset());
         binding.btnCopyFen.setOnClickListener(v -> copyFEN());
 
-        btn_resign.setOnClickListener(v -> resign());
+        btn_draw.setOnClickListener(v -> createDialog("Draw", "Are you sure you want to draw?", (d, i) -> {
+            pgn.setTermination("Draw by agreement");
+            terminateGame(ChessState.DRAW);
+        }));
+        btn_resign.setOnClickListener(v -> createDialog("Resign", "Are you sure you want to resign?", (d, i) -> {
+            pgn.setTermination(opponentPlayer(playerToPlay()).getName() + " won by Resignation");
+            terminateGame(ChessState.RESIGN);
+        }));
         btn_undo_move.setOnClickListener(v -> undoLastMove());
 
         if (newGame) reset();
@@ -164,12 +186,15 @@ public class GameFragment extends Fragment implements BoardInterface {
         } else chessTimer.startTimer();
 
         if (loadingPGN) {
+            pgn.setCommentsMap(commentsMap);
+            pgn.setMoveAnnotationMap(moveAnnotationMap);
+            pgn.setAlternateMoveSequence(alternateMoveSequence);
             long start = System.nanoTime();
             boolean result = parsePGN();
             long end = System.nanoTime();
 
             HomeFragment.printTime(TAG, "loading PGN moves", end - start, moves.size());
-            if (result) Toast.makeText(requireContext(), "Game Valid", Toast.LENGTH_SHORT).show();
+            if (result) Log.i(TAG, "onViewCreated: Game valid");
         }
     }
 
@@ -182,7 +207,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         timerEnabled = dataManager.isTimerEnabled();
         vibrationEnabled = dataManager.getVibration();
 
-        //    private String[] permissions;
         SimpleDateFormat pgnDate = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
 
         white = dataManager.getWhite();
@@ -199,7 +223,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
             pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
             boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.STACK_FILE);
-            FENs = (LinkedList<String[]>) dataManager.readObject(DataManager.FENS_LIST_FILE);
+            FENs = (LinkedList<String>) dataManager.readObject(DataManager.FENS_LIST_FILE);
         }
 
         if (boardModel == null || pgn == null) {
@@ -207,7 +231,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             boardModelStack = new Stack<>();
             FENs = new LinkedList<>();
             boardModelStack.push(boardModel);
-            FENs.push(boardModel.toFENStrings());
+            FENs.push(boardModel.toFEN());
             pgn = new PGN(PGN.APP_NAME, white, black, pgnDate.format(new Date()), ChessState.WHITE_TO_PLAY);
             if (timerEnabled) chessTimer = new ChessTimer(this);
         }
@@ -267,6 +291,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         Player player;
 
         for (String move : moves) {
+            move = move.trim();
             Log.d(TAG, "parsePGN: Move: " + move);
             startRow = -1;
             startCol = -1;
@@ -311,6 +336,7 @@ public class GameFragment extends Fragment implements BoardInterface {
                     default:
                         rank = Rank.PAWN;
                 }
+                label:
                 for (i = 0; i < move.length(); i++) {
                     ch = move.charAt(i);
                     switch (ch) {
@@ -340,7 +366,25 @@ public class GameFragment extends Fragment implements BoardInterface {
 
                         case '=':
                             promotion = true;
-                            break;
+                            ch = move.charAt(i + 1);
+                            Log.d(TAG, "parsePGN: Promotion");
+                            switch (ch) {
+                                case 'Q':
+                                    promotionRank = Rank.QUEEN;
+                                    break;
+                                case 'R':
+                                    promotionRank = Rank.ROOK;
+                                    break;
+                                case 'N':
+                                    promotionRank = Rank.KNIGHT;
+                                    break;
+                                case 'B':
+                                    promotionRank = Rank.BISHOP;
+                                    break;
+                            }
+                            Log.d(TAG, "parsePGN: Promotion rank: " + promotionRank);
+                            if (promotionRank == null) return false;
+                            break label;
 
                         case 'K':
                         case 'Q':
@@ -353,34 +397,16 @@ public class GameFragment extends Fragment implements BoardInterface {
                         case '#':
                             break;
                     }
-                    if (promotion) {
-                        ch = move.charAt(i + 1);
-                        switch (ch) {
-                            case 'Q':
-                                promotionRank = Rank.QUEEN;
-                                break;
-                            case 'R':
-                                promotionRank = Rank.ROOK;
-                                break;
-                            case 'N':
-                                promotionRank = Rank.KNIGHT;
-                                break;
-                            case 'B':
-                                promotionRank = Rank.BISHOP;
-                                break;
-                        }
-                        if (promotionRank == null) return false;
-                    }
                 }
 
                 if (startRow != -1 && startCol != -1) {
                     piece = boardModel.pieceAt(startRow, startCol);
                     Log.d(TAG, String.format("parsePGN: piece at %s piece: %s", toNotation(startRow, startCol), piece));
                 } else if (startCol != -1) {
-                    piece = boardModel.searchCol(player, rank, startCol);
+                    piece = boardModel.searchCol(this, player, rank, startCol, destRow, destCol);
                     Log.d(TAG, String.format("parsePGN: searched col: %d piece:%s", startCol, piece));
                 } else if (startRow != -1) {
-                    piece = boardModel.searchRow(player, rank, startRow);
+                    piece = boardModel.searchRow(this, player, rank, startRow, destRow, destCol);
                     Log.d(TAG, String.format("parsePGN: searched row: %d piece: %s", startRow, piece));
                 }
 
@@ -398,6 +424,33 @@ public class GameFragment extends Fragment implements BoardInterface {
                 if (piece != null) {
                     if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
                         Log.d(TAG, String.format("parsePGN: Move success %s", move));
+                    else {
+                        Log.d(TAG, "parsePGN: Second search!");
+                        LinkedHashSet<Piece> pieces = boardModel.pieces, tempPieces = new LinkedHashSet<>();
+                        for (Piece tempPiece : pieces)
+                            if (tempPiece.getPlayer() == player && tempPiece.getRank() == rank) {
+                                if (startRow != -1 && tempPiece.getRow() == startRow)
+                                    tempPieces.add(tempPiece);
+                                else if (startCol != -1 && tempPiece.getCol() == startCol)
+                                    tempPieces.add(tempPiece);
+                                else tempPieces.add(tempPiece);
+                            }
+
+                        for (Piece tempPiece : tempPieces)
+                            if (getLegalMoves().containsKey(tempPiece) && Objects.requireNonNull(getLegalMoves().get(tempPiece)).contains(destCol + destRow * 8))
+                                piece = tempPiece;
+
+                        if (piece != null && movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
+                            Log.d(TAG, "parsePGN: Move success after 2nd search! " + move);
+                        else {
+                            StringBuilder legalMoves = new StringBuilder();
+                            HashSet<Integer> pieceLegalMoves = getLegalMoves().get(piece);
+                            if (pieceLegalMoves != null) for (int legalMove : pieceLegalMoves)
+                                legalMoves.append(toNotation(legalMove)).append(' ');
+                            Log.d(TAG, String.format("parsePGN: Move failed: %s%nPiece: %s%nLegalMoves: %s", move, piece, legalMoves));
+                            return false;
+                        }
+                    }
                 } else {
                     Log.d(TAG, String.format("parsePGN: Move invalid! Piece not found! %s %s (%d,%d) -> %s move: %s", player, rank, startRow, startCol, toNotation(destRow, destCol), move));
                     Toast.makeText(requireContext(), "Invalid move " + move, Toast.LENGTH_SHORT).show();
@@ -411,7 +464,12 @@ public class GameFragment extends Fragment implements BoardInterface {
         }
 
         Set<String> tags = tagsMap.keySet();
-        for (String tag : tags) pgn.addTag(tag, tagsMap.get(tag));
+        for (String tag : tags) {
+            String value = tagsMap.get(tag);
+            if (value != null && !value.isEmpty()) pgn.addTag(tag, value);
+            Log.d(TAG, String.format("parsePGN: Tag: [%s \"%s\"]", tag, value));
+        }
+
         loadGame();
         return true;
     }
@@ -461,8 +519,8 @@ public class GameFragment extends Fragment implements BoardInterface {
                 }
                 fromSquare = toNotation(fromRow, fromCol);
                 toSquare = toNotation(toRow, toCol);
-                pushToStack();
                 toggleGameState();
+                pushToStack();
                 if (playerToPlay().isInCheck()) printLegalMoves();
             }
             return result;
@@ -470,8 +528,7 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     public void saveGame() {
-        if (gameTerminated) return;
-        if (loadingPGN) return;
+        if (gameTerminated || loadingPGN) return;
         dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
     }
 
@@ -484,7 +541,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         moveStringBuilder.insert(1, position + capture);
 
         if (move.contains(PGN.PROMOTE)) {
-            moveStringBuilder.append('=').append(piece.getPosition().charAt(0));
+            moveStringBuilder.append('=').append(piece.getRankChar());
             moveStringBuilder.deleteCharAt(0);
         }
 
@@ -505,10 +562,18 @@ public class GameFragment extends Fragment implements BoardInterface {
         promoteDialog.show();
 
 //        Set image buttons as respective color pieces
-        promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()));
-        promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.ROOK.toString()));
-        promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString()));
-        promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(boardModel.resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString()));
+        Integer queenResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString());
+        Integer rookResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.ROOK.toString());
+        Integer bishopResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString());
+        Integer knightResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString());
+        if (queenResID != null)
+            promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(queenResID);
+        if (rookResID != null)
+            promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(rookResID);
+        if (bishopResID != null)
+            promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(bishopResID);
+        if (knightResID != null)
+            promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(knightResID);
 
 //        Invalidate chess board to show new promoted piece
         promoteDialog.setOnDismissListener(dialogInterface -> {
@@ -524,8 +589,8 @@ public class GameFragment extends Fragment implements BoardInterface {
             Log.v(TAG, "promote: Promoted to " + rank);
             fromSquare = toNotation(fromRow, fromCol);
             toSquare = toNotation(row, col);
-            pushToStack();
             toggleGameState();
+            pushToStack();
         });
     }
 
@@ -546,8 +611,8 @@ public class GameFragment extends Fragment implements BoardInterface {
         if (promoted) {
             fromSquare = toNotation(fromRow, fromCol);
             toSquare = toNotation(row, col);
-            pushToStack();
             toggleGameState();
+            pushToStack();
         }
         return promoted;
     }
@@ -561,7 +626,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         else if (gameState == ChessState.BLACK_TO_PLAY) gameState = ChessState.WHITE_TO_PLAY;
         pgn.setGameState(gameState);
         if (timerEnabled) chessTimer.toggleTimer();
-        updateAll();
     }
 
     private void undoLastMove() {
@@ -574,6 +638,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             if (boardModel.enPassantPawn != null)
                 Log.d(TAG, "undoLastMove: EnPassantPawn: " + boardModel.enPassantPawn.getPosition() + " EnPassantSquare: " + boardModel.enPassantSquare);
             toggleGameState();
+            updateAll();
         }
     }
 
@@ -586,7 +651,7 @@ public class GameFragment extends Fragment implements BoardInterface {
 
         count = 0;
         start = System.nanoTime();
-        updateLegalMoves();
+        computeLegalMoves();
         end = System.nanoTime();
         isChecked();
         HomeFragment.printTime(TAG, "updating LegalMoves", end - start, count);
@@ -602,6 +667,9 @@ public class GameFragment extends Fragment implements BoardInterface {
         if (btn_resign.isEnabled()) btn_resign.setAlpha(1f);
         else btn_resign.setAlpha(0.5f);
 
+        if (btn_draw.isEnabled()) btn_draw.setAlpha(1f);
+        else btn_draw.setAlpha(0.5f);
+
         chessBoard.invalidate();
         Log.i(TAG, "updateAll: Updated and saved game");
     }
@@ -611,13 +679,12 @@ public class GameFragment extends Fragment implements BoardInterface {
      */
     private void checkGameTermination() {
         ChessState terminationState;
-
+//        if (!loadingPGN) {
 //      Check for draw by insufficient material
         if (drawByInsufficientMaterial()) {
             termination = "Draw by insufficient material";
             terminationState = ChessState.DRAW;
             pgn.setTermination(termination);
-            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
             terminateGame(terminationState);
             return;
         }
@@ -627,11 +694,10 @@ public class GameFragment extends Fragment implements BoardInterface {
             termination = "Draw by repetition";
             terminationState = ChessState.DRAW;
             pgn.setTermination(termination);
-            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
             terminateGame(terminationState);
             return;
         }
-
+//        }
         if (noLegalMoves()) {
             Log.v(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
             isChecked();
@@ -645,7 +711,7 @@ public class GameFragment extends Fragment implements BoardInterface {
             }
 
             pgn.setTermination(termination);
-            Toast.makeText(requireContext(), termination, Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), termination, Toast.LENGTH_SHORT).show();
             terminateGame(terminationState);
         }
     }
@@ -664,28 +730,28 @@ public class GameFragment extends Fragment implements BoardInterface {
      */
     private void terminateGame(ChessState gameState) {
         saveGame();
+        setGameState(gameState);
         if (!loadingPGN && dataManager.deleteGameFiles())
             Log.d(TAG, "deleteGameFiles: Game files deleted successfully!");
-        if (loadingPGN) {
-            loadGame();
-            return;
-        }
         gameTerminated = true;
 
-        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
-        String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
-        if (dataManager.savePGN(pgn, name))
-            Log.d(TAG, "terminateGame: Game PGN saved successfully!");
+        if (!loadingPGN) {
+            SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.ENGLISH);
+            String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
+            if (dataManager.savePGN(pgn, name))
+                Log.d(TAG, "terminateGame: Game PGN saved successfully!");
+        }
 
         if (timerEnabled && chessTimer != null) chessTimer.stopTimer();
         chessBoard.invalidate();
-        setGameState(gameState);
         btn_resign.setEnabled(false);
+        btn_draw.setEnabled(false);
         Log.i(TAG, "terminateGame: Game terminated by: " + gameState);
         showGameOverDialog();
     }
 
     private void showGameOverDialog() {
+        if (loadingPGN) return;
         GameOverDialog gameOverDialog = new GameOverDialog(requireContext(), pgn);
         gameOverDialog.show();
         gameOverDialog.findViewById(R.id.btn_view_game).setOnClickListener(v -> {
@@ -748,46 +814,34 @@ public class GameFragment extends Fragment implements BoardInterface {
     private boolean drawByRepetition() {
         int i = 0, j, l = FENs.size();
         String[] positions = new String[l];
-        for (String[] FEN : FENs) {
-            positions[i++] = FEN[0];
-        }
+        for (String FEN : FENs) positions[l - i++ - 1] = FEN;
+
+        String lastPosition = positions[l - 1];
         for (i = 0; i < l - 2; i++)
-            for (j = i + 1; j < l - 1; j++) {
-                if (positions[j].isEmpty()) continue;
-                if (positions[i].equals(positions[j])) {
-                    for (int k = j + 1; k < l; k++)
-                        if (positions[j].equals(positions[k])) {
-                            Log.i(TAG, "Draw by repetition");
-                            Log.i(TAG, "Position : " + i + ", " + j + " & " + k);
-                            Log.i(TAG, "Repeated moves FEN:\n" + i + " - " + positions[i] + "\n" + j + " - " + positions[j] + "\n" + k + " - " + positions[k]);
-                            return true;
-                        }
-                    positions[i] = "";
-                    positions[j] = "";
-                }
+            if (lastPosition.equals(positions[i])) {
+                Log.d(TAG, String.format("drawByRepetition: One repetition found:\n%d: %s\n%d: %s", i / 2 + 1, positions[i], (l - 1) / 2 + 1, lastPosition));
+                for (j = i + 1; j < l - 1; j++)
+                    if (positions[i].equals(positions[j])) {
+                        Log.i(TAG, "Draw by repetition");
+                        Log.i(TAG, String.format("Position : %d, %d & %d", i / 2 + 1, j / 2 + 1, (l - 1) / 2 + 1));
+                        Log.i(TAG, String.format("Repeated moves FEN:\n%d - %s\n%d - %s\n%d - %s", i / 2 + 1, positions[i], j / 2 + 1, positions[j], (l - 1) / 2 + 1, lastPosition));
+                        return true;
+                    }
+                positions[i] = "";
             }
         return false;
     }
 
-    /**
-     * Resigns and terminates the game
-     */
-    private void resign() {
+    private void createDialog(String title, String message, DialogInterface.OnClickListener positiveOnClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setMessage("Are you sure you want to resign?");
-        builder.setTitle("Resign");
-        builder.setPositiveButton("Yes", (d, i) -> {
-            pgn.setTermination(opponentPlayer(playerToPlay()).getName() + " won by Resignation");
-            terminateGame(ChessState.RESIGN);
-        });
-        builder.setNegativeButton("No", (dialog, i) -> dialog.cancel());
+        builder.setTitle(title).setMessage(message).setPositiveButton("Yes", positiveOnClickListener).setNegativeButton("No", (d, i) -> d.cancel());
 
-        AlertDialog resignDialog = builder.create();
-        resignDialog.setOnShowListener(di -> {
-            resignDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#EFEFEF"));
-            resignDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#EFEFEF"));
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(d -> {
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(Color.parseColor("#EFEFEF"));
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#EFEFEF"));
         });
-        resignDialog.show();
+        alertDialog.show();
     }
 
     /**
@@ -819,13 +873,6 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     /**
-     * Updates all legal moves after each move
-     */
-    private void updateLegalMoves() {
-        legalMoves = computeLegalMoves();
-    }
-
-    /**
      * Prints all legal moves for the player in check
      */
     private void printLegalMoves() {
@@ -845,11 +892,9 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     /**
-     * Computes all legal moves for the player to play
-     *
-     * @return {@code  HashMap<Piece, HashSet<Integer>>} <br> Set of legal moves for each <code>Piece</code>
+     * Computes and updates all legal moves for the player to play
      */
-    private HashMap<Piece, HashSet<Integer>> computeLegalMoves() {
+    private void computeLegalMoves() {
         legalMoves = new HashMap<>();
         LinkedHashSet<Piece> pieces = boardModel.pieces;
         for (Piece piece : pieces) {
@@ -864,7 +909,6 @@ public class GameFragment extends Fragment implements BoardInterface {
             possibleMoves.removeAll(illegalMoves);
             legalMoves.put(piece, possibleMoves);
         }
-        return legalMoves;
     }
 
     /**
@@ -877,7 +921,6 @@ public class GameFragment extends Fragment implements BoardInterface {
     private boolean isIllegalMove(Piece piece, int move) {
         TempBoardInterface tempBoardInterface = new TempBoardInterface();
         tempBoardInterface.tempBoardModel = boardModel.clone();
-//        tempBoardInterface.updatePossibleMoves();
         boolean isChecked;
         int row = piece.getRow(), col = piece.getCol(), toRow = toRow(move), toCol = toCol(move);
         tempBoardInterface.movePiece(row, col, toRow, toCol);
@@ -937,11 +980,12 @@ public class GameFragment extends Fragment implements BoardInterface {
 
     private void pushToStack() {
         boardModelStack.push(boardModel.clone());
-        FENs.push(boardModel.toFENStrings());
+        FENs.push(boardModel.toFEN());
         boardModel.fromSquare = fromSquare;
         boardModel.toSquare = toSquare;
         fromSquare = "";
         toSquare = "";
+        updateAll();
     }
 
     /**
@@ -1032,6 +1076,15 @@ public class GameFragment extends Fragment implements BoardInterface {
         return "" + (char) ('a' + col) + (row + 1);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.show();
+        }
+    }
+
     /**
      * Temporary BoardInterface for computing Legal Moves
      */
@@ -1074,7 +1127,6 @@ public class GameFragment extends Fragment implements BoardInterface {
         public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
             return null;
         }
-
     }
 
     public static String getTAG() {

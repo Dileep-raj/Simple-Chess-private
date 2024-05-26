@@ -81,6 +81,7 @@
     <string name="delete_all">Delete all</string>
     <string name="autoplay_moves">Autoplay moves</string>
     <string name="move_animation">Move animation</string>
+    <string name="offer_draw">Offer draw</string>
 
     <string-array name="unicodes">
         <item>\u2654</item>

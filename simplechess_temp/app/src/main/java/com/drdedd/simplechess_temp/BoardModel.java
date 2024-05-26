@@ -168,18 +168,20 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
-    public Piece searchRow(Player player, Rank rank, int row) {
+    public Piece searchRow(BoardInterface boardInterface, Player player, Rank rank, int row, int destRow, int destCol) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
-            if (piece.getRank() == rank && row == piece.getRow()) return piece;
+            if (piece.getRank() == rank && row == piece.getRow() && piece.canMoveTo(boardInterface, destRow, destCol))
+                return piece;
         }
         return null;
     }
 
-    public Piece searchCol(Player player, Rank rank, int col) {
+    public Piece searchCol(BoardInterface boardInterface, Player player, Rank rank, int col, int destRow, int destCol) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
-            if (piece.getRank() == rank && col == piece.getCol()) return piece;
+            if (piece.getRank() == rank && col == piece.getCol() && piece.canMoveTo(boardInterface, destRow, destCol))
+                return piece;
         }
         return null;
     }
@@ -293,7 +295,7 @@ public class BoardModel implements Serializable, Cloneable {
      */
     public String toFEN() {
         String[] fenStrings = toFENStrings();
-        return fenStrings[0] + " " + fenStrings[1] + " " + fenStrings[2] + " " + fenStrings[3];
+        return String.format(Locale.ENGLISH, "%s %s %s %s", fenStrings[0], fenStrings[1], fenStrings[2], fenStrings[3]);
     }
 
     public String[] toFENStrings() {
@@ -322,8 +324,8 @@ public class BoardModel implements Serializable, Cloneable {
 
         FEN[0] = String.valueOf(position);
 
-        if (GameFragment.getGameState() == ChessState.WHITE_TO_PLAY) FEN[1] = " w ";
-        else if (GameFragment.getGameState() == ChessState.BLACK_TO_PLAY) FEN[1] = " b ";
+        if (GameFragment.getGameState() == ChessState.WHITE_TO_PLAY) FEN[1] = "w";
+        else if (GameFragment.getGameState() == ChessState.BLACK_TO_PLAY) FEN[1] = "b";
 
         StringBuilder castleRights = getCastleRights();
         if (castleRights.length() == 0) FEN[2] = " - ";

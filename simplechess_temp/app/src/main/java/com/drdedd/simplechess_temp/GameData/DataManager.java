@@ -170,7 +170,7 @@ public class DataManager {
         editor.commit();
     }
 
-    public void saveData(BoardModel boardModel, PGN pgn, Stack<BoardModel> boardModelStack, LinkedList<String[]> FENs) {
+    public void saveData(BoardModel boardModel, PGN pgn, Stack<BoardModel> boardModelStack, LinkedList<String> FENs) {
         saveObject(DataManager.BOARD_FILE, boardModel);
         saveObject(DataManager.PGN_FILE, pgn);
         saveObject(DataManager.STACK_FILE, boardModelStack);

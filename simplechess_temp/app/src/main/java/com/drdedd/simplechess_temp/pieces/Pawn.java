@@ -32,7 +32,6 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canCapture(BoardInterface boardInterface, @NonNull Piece capturingPiece) {
-        //            moved = true;
         return Math.abs(getCol() - capturingPiece.getCol()) == 1 && (capturingPiece.getRow() - getRow()) * direction == 1;
     }
 
@@ -64,10 +63,12 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        if (Math.abs(col - getCol()) == 1) return canCaptureEnPassant(boardInterface);
+        if (row == getRow() && Math.abs(col - getCol()) == 1)
+            return canCaptureEnPassant(boardInterface);
         if (getCol() == col)
             return row * direction - getRow() * direction == 1 || !moved && row * direction - getRow() * direction == 2 && boardInterface.pieceAt(row - direction, col) == null;
-//                return moved = true;
+        Piece piece = boardInterface.pieceAt(row, col);
+        if (piece != null) return canCapture(boardInterface, piece);
         return false;
     }
 
