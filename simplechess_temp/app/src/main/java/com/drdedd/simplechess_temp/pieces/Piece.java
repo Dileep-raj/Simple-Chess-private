@@ -111,7 +111,7 @@ public abstract class Piece implements Serializable, Cloneable {
      * @return <code>K|Q|R|B|N|P</code>
      */
     public char getRankChar() {
-        return rank == Rank.KNIGHT ? 'N' : rank.toString().charAt(0);
+        return rank.getLetter();
     }
 
     /**

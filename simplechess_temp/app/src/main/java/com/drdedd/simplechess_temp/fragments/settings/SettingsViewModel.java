@@ -8,7 +8,7 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 
 public class SettingsViewModel extends ViewModel {
-    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation;
+    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound;
     private String whiteName, blackName;
     private int minutes, seconds;
     private BoardTheme boardTheme;
@@ -21,6 +21,7 @@ public class SettingsViewModel extends ViewModel {
         invertBlackSVGs = dataManager.invertBlackSVGEnabled();
         timer = dataManager.isTimerEnabled();
         vibration = dataManager.getVibration();
+        sound = dataManager.getSound();
         animation = dataManager.getAnimation();
         minutes = dataManager.getTimerMinutes();
         seconds = dataManager.getTimerSeconds();
@@ -36,6 +37,7 @@ public class SettingsViewModel extends ViewModel {
         dataManager.setInvertBlackSVG(invertBlackSVGs);
         dataManager.setTimerEnabled(timer);
         dataManager.setVibration(vibration);
+        dataManager.setSound(sound);
         dataManager.setAnimation(animation);
         dataManager.setTimerMinutesSeconds(minutes, seconds);
         dataManager.setBoardTheme(boardTheme);
@@ -127,5 +129,13 @@ public class SettingsViewModel extends ViewModel {
 
     public void setAnimation(boolean animation) {
         this.animation = animation;
+    }
+
+    public boolean getSound() {
+        return sound;
+    }
+
+    public void setSound(boolean sound) {
+        this.sound = sound;
     }
 }

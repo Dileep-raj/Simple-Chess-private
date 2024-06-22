@@ -3,8 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="400dp"
-    android:minHeight="300dp"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -13,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        android:textColor="@color/white"
         android:text="@string/load_from_pgn"
         android:textSize="16sp" />
 
@@ -24,11 +23,14 @@
         <EditText
             android:id="@+id/load_pgn_txt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
+            android:maxHeight="400dp"
             android:background="@color/dark_bg"
             android:hint="@string/paste_your_pgn_here"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
+            android:lineSpacingExtra="2dp"
             android:padding="8dp"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

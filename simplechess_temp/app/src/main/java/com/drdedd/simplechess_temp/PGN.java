@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.interfaces.PGNRecyclerViewInterface;
@@ -33,27 +32,28 @@ public class PGN implements Serializable {
      */
     public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME = "Simple Chess";
     public static final String RESULT_DRAW = "1/2-1/2", RESULT_WHITE_WON = "1-0", RESULT_BLACK_WON = "0-1", RESULT_ONGOING = "*";
-    public static final String APP_TAG = "App", WHITE_TAG = "White", DATE_TAG = "Date", BLACK_TAG = "Black", SET_UP_TAG = "SetUp", FEN_TAG = "FEN", RESULT_TAG = "Result", TERMINATION_TAG = "Termination";
+    public static final String TAG_APP = "App", TAG_WHITE = "White", TAG_DATE = "Date", TAG_BLACK = "Black", TAG_SET_UP = "SetUp", TAG_FEN = "FEN", TAG_RESULT = "Result", TAG_TERMINATION = "Termination";
+    public static final String TAG_ECO = "ECO", TAG_OPENING = "Opening";
     private final String FEN;
+    private boolean whiteToPlay;
     private String termination = "";
-    private ChessState gameState;
     private final LinkedList<String> moves = new LinkedList<>();
     private final LinkedHashMap<String, String> allTags = new LinkedHashMap<>();
     public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
 
     /**
-     * @param app       Name of app
-     * @param white     Name of White player
-     * @param black     Name of Black player
-     * @param date      Date of the game
-     * @param gameState State of the game
+     * @param app         Name of app
+     * @param white       Name of White player
+     * @param black       Name of Black player
+     * @param date        Date of the game
+     * @param whiteToPlay Player to play
      */
-    public PGN(String app, String white, String black, String date, ChessState gameState) {
-        allTags.put(APP_TAG, app);
-        allTags.put(WHITE_TAG, white);
-        allTags.put(BLACK_TAG, black);
-        allTags.put(DATE_TAG, date);
-        this.gameState = gameState;
+    public PGN(String app, String white, String black, String date, boolean whiteToPlay) {
+        allTags.put(TAG_APP, app);
+        allTags.put(TAG_WHITE, white);
+        allTags.put(TAG_BLACK, black);
+        allTags.put(TAG_DATE, date);
+        this.whiteToPlay = whiteToPlay;
         FEN = "";
         moves.clear();
         commentsMap = new LinkedHashMap<>();
@@ -62,19 +62,19 @@ public class PGN implements Serializable {
     }
 
     /**
-     * @param app       Name of app
-     * @param white     Name of White player
-     * @param black     Name of Black player
-     * @param date      Date of the game
-     * @param gameState State of the game
-     * @param FEN       Starting position of the game
+     * @param app         Name of app
+     * @param white       Name of White player
+     * @param black       Name of Black player
+     * @param date        Date of the game
+     * @param whiteToPlay Player to play
+     * @param FEN         Starting position of the game
      */
-    public PGN(String app, String white, String black, String date, ChessState gameState, String FEN) {
-        allTags.put(APP_TAG, app);
-        allTags.put(WHITE_TAG, white);
-        allTags.put(BLACK_TAG, black);
-        allTags.put(DATE_TAG, date);
-        this.gameState = gameState;
+    public PGN(String app, String white, String black, String date, boolean whiteToPlay, String FEN) {
+        allTags.put(TAG_APP, app);
+        allTags.put(TAG_WHITE, white);
+        allTags.put(TAG_BLACK, black);
+        allTags.put(TAG_DATE, date);
+        this.whiteToPlay = whiteToPlay;
         this.FEN = FEN;
         moves.clear();
         commentsMap = new LinkedHashMap<>();
@@ -91,12 +91,12 @@ public class PGN implements Serializable {
         if (!moves.isEmpty()) moves.removeLast();
     }
 
-    public ChessState getGameState() {
-        return gameState;
+    public boolean isWhiteToPlay() {
+        return whiteToPlay;
     }
 
-    public void setGameState(ChessState gameState) {
-        this.gameState = gameState;
+    public void setWhiteToPlay(boolean whiteToPlay) {
+        this.whiteToPlay = whiteToPlay;
     }
 
     /**
@@ -106,22 +106,22 @@ public class PGN implements Serializable {
      * @param black Name of black player
      */
     public void setWhiteBlack(String white, String black) {
-        allTags.put(WHITE_TAG, white);
-        allTags.put(BLACK_TAG, black);
+        allTags.put(TAG_WHITE, white);
+        allTags.put(TAG_BLACK, black);
     }
 
     /**
      * @return <code>String</code> - White player name
      */
     public String getWhite() {
-        return allTags.get(WHITE_TAG);
+        return allTags.get(TAG_WHITE);
     }
 
     /**
      * @return <code>String</code> - Black player name
      */
     public String getBlack() {
-        return allTags.get(BLACK_TAG);
+        return allTags.get(TAG_BLACK);
     }
 
     /**
@@ -142,11 +142,11 @@ public class PGN implements Serializable {
      */
     private String getTags() {
         StringBuilder tags = new StringBuilder();
-        allTags.put(RESULT_TAG, getResult());
-        if (!termination.isEmpty()) allTags.put(TERMINATION_TAG, termination);
+        allTags.put(TAG_RESULT, getResult());
+        if (!termination.isEmpty()) allTags.put(TAG_TERMINATION, termination);
         if (FEN != null && !FEN.isEmpty()) {
-            allTags.put(SET_UP_TAG, "1");
-            allTags.put(FEN_TAG, FEN);
+            allTags.put(TAG_SET_UP, "1");
+            allTags.put(TAG_FEN, FEN);
         }
         Set<String> tagSet = allTags.keySet();
         for (String tag : tagSet) {
@@ -163,11 +163,10 @@ public class PGN implements Serializable {
      * @return <code> * | 0-1 | 1-0 | 1/2-1/2 </code>
      */
     public String getResult() {
-        if (allTags.containsKey(RESULT_TAG)) return allTags.get(RESULT_TAG);
+        if (allTags.containsKey(TAG_RESULT)) return allTags.get(TAG_RESULT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             switch (GameFragment.getGameState()) {
-                case WHITE_TO_PLAY:
-                case BLACK_TO_PLAY:
+                case ONGOING:
                     return PGN.RESULT_ONGOING;
                 case RESIGN:
                 case TIMEOUT:
@@ -183,9 +182,9 @@ public class PGN implements Serializable {
     }
 
     /**
-     * @return <code>String</code> - PGN moves without tags
+     * @return <code>String</code> - PGN moves without tags, comments and annotations
      */
-    public String getPGN() {
+    public String getPGNMoves() {
         StringBuilder pgn = new StringBuilder();
         int length = moves.size();
         for (int i = 0; i < length; i++) {

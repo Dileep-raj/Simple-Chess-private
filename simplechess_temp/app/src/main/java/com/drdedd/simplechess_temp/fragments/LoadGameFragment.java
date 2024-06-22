@@ -1,15 +1,16 @@
 package com.drdedd.simplechess_temp.fragments;
 
 import static android.content.Context.VIBRATOR_SERVICE;
+import static com.drdedd.simplechess_temp.data.MoveAnnotation.BOOK;
 import static com.drdedd.simplechess_temp.data.Regexes.FENPattern;
-import static com.drdedd.simplechess_temp.data.Regexes.chessDotComAnnotationRegex;
 import static com.drdedd.simplechess_temp.data.Regexes.commentNumberStrictRegex;
 import static com.drdedd.simplechess_temp.data.Regexes.moveAnnotationPattern;
 import static com.drdedd.simplechess_temp.data.Regexes.moveNumberRegex;
 import static com.drdedd.simplechess_temp.data.Regexes.moveNumberStrictRegex;
+import static com.drdedd.simplechess_temp.data.Regexes.numberedAnnotationRegex;
 import static com.drdedd.simplechess_temp.data.Regexes.resultPattern;
 import static com.drdedd.simplechess_temp.data.Regexes.resultRegex;
-import static com.drdedd.simplechess_temp.data.Regexes.singleMoveStrictPattern;
+import static com.drdedd.simplechess_temp.data.Regexes.singleMoveStrictRegex;
 import static com.drdedd.simplechess_temp.data.Regexes.startingMovePattern;
 
 import android.annotation.SuppressLint;
@@ -21,6 +22,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.icu.text.SimpleDateFormat;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -53,6 +55,7 @@ import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.data.MoveAnnotation;
+import com.drdedd.simplechess_temp.data.Openings;
 import com.drdedd.simplechess_temp.databinding.FragmentLoadGameBinding;
 import com.drdedd.simplechess_temp.dialogs.ProgressBarDialog;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
@@ -62,6 +65,7 @@ import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -76,12 +80,12 @@ import java.util.regex.Matcher;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class LoadGameFragment extends Fragment {
     private static final String TAG = "LoadGameFragment";
-    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", PGN_FILE_KEY = "PGNFile";
+    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", PGN_FILE_KEY = "PGNFile", FILE_EXISTS_KEY = "FileExists";
     public LinkedHashMap<String, String> tagsMap;
     public LinkedList<String> moves, invalidWords;
     public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
     private FragmentLoadGameBinding binding;
-    boolean gameLoaded = false;
+    boolean gameLoaded = false, fileExists;
     private final static int gone = View.GONE, visible = View.VISIBLE;
     private ClipboardManager clipboardManager;
     private NavController navController;
@@ -89,6 +93,8 @@ public class LoadGameFragment extends Fragment {
     private ProgressBarDialog progressBarDialog;
     private Dialog dialog;
     private EditText pgnTxt;
+    private String opening;
+//    private ChessBoard analysisBoard;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -105,11 +111,14 @@ public class LoadGameFragment extends Fragment {
         invalidWords = new LinkedList<>();
         Bundle args = getArguments();
         if (args != null) {
-            if (args.containsKey(GameFragment.LOAD_GAME_KEY) && args.containsKey(LOAD_PGN_KEY)) {
+            fileExists = args.getBoolean(FILE_EXISTS_KEY, false);
+            if (args.containsKey(LOAD_GAME_KEY) && args.containsKey(LOAD_PGN_KEY)) {
                 Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(LOAD_GAME_KEY);
                 PGN pgn = (PGN) args.getSerializable(LOAD_PGN_KEY);
+                opening = args.getString(GameFragment.OPENING_KEY, "");
                 if (boardModelStack != null) try {
                     this.pgn = pgn;
+                    if (!opening.isEmpty()) binding.openingName.setText(opening);
                     loadGameView(new ArrayList<>(boardModelStack));
                     gameLoaded = true;
                 } catch (Exception e) {
@@ -118,7 +127,11 @@ public class LoadGameFragment extends Fragment {
             } else if (args.containsKey(PGN_FILE_KEY)) {
                 String pgn = args.getString(PGN_FILE_KEY);
                 gameLoaded = true;
+                long s = System.nanoTime();
                 readPGN(pgn);
+                long e = System.nanoTime();
+                if (pgn != null)
+                    HomeFragment.printTime(TAG, "reading parsed PGN", e - s, pgn.length());
                 parsePGN();
             }
         }
@@ -128,11 +141,11 @@ public class LoadGameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.hide();
+        }
         if (gameLoaded) {
-            if (getActivity() != null) {
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) actionBar.hide();
-            }
             binding.loadedLayout.setVisibility(visible);
             binding.notLoadedLayout.setVisibility(gone);
             Log.d(TAG, "onViewCreated: Game Loaded");
@@ -169,7 +182,7 @@ public class LoadGameFragment extends Fragment {
                 Bundle args = new Bundle();
                 args.putString(GameFragment.FEN_KEY, FEN);
                 args.putBoolean(GameFragment.NEW_GAME_KEY, false);
-                Log.v(TAG, "inputFEN: Found FEN navigating to GameFragment");
+                Log.v(TAG, "inputPGNDialog: Found FEN, navigating to GameFragment");
                 dialog.dismiss();
                 navController.navigate(R.id.nav_game, args);
                 return;
@@ -187,11 +200,12 @@ public class LoadGameFragment extends Fragment {
 
             if (result) {
                 HomeFragment.printTime(TAG, "Reading PGN", end - start, pgn.length());
-                Log.v(TAG, "inputFEN: No errors in PGN");
+                Log.v(TAG, "inputPGNDialog: No errors in PGN");
                 dialog.dismiss();
+                fileExists = false;
                 parsePGN();
             } else {
-                Log.v(TAG, "inputFEN: Invalid PGN!");
+                Log.v(TAG, "inputPGNDialog: Invalid PGN!");
                 Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
                 pgnTxt.getText().clear();
             }
@@ -235,13 +249,14 @@ public class LoadGameFragment extends Fragment {
         });
         binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", pgn.toString()));
         binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameViewer.boardModel.toFEN()));
-        binding.btnSavePgn.setOnClickListener(v -> savePGN());
+        if (fileExists) binding.btnSavePgn.setVisibility(gone);
+        else binding.btnSavePgn.setOnClickListener(v -> savePGN());
     }
 
     private void savePGN() {
         DataManager dataManager = new DataManager(requireContext());
-        String white = tagsMap.containsKey(PGN.WHITE_TAG) ? tagsMap.get(PGN.WHITE_TAG) : "White";
-        String black = tagsMap.containsKey(PGN.BLACK_TAG) ? tagsMap.get(PGN.BLACK_TAG) : "Black";
+        String white = tagsMap.containsKey(PGN.TAG_WHITE) ? tagsMap.get(PGN.TAG_WHITE) : "White";
+        String black = tagsMap.containsKey(PGN.TAG_BLACK) ? tagsMap.get(PGN.TAG_BLACK) : "Black";
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.ENGLISH);
         String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
         if (dataManager.savePGN(pgn, name))
@@ -259,9 +274,9 @@ public class LoadGameFragment extends Fragment {
         progressBarDialog.show();
         boolean newGame = true;
         Bundle args = new Bundle();
-        if (tagsMap.containsKey(PGN.SET_UP_TAG) && tagsMap.containsKey(PGN.FEN_TAG))
-            if ("1".equals(tagsMap.get(PGN.SET_UP_TAG))) {
-                String FEN = tagsMap.get(PGN.FEN_TAG);
+        if (tagsMap.containsKey(PGN.TAG_SET_UP) && tagsMap.containsKey(PGN.TAG_FEN))
+            if ("1".equals(tagsMap.get(PGN.TAG_SET_UP))) {
+                String FEN = tagsMap.get(PGN.TAG_FEN);
                 if (FEN != null && !FEN.isEmpty()) {
                     args.putString(GameFragment.LOAD_GAME_KEY, FEN);
                     newGame = false;
@@ -274,6 +289,8 @@ public class LoadGameFragment extends Fragment {
         args.putSerializable(GameFragment.COMMENTS_KEY, commentsMap);
         args.putSerializable(GameFragment.ANNOTATION_MAP_KEY, moveAnnotationMap);
         args.putSerializable(GameFragment.ALTERNATE_MOVE_SEQUENCE_KEY, alternateMoveSequence);
+        args.putString(GameFragment.OPENING_KEY, opening);
+        args.putBoolean(FILE_EXISTS_KEY, fileExists);
         if (navController != null) {
             navController.popBackStack();
             navController.navigate(R.id.nav_game, args);
@@ -339,17 +356,16 @@ public class LoadGameFragment extends Fragment {
                 }
 
 //              If a move is found add move to the moves list
-                Matcher moveMatcher = singleMoveStrictPattern.matcher(word);
-                if (moveMatcher.find()) {
-                    String move = moveMatcher.group().replaceAll(moveNumberRegex, "");
+                if (word.matches(singleMoveStrictRegex)) {
+                    String move = word.replaceAll(moveNumberRegex, "");
                     moves.add(move);
                     moveCount++;
                     findMoveFeedback(word, moveCount);
                     continue;
                 }
 
-                if (word.matches(chessDotComAnnotationRegex)) {
-                    moveAnnotationMap.put(moveCount, MoveAnnotation.parseChessDotComAnnotation(word));
+                if (word.matches(numberedAnnotationRegex)) {
+                    moveAnnotationMap.put(moveCount, MoveAnnotation.parseNumberedAnnotation(word));
                     continue;
                 }
 
@@ -360,6 +376,23 @@ public class LoadGameFragment extends Fragment {
                 Log.e(TAG, "readPGN: Error at :" + word, e);
             }
         }
+
+        long start = System.nanoTime();
+        Openings openings = Openings.getInstance(requireContext());
+        String openingResult = openings.searchOpening(moves);
+        long end = System.nanoTime();
+
+        String[] split = openingResult.split(Openings.separator);
+        int lastBookMove = Integer.parseInt(split[0]);
+        if (lastBookMove != -1 && split.length == 2) {
+            HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
+            opening = split[1];
+            for (int i = 0; i <= lastBookMove; i++) moveAnnotationMap.put(i, BOOK);
+        } else {
+            opening = "";
+            Log.d(TAG, "readPGN: Opening not found!\n" + Arrays.toString(split));
+        }
+
         return true;
     }
 
@@ -426,10 +459,6 @@ public class LoadGameFragment extends Fragment {
         gameLoaded = false;
         if (progressBarDialog != null) progressBarDialog.dismiss();
         if (dialog != null) dialog.dismiss();
-        if (getActivity() != null) {
-            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-            if (actionBar != null) actionBar.show();
-        }
     }
 
     /**
@@ -440,9 +469,9 @@ public class LoadGameFragment extends Fragment {
         private static final String TAG = "GameViewer";
         private final ArrayList<BoardModel> boardModels;
         private final ChessBoard analysisBoard;
-        private final boolean vibrationEnabled;
+        private final boolean vibrationEnabled, sound, animate;
         private final int length;
-        private final Vibrator vibrator;
+        private Vibrator vibrator;
         private final FragmentLoadGameBinding binding;
         private final RecyclerView pgnRecyclerView;
         private final LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
@@ -452,6 +481,7 @@ public class LoadGameFragment extends Fragment {
         private boolean autoplayRunning;
         private final long delay = 800;
         private CountDownTimer countDownTimer;
+        private MediaPlayer mediaPlayer;
 
         /**
          * @param binding     LoadGame fragment binding
@@ -504,11 +534,13 @@ public class LoadGameFragment extends Fragment {
             length = boardModels.size();
             pointer = 0;
 
-            vibrator = (Vibrator) activity.getSystemService(VIBRATOR_SERVICE);
             vibrationEnabled = dataManager.getVibration();
+            if (vibrationEnabled) vibrator = (Vibrator) activity.getSystemService(VIBRATOR_SERVICE);
+            sound = dataManager.getSound();
+            if (sound) mediaPlayer = MediaPlayer.create(activity, R.raw.move_sound);
+            animate = dataManager.getAnimation();
 
             analysisBoard.boardInterface = this;
-            analysisBoard.setTheme(dataManager.getBoardTheme());
             analysisBoard.invalidate = false;
             update();
 
@@ -649,6 +681,7 @@ public class LoadGameFragment extends Fragment {
                 analysisBoard.annotation = MoveAnnotation.getAnnotationResource(moveAnnotationMap.get(pointer - 1));
             }
             analysisBoard.invalidate();
+            if (animate) analysisBoard.initializeAnimation();
 
             long start = System.nanoTime();
             boolean isChecked = false;
@@ -675,6 +708,8 @@ public class LoadGameFragment extends Fragment {
                     vibrator.vibrate(VibrationEffect.createOneShot(vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE));
                 else vibrator.vibrate(vibrationDuration);
             }
+
+            if (sound && pointer != 0) mediaPlayer.start();
 
             binding.movePrevious.setAlpha(pointer == 0 ? 0.5f : 1f);
             binding.moveNext.setAlpha(pointer == length - 1 ? 0.5f : 1f);

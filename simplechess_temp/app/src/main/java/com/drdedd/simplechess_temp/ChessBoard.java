@@ -45,7 +45,8 @@ import java.util.Set;
 public class ChessBoard extends View {
     private static final String TAG = "ChessBoard";
     public BoardInterface boardInterface;
-    private float offsetX = 10f, offsetY = 10f, sideLength = 130f;
+    private final float offsetX = 0f, offsetY = 0f;
+    private float sideLength = 130f;
     private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
     private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kbi, R.drawable.qbi, R.drawable.rbi, R.drawable.bbi, R.drawable.nbi, R.drawable.pbi, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight, R.drawable.check, R.drawable.move_square);
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
@@ -59,10 +60,16 @@ public class ChessBoard extends View {
     private final Resources res = getResources();
     public int annotation = -1;
 
+    private float x, y;
+    private Bitmap bitmap;
+    private final static int animationSpeed = 10;
+    private int startX = -1, startY = -1, endX = -1, endY = -1;
+
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         loadBitmaps();
         DataManager dataManager = new DataManager(this.getContext());
+        setTheme(dataManager.getBoardTheme());
         cheatMode = dataManager.cheatModeEnabled();
     }
 
@@ -77,25 +84,27 @@ public class ChessBoard extends View {
     protected void onDraw(@NonNull Canvas canvas) {
         long start = System.nanoTime();
         super.onDraw(canvas);
+        canvas.drawColor(getResources().getColor(R.color.black));
         int width = getWidth(), height = getHeight();
-        float scaleFactor = 0.95f;
-        float boardSize = Math.min(width, height) * scaleFactor;
+        float boardSize = Math.min(width, height);
         sideLength = boardSize / 8f;
-        offsetX = (width - boardSize) / 2;
-        offsetY = (height - boardSize) / 2;
         drawBoard(canvas);
         drawCoordinates(canvas);
 
         fromSquare = boardInterface.getBoardModel().fromSquare;
         toSquare = boardInterface.getBoardModel().toSquare;
-        Log.d(TAG, String.format("onDraw: fromSquare: %s toSquare: %s", fromSquare, toSquare));
+//        Log.d(TAG, String.format("onDraw: fromSquare: %s toSquare: %s", fromSquare, toSquare));
         if (fromSquare != null && !fromSquare.isEmpty())
             highlightSquare(canvas, GameFragment.toRow(fromSquare), GameFragment.toCol(fromSquare), R.drawable.move_square);
         if (toSquare != null && !toSquare.isEmpty())
             highlightSquare(canvas, GameFragment.toRow(toSquare), GameFragment.toCol(toSquare), R.drawable.move_square);
 
         drawPieces(canvas);
-        if (!cheatMode && !GameFragment.isGameTerminated()) drawGuides(canvas);
+        if (!cheatMode && !GameFragment.isGameTerminated()) {
+            if (previousSelectedPiece != null)
+                legalMoves = allLegalMoves.getOrDefault(previousSelectedPiece, null);
+            drawGuides(canvas);
+        }
 
         King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();
         if (previousSelectedPiece != null && !GameFragment.isGameTerminated())
@@ -146,19 +155,22 @@ public class ChessBoard extends View {
     }
 
     private void drawPieces(Canvas canvas) {
+        Piece piece;
         for (int i = 0; i < 8; i++)
             for (int j = 0; j < 8; j++)
-                if (i != fromRow || j != fromCol) {
-                    Piece piece = boardInterface.pieceAt(i, j);
+                if ((i != 7 - endY || j != endX) && (i != fromRow || j != fromCol)) {
+                    piece = boardInterface.pieceAt(i, j);
                     if (piece != null) drawPieceAt(canvas, i, j, piece.getResID());
                 }
-        Piece piece = boardInterface.pieceAt(fromRow, fromCol);
-        if (piece != null) {
-            if (!GameFragment.isGameTerminated() && GameFragment.isPieceToPlay(piece) || cheatMode) {
-                Bitmap b = bitmaps.get(piece.getResID());
-                if (b != null)
-                    canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
-            } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
+        if (endX != -1 || endY != -1) drawAnimatedPiece(canvas, bitmap);
+        else {
+            piece = boardInterface.pieceAt(fromRow, fromCol);
+            if (piece != null)
+                if (cheatMode || !GameFragment.isGameTerminated() && GameFragment.isPieceToPlay(piece)) {
+                    Bitmap b = bitmaps.get(piece.getResID());
+                    if (b != null)
+                        canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
+                } else drawPieceAt(canvas, piece.getRow(), piece.getCol(), piece.getResID());
         }
     }
 
@@ -166,6 +178,35 @@ public class ChessBoard extends View {
         Bitmap b = bitmaps.get(resID);
         if (b != null)
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
+    }
+
+    private void drawAnimatedPiece(Canvas canvas, Bitmap pieceBitmap) {
+        try {
+            if (pieceBitmap != null) {
+                if (endX != -1 && x != endX * sideLength) {
+                    float incrementX = ((endX - startX) * sideLength) / animationSpeed;
+                    if (incrementX > 0 && x + incrementX > endX * sideLength || incrementX < 0 && x + incrementX < endX * sideLength)
+                        x = endX * sideLength + offsetX;
+                    else x += incrementX;
+                }
+                if (endY != -1 && y != endY * sideLength) {
+                    float incrementY = ((endY - startY) * sideLength) / animationSpeed;
+                    if (incrementY > 0 && y + incrementY > endY * sideLength || incrementY < 0 && y + incrementY < endY * sideLength)
+                        y = endY * sideLength + offsetY;
+                    else y += incrementY;
+                }
+                Thread.sleep(5);
+                canvas.drawBitmap(pieceBitmap, null, new RectF(x, y, x + sideLength, y + sideLength), null);
+                if (x == endX * sideLength + offsetX && y == endY * sideLength + offsetY)
+                    endX = endY = -1;
+                else if (endX != -1 || endY != -1) invalidate();
+            } else {
+                Piece piece = boardInterface.pieceAt(7 - endY, endX);
+                if (piece != null) drawPieceAt(canvas, 7 - endY, endX, piece.getResID());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "drawAnimatedPiece: Animation failed", e);
+        }
     }
 
     private void drawGuides(Canvas canvas) {
@@ -188,12 +229,35 @@ public class ChessBoard extends View {
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * (col + 0.6f), offsetY + sideLength * (7 - row - 0.1f), offsetX + sideLength * (col + 1.1f), offsetY + sideLength * (7 - row + 0.4f)), p);
     }
 
+    public void initializeAnimation() {
+        fromSquare = boardInterface.getBoardModel().fromSquare;
+        toSquare = boardInterface.getBoardModel().toSquare;
+        if (fromSquare != null && !fromSquare.isEmpty()) {
+            startY = 7 - GameFragment.toRow(fromSquare);
+            startX = GameFragment.toCol(fromSquare);
+            x = offsetX + sideLength * startX;
+            y = offsetY + sideLength * startY;
+        } else Log.d(TAG, "initializeAnimation: From square empty");
+        if (toSquare != null && !toSquare.isEmpty()) {
+            endY = 7 - GameFragment.toRow(toSquare);
+            endX = GameFragment.toCol(toSquare);
+            Piece piece = boardInterface.pieceAt(7 - endY, endX);
+            if (piece != null) bitmap = bitmaps.get(piece.getResID());
+        } else Log.d(TAG, "initializeAnimation: To square empty");
+//        Log.d(TAG, "initializeAnimation: Animation initialized");
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int toCol, toRow;
         Piece selectedPiece;
         if (GameFragment.isGameTerminated() || !invalidate) return true;
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            Log.e(TAG, "onTouchEvent: Sleep failed", e);
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 allLegalMoves = boardInterface.getLegalMoves();
@@ -217,7 +281,8 @@ public class ChessBoard extends View {
                     if (GameFragment.isPieceToPlay(selectedPiece)) {
                         if (fromRow == toRow && fromCol == toCol)
                             previousSelectedPiece = selectedPiece;
-                        if (!cheatMode) legalMoves = allLegalMoves.get(selectedPiece);
+                        if (!cheatMode)
+                            legalMoves = allLegalMoves.getOrDefault(selectedPiece, null);
                     } else previousSelectedPiece = null;
                 }
                 if (selectedPiece != null && previousSelectedPiece != null) {
@@ -246,7 +311,7 @@ public class ChessBoard extends View {
 
         Piece movingPiece = boardInterface.pieceAt(fromRow, fromCol);
         if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7) {
-            Log.d(TAG, "movePiece: Moving piece is null");
+//            Log.d(TAG, "movePiece: Moving piece is null");
             return false;
         }
         if (!GameFragment.isPieceToPlay(movingPiece)) return false;
@@ -324,13 +389,16 @@ public class ChessBoard extends View {
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         if (drawable instanceof BitmapDrawable) {
             return BitmapFactory.decodeResource(context.getResources(), drawableId);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else {
             if (drawable instanceof VectorDrawable) {
                 return getBitmap((VectorDrawable) drawable);
             } else {
                 throw new IllegalArgumentException("unsupported drawable type");
             }
         }
-        return null;
+    }
+
+    public void clearSelection() {
+        previousSelectedPiece = null;
     }
 }

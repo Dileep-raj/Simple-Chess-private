@@ -8,7 +8,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
@@ -43,12 +42,12 @@ public class BoardModel implements Serializable, Cloneable {
     private final HashMap<String, String> unicodes = new HashMap<>();
     private static final String TAG = "BoardModel";
 
-    public BoardModel(Context context, boolean initializeBoard) {
+    public BoardModel(Context context, boolean initializeBoard, boolean loadingPGN) {
         Player.WHITE.setInCheck(false);
         Player.BLACK.setInCheck(false);
 
         DataManager dataManager = new DataManager(context);
-        invertBlackSVGs = dataManager.invertBlackSVGEnabled();
+        invertBlackSVGs = !loadingPGN && dataManager.invertBlackSVGEnabled();
 
         Resources res = context.getResources();
         String[] unicodesArray = res.getStringArray(R.array.unicodes);
@@ -324,14 +323,14 @@ public class BoardModel implements Serializable, Cloneable {
 
         FEN[0] = String.valueOf(position);
 
-        if (GameFragment.getGameState() == ChessState.WHITE_TO_PLAY) FEN[1] = "w";
-        else if (GameFragment.getGameState() == ChessState.BLACK_TO_PLAY) FEN[1] = "b";
+        if (GameFragment.isWhiteToPlay()) FEN[1] = "w";
+        else FEN[1] = "b";
 
         StringBuilder castleRights = getCastleRights();
-        if (castleRights.length() == 0) FEN[2] = " - ";
+        if (castleRights.length() == 0) FEN[2] = "-";
         else FEN[2] = String.valueOf(castleRights);
 
-        if (enPassantSquare.isEmpty()) FEN[3] = " - ";
+        if (enPassantSquare.isEmpty()) FEN[3] = "-";
         else FEN[3] = enPassantSquare;
 
         return FEN;
@@ -352,14 +351,14 @@ public class BoardModel implements Serializable, Cloneable {
     }
 
     private char getPieceChar(Piece piece) {
-        char ch = piece.getRank() == Rank.KNIGHT ? 'N' : piece.getRank().toString().charAt(0);
+        char ch = piece.getRank().getLetter();
         if (!piece.isWhite()) ch = Character.toLowerCase(ch);
         return ch;
     }
 
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
-        BoardModel boardModel = new BoardModel(context, false);
+        BoardModel boardModel = new BoardModel(context, false, false);
         Matcher matcher = FENPattern.matcher(FEN);
         if (!matcher.find()) {
             Log.d(TAG, "parseFEN: Invalid FEN! FEN didn't match the pattern");

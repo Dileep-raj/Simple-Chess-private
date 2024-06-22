@@ -33,7 +33,7 @@ public class DataManager {
     public static final String TAG = "DataManager", BOARD_FILE = "boardFile", PGN_FILE = "PGNFile", STACK_FILE = "stackFile", FENS_LIST_FILE = "FENsListFile";
     private final String boardThemeLabel = "BoardTheme", whiteLabel = "white", blackLabel = "black", fullScreenLabel = "fullScreen", cheatModeLabel = "cheatMode", invertBlackSVGLabel = "invertBlackSVG";
     private final String timerLabel = "timer", minutesLabel = "minutes", secondsLabel = "seconds", whiteTimeLeftLabel = "whiteTimeLeft", blackTimeLeftLabel = "blackTimeLeft", vibrationLabel = "vibration";
-    private final String animationLabel = "animation";
+    private final String animationLabel = "animation", soundLabel = "sound";
     public final String savedGameDir;
     private final Context context;
     private final SharedPreferences sharedPreferences;
@@ -348,5 +348,14 @@ public class DataManager {
 
     public boolean getAnimation() {
         return sharedPreferences.getBoolean(animationLabel, false);
+    }
+
+    public void setSound(boolean sound) {
+        editor.putBoolean(soundLabel, sound);
+        editor.commit();
+    }
+
+    public boolean getSound() {
+        return sharedPreferences.getBoolean(soundLabel, false);
     }
 }

@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
-import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
 
 import java.util.Locale;
@@ -94,8 +93,7 @@ public class ChessTimer {
      * Toggles white or black timer
      */
     public void toggleTimer() {
-        if (!GameFragment.isGameTerminated())
-            whiteTurn = GameFragment.playerToPlay() == Player.WHITE;
+        if (!GameFragment.isGameTerminated()) whiteTurn = GameFragment.isWhiteToPlay();
         newTimer(whiteTurn ? whiteTimeLeft : blackTimeLeft);
     }
 

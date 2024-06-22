@@ -37,7 +37,7 @@ public class Pawn extends Piece {
 
     public boolean canCaptureEnPassant(BoardInterface boardInterface) {
         Pawn enPassantPawn = boardInterface.getBoardModel().enPassantPawn;
-        if (enPassantPawn != null) if (enPassantPawn.getPlayer() != getPlayer())
+        if (enPassantPawn != null && enPassantPawn.getPlayer() != getPlayer())
             return enPassantPawn.getRow() == getRow() && Math.abs(getCol() - enPassantPawn.getCol()) == 1;
         return false;
     }
@@ -48,9 +48,8 @@ public class Pawn extends Piece {
         int col = getCol(), row = getRow(), i;
         if (boardInterface.pieceAt(row + direction, col) == null)
             possibleMoves.add((row + direction) * 8 + col);
-        if (!moved && boardInterface.pieceAt(row + 2 * direction, col) == null && boardInterface.pieceAt(row + direction, col) == null) {
+        if (!moved && boardInterface.pieceAt(row + 2 * direction, col) == null && boardInterface.pieceAt(row + direction, col) == null)
             possibleMoves.add((row + 2 * direction) * 8 + col);
-        }
         for (i = -1; i <= 1; i += 2) {
             Piece tempPiece = boardInterface.pieceAt(row + direction, col + i);
             if (tempPiece != null) if (tempPiece.getPlayer() != getPlayer())
@@ -63,10 +62,10 @@ public class Pawn extends Piece {
 
     @Override
     public boolean canMoveTo(BoardInterface boardInterface, int row, int col) {
-        if (row == getRow() && Math.abs(col - getCol()) == 1)
-            return canCaptureEnPassant(boardInterface);
+        if (row - getRow() == direction && Math.abs(col - getCol()) == 1 && canCaptureEnPassant(boardInterface))
+            return true;
         if (getCol() == col)
-            return row * direction - getRow() * direction == 1 || !moved && row * direction - getRow() * direction == 2 && boardInterface.pieceAt(row - direction, col) == null;
+            return row - getRow() == direction || !moved && (row - getRow()) * direction == 2 && boardInterface.pieceAt(row - direction, col) == null;
         Piece piece = boardInterface.pieceAt(row, col);
         if (piece != null) return canCapture(boardInterface, piece);
         return false;

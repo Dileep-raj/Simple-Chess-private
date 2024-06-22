@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -78,6 +80,10 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.show();
+        }
         navController = Navigation.findNavController(view);
         savedGamesRecyclerView = binding.savedGamesRecyclerView;
 
@@ -124,7 +130,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         savedGames = dataManager.savedGames();
         if (savedGames.isEmpty()) {
             binding.noGames.setVisibility(View.VISIBLE);
-            binding.savedGamesRecyclerView.setVisibility(View.GONE);
+            savedGamesRecyclerView.setVisibility(View.GONE);
         } else {
             GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(requireContext(), savedGames, this);
             savedGamesRecyclerView.swapAdapter(adapter, true);
@@ -134,11 +140,10 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void openGame(int position) {
-//        Toast.makeText(requireContext(), "Game can't be loaded", Toast.LENGTH_SHORT).show();
-
         Bundle args = new Bundle();
         try {
             args.putString(LoadGameFragment.PGN_FILE_KEY, new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + savedGames.get(position)))));
+            args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, true);
         } catch (IOException e) {
             Log.e(TAG, "openGame: Error while reading pgn:", e);
         }
@@ -183,13 +188,13 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
                         String tagValue = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
                         tagsMap.put(tagName, tagValue);
                     }
-                    if (tagsMap.containsKey(PGN.WHITE_TAG) && tagsMap.containsKey(PGN.BLACK_TAG))
-                        name = String.format("%s vs %s", tagsMap.get(PGN.WHITE_TAG), tagsMap.get(PGN.BLACK_TAG));
+                    if (tagsMap.containsKey(PGN.TAG_WHITE) && tagsMap.containsKey(PGN.TAG_BLACK))
+                        name = String.format("%s vs %s", tagsMap.get(PGN.TAG_WHITE), tagsMap.get(PGN.TAG_BLACK));
 
-                    if (tagsMap.containsKey(PGN.TERMINATION_TAG))
-                        result = tagsMap.get(PGN.TERMINATION_TAG);
-                    else if (tagsMap.containsKey(PGN.RESULT_TAG))
-                        result = tagsMap.get(PGN.RESULT_TAG);
+                    if (tagsMap.containsKey(PGN.TAG_TERMINATION))
+                        result = tagsMap.get(PGN.TAG_TERMINATION);
+                    else if (tagsMap.containsKey(PGN.TAG_RESULT))
+                        result = tagsMap.get(PGN.TAG_RESULT);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "onBindViewHolder: Exception while finding result", e);

@@ -36,6 +36,17 @@
             app:drawableLeftCompat="@drawable/ic_vibration" />
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/soundToggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:drawablePadding="8dp"
+            android:text="@string/sound"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:drawableLeftCompat="@drawable/ic_sound" />
+
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/animationToggle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -132,7 +143,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ThemeMenuLayout"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="50dp"
             android:layout_marginHorizontal="8dp">
 
             <TextView
@@ -253,6 +264,5 @@
                 android:textAlignment="center"
                 android:textColor="@color/white" />
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>

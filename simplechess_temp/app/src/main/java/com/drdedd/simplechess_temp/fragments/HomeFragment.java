@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -38,6 +40,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.show();
+        }
         navController = Navigation.findNavController(view);
         DataManager dataManager = new DataManager(requireContext());
 
@@ -47,7 +53,7 @@ public class HomeFragment extends Fragment {
         binding.btnNewGame.setOnClickListener(v -> startGame(true));
         binding.btnExitApp.setOnClickListener(v -> exit_app());
         binding.btnSettings.setOnClickListener(v -> navController.navigate(R.id.nav_settings));
-//        binding.btnOpenTest.setOnClickListener(v -> navController.navigate(R.id.nav_test));
+        binding.btnOpenTest.setOnClickListener(v -> navController.navigate(R.id.nav_test));
 
         gameStatistics = new GameStatistics(requireContext());
         long start = System.nanoTime();

@@ -1,21 +1,22 @@
 package com.drdedd.simplechess_temp.GameData;
 
 /**
- * State of the game (White to play, Black to play, Checkmate, Resign, Stalemate, Draw)
+ * State of the game ({@link ChessState#CHECKMATE Checkmate}, {@link ChessState#DRAW Draw}, {@link ChessState#ONGOING Ongoing}, {@link ChessState#RESIGN Resigned},
+ * {@link ChessState#STALEMATE Stalemate}, {@link ChessState#TIMEOUT Timeout})
  */
 public enum ChessState {
-    /**
-     * White's turn to play
-     */
-    WHITE_TO_PLAY,
-    /**
-     * Black's turn to play
-     */
-    BLACK_TO_PLAY,
     /**
      * Game over by checkmate
      */
     CHECKMATE,
+    /**
+     * Game over by draw
+     */
+    DRAW,
+    /**
+     * Game is ongoing
+     */
+    ONGOING,
     /**
      * Game over by Resignation
      */
@@ -24,10 +25,6 @@ public enum ChessState {
      * Game over by stalemate
      */
     STALEMATE,
-    /**
-     * Game over by draw
-     */
-    DRAW,
     /**
      * Game over by timeout
      */

@@ -6,17 +6,13 @@ public class Regexes {
     public static final String tagsRegex = "\\[(\\w*) \"([-\\w.,/* ]*)\"]";
     public static final Pattern tagsPattern = Pattern.compile(tagsRegex);
 
-    //    public static final String commentsRegex = "(\\{[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\}(\\s?[0-9]*\\.{3})?)|(;\\s[\\w!@#$%^&*();:,.<>\"'|/?\\-=+\\[\\]\\s]*\\s[0-9]*\\.{3})";
-    public static final String commentsRegex = "\\{.*?\\}(\\s?\\([\\w\\s+=#-]*\\))?(\\s?[0-9]*\\.{3})?";
+//    public static final String commentsRegex = "\\{.*?\\}(\\s?\\([\\w\\s+=#-]*\\))?(\\s?[0-9]*\\.{3})?";
 
-    public static final String startingMoveRegex = "^\\s*1\\.";
+    //    "^[^]]*?.*?1\\."
+    public static final String startingMoveRegex = "1\\.\\s*[NP]?[a-h][1-8]";
     public static final Pattern startingMovePattern = Pattern.compile(startingMoveRegex, Pattern.MULTILINE);
 
-    public static final String singleMoveRegex = "([KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=[QRNB])?|O-O-O|O-O)[+#]?";
-    public static final Pattern singleMovePattern = Pattern.compile(singleMoveRegex);
-
-    public static final String singleMoveStrictRegex = "^(\\d+\\.)??([KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=[QRNB])?|O-O-O|O-O)[+#]?(!!|\\?\\?|\\?!|!\\?|!|\\?)?$";
-    public static final Pattern singleMoveStrictPattern = Pattern.compile(singleMoveStrictRegex);
+    public static final String singleMoveStrictRegex = "^(\\d+\\.)??([KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=?[QRNB])?|O-O-O|O-O)[+#]?(!!|\\?\\?|\\?!|!\\?|!|\\?)?$";
 
     public static final String moveNumberRegex = "\\d+\\.";
     public static final String moveNumberStrictRegex = "^\\d+\\.$";
@@ -34,5 +30,5 @@ public class Regexes {
     public static final String moveAnnotationRegex = "!!|\\?\\?|\\?!|!\\?|!|\\?";
     public static final Pattern moveAnnotationPattern = Pattern.compile(moveAnnotationRegex);
 
-    public static final String chessDotComAnnotationRegex = "^\\$[1-6]$";
+    public static final String numberedAnnotationRegex = "^\\$\\d+$";
 }

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context=".fragments.GameFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,34 +23,43 @@
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             android:text="@string/pgn"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy" />
+            app:drawableLeftCompat="@drawable/ic_copy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_copy_fen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_copy_fen"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             android:text="@string/fen"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_copy" />
+            app:drawableLeftCompat="@drawable/ic_copy"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btn_export_pgn"
+            app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
             android:id="@+id/btn_export_pgn"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             android:text="@string/pgn"
             android:textColor="@color/white"
             android:textSize="14sp"
-            app:drawableLeftCompat="@drawable/ic_save" />
-    </LinearLayout>
+            app:drawableLeftCompat="@drawable/ic_save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <HorizontalScrollView
         android:id="@+id/scrollView"

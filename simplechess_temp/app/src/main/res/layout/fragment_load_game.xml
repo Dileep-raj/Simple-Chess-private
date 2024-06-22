@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
     tools:context=".fragments.LoadGameFragment">
@@ -44,7 +43,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -55,39 +54,48 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:text="@string/pgn"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:drawableLeftCompat="@drawable/ic_copy" />
+                app:drawableLeftCompat="@drawable/ic_copy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_copy_fen"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btn_copy_fen"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:text="@string/fen"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:drawableLeftCompat="@drawable/ic_copy" />
+                app:drawableLeftCompat="@drawable/ic_copy"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_save_pgn"
+                app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btn_save_pgn"
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
                 android:text="@string/pgn"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                app:drawableLeftCompat="@drawable/ic_save" />
-        </LinearLayout>
+                app:drawableLeftCompat="@drawable/ic_save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/pgn_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_margin="8dp" />
 
         <LinearLayout
@@ -135,6 +143,13 @@
                         android:textColor="@color/white" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/openingName"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <com.drdedd.simplechess_temp.ChessBoard
                 android:id="@+id/analysisBoard"
