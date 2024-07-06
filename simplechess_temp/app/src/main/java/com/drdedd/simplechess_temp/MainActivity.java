@@ -1,10 +1,14 @@
 package com.drdedd.simplechess_temp;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
@@ -18,12 +22,19 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.databinding.ActivityMainBinding;
+import com.drdedd.simplechess_temp.fragments.LoadGameFragment;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
-    //    private static final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
     private AppBarConfiguration mAppBarConfiguration;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         DataManager dataManager = new DataManager(this);
-        if (dataManager.isFullScreen())
+        if (dataManager.isFullScreen()) {
+            EdgeToEdge.enable(this);
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
+        }
 
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolBar);
@@ -46,25 +59,66 @@ public class MainActivity extends AppCompatActivity {
         NavigationView navigationView = binding.navView;
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home).setOpenableLayout(drawerLayout).build();
-        NavController navController = Navigation.findNavController(this, R.id.main_fragment);
+        navController = Navigation.findNavController(this, R.id.main_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
-//        Intent intent = getIntent();
-//        String action = intent.getAction(), type = intent.getType();
-//
-//        if (action != null && action.equals(Intent.ACTION_SEND)) {
-//            if (type != null && type.equals("text/plain")) {
-//                Log.d(TAG, "onCreate: Data " + intent.getData());
-//                Log.d(TAG, "onCreate: Extra text " + intent.getStringExtra(Intent.EXTRA_TEXT));
-//                Uri textURI = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-//                if (textURI != null)
-//                    Log.d(TAG, String.format("onCreate: URI: %s\n%s", textURI.getPath(), textURI));
-//            }
-//        }
-//
-//        Uri uri = intent.getData();
-//        if (uri != null) Log.d(TAG, "onCreate: URI2: " + Uri.parse(uri.toString()));
+        Intent intent = getIntent();
+        String action = intent.getAction(), type = intent.getType(), scheme = intent.getScheme();
+        if (action != null && !action.equals(Intent.ACTION_MAIN))
+            Log.d(TAG, String.format("onCreate:%nAction: %s%nType: %s%nScheme: %s", action, type, scheme));
+
+        if (action != null && action.equals(Intent.ACTION_SEND) && type != null) {
+            if (type.startsWith("text/")) {
+                String content = intent.getStringExtra(Intent.EXTRA_TEXT);
+                Log.d(TAG, "onCreate: Extra text:%n" + content);
+                if (content != null && !content.isEmpty()) loadGame(content);
+            }
+            if (type.startsWith("application/")) {
+                Uri textURI = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                readUri(textURI);
+            }
+        }
+
+        if (action != null && action.equals(Intent.ACTION_VIEW)) {
+            Uri uri = intent.getData();
+            readUri(uri);
+        }
+    }
+
+    /**
+     * Read PGN using URI
+     *
+     * @param uri URI of the PGN file
+     */
+    private void readUri(Uri uri) {
+        if (uri != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream));
+                while ((line = bf.readLine()) != null) stringBuilder.append(line).append('\n');
+                Log.d(TAG, "readUri: Content: " + stringBuilder);
+
+                loadGame(stringBuilder.toString());
+            } catch (IOException e) {
+                Log.e(TAG, "readUri: Error while reading uri file", e);
+            }
+        }
+    }
+
+    /**
+     * Load game from the PGN content
+     *
+     * @param content Shared text content
+     */
+    private void loadGame(String content) {
+        Bundle args = new Bundle();
+        args.putString(LoadGameFragment.PGN_CONTENT_KEY, content);
+        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
+        navController.popBackStack();
+        navController.navigate(R.id.nav_load_game, args);
     }
 
     @Override

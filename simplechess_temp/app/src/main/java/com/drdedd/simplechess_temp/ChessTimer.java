@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
 import java.util.Locale;
 
@@ -24,13 +25,15 @@ public class ChessTimer {
     private long whiteTimeLeft, blackTimeLeft;
     private final TextView whiteTimeTV, blackTimeTV;
     private final LinearLayout whiteLayout, blackLayout;
-    private CountDownTimer timer;
-    private boolean whiteTurn, timerRunning;
     private final DataManager dataManager;
     private final int defaultColor, activeColor, criticalColor;
+    private final BoardInterface boardInterface;
+    private boolean whiteTurn, timerRunning;
+    private CountDownTimer timer;
 
-    public ChessTimer(GameFragment gameFragment) {
+    public ChessTimer(GameFragment gameFragment, BoardInterface boardInterface) {
         this.gameFragment = gameFragment;
+        this.boardInterface = boardInterface;
         dataManager = new DataManager(gameFragment.requireContext());
         INITIAL_TIME = minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds());
         defaultColor = R.drawable.timer_bg_default;
@@ -49,14 +52,15 @@ public class ChessTimer {
         updateTimeText();
     }
 
-
     /**
      * @param gameFragment  GameFragment instance
+     * @param boardInterface BoardInterface of the game
      * @param whiteTimeLeft White time left in milliseconds
      * @param blackTimeLeft Black time left in milliseconds
      */
-    public ChessTimer(GameFragment gameFragment, long whiteTimeLeft, long blackTimeLeft) {
+    public ChessTimer(GameFragment gameFragment, BoardInterface boardInterface, long whiteTimeLeft, long blackTimeLeft) {
         this.gameFragment = gameFragment;
+        this.boardInterface = boardInterface;
         dataManager = new DataManager(gameFragment.requireContext());
         INITIAL_TIME = minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds());
         defaultColor = R.drawable.timer_bg_default;
@@ -93,7 +97,7 @@ public class ChessTimer {
      * Toggles white or black timer
      */
     public void toggleTimer() {
-        if (!GameFragment.isGameTerminated()) whiteTurn = GameFragment.isWhiteToPlay();
+        if (!boardInterface.isGameTerminated()) whiteTurn = boardInterface.isWhiteToPlay();
         newTimer(whiteTurn ? whiteTimeLeft : blackTimeLeft);
     }
 

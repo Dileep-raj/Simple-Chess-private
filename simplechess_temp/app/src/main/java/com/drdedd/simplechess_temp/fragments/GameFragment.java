@@ -1,8 +1,8 @@
 package com.drdedd.simplechess_temp.fragments;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
-import static android.content.Context.VIBRATOR_SERVICE;
-import static com.drdedd.simplechess_temp.data.Regexes.activePlayerPattern;
+import static com.drdedd.simplechess_temp.data.DataConverter.opponentPlayer;
+import static com.drdedd.simplechess_temp.data.MoveAnnotation.BOOK;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -10,12 +10,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.icu.text.SimpleDateFormat;
-import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,42 +35,26 @@ import com.drdedd.simplechess_temp.ChessTimer;
 import com.drdedd.simplechess_temp.GameData.ChessState;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.GameLogic;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.data.Openings;
 import com.drdedd.simplechess_temp.databinding.FragmentGameBinding;
 import com.drdedd.simplechess_temp.dialogs.GameOverDialog;
-import com.drdedd.simplechess_temp.dialogs.PromoteDialog;
-import com.drdedd.simplechess_temp.interfaces.BoardInterface;
-import com.drdedd.simplechess_temp.pieces.King;
-import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.Stack;
-import java.util.regex.Matcher;
+import java.util.Arrays;
 
 /**
- * {@inheritDoc}
- * Fragment to view, play, load and save chess game
+ * Fragment to view and play chess game
  */
 @SuppressLint("NewApi")
-public class GameFragment extends Fragment implements BoardInterface {
+public class GameFragment extends Fragment {
     private final static String TAG = "GameFragment";
-    protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", OPENING_KEY = "Opening";
-    protected static final String TAGS_MAP_KEY = "tagsMap", MOVES_LIST_KEY = "moves", ANNOTATION_MAP_KEY = "annotationsMap", ALTERNATE_MOVE_SEQUENCE_KEY = "alternateMoveSequence", COMMENTS_KEY = "comments";
+    protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", OPENING_KEY = "Opening";
     private FragmentGameBinding binding;
-    private String FEN, white = "White", black = "Black", app, date, termination, fromSquare, toSquare, opening;
+    private String termination;
     private PGN pgn;
     protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
@@ -83,21 +62,12 @@ public class GameFragment extends Fragment implements BoardInterface {
     public TextView PGN_textView, gameStateView, whiteName, blackName, whiteCaptured, blackCaptured, whiteValue, blackValue, whiteTimeTV, blackTimeTV;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
-    private static ChessState gameState;
-    private static boolean gameTerminated, whiteToPlay = true;
-    protected Stack<BoardModel> boardModelStack;
     protected ClipboardManager clipboard;
-    protected HashMap<Piece, HashSet<Integer>> legalMoves;
-    private LinkedList<String> FENs, moves;
-    private HashMap<String, String> tagsMap;
-    private LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
-    private boolean timerEnabled, vibrationEnabled, newGame, loadingPGN, sound, fileExists = true, animate;
+    private boolean timerEnabled, newGame;
     public LinearLayout whiteTimeLayout, blackTimeLayout;
     private ChessTimer chessTimer;
-    private Vibrator vibrator;
-    private int count;
     private NavController navController;
-    private MediaPlayer mediaPlayer;
+    private GameLogic gameLogic;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -106,7 +76,6 @@ public class GameFragment extends Fragment implements BoardInterface {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() != null) {
@@ -141,642 +110,82 @@ public class GameFragment extends Fragment implements BoardInterface {
         clipboard = (ClipboardManager) requireActivity().getSystemService(CLIPBOARD_SERVICE);
 
         newGame = args.getBoolean(NEW_GAME_KEY);
+
+        gameLogic = new GameLogic(this, chessBoard, newGame);
         initializeData();
 
-        if (args.containsKey(LOAD_PGN_KEY)) {
-            fileExists = args.getBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
-            loadingPGN = true;
-            tagsMap = (HashMap<String, String>) args.getSerializable(TAGS_MAP_KEY);
-            moves = (LinkedList<String>) args.getSerializable(MOVES_LIST_KEY);
-
-            commentsMap = (LinkedHashMap<Integer, String>) args.getSerializable(COMMENTS_KEY);
-            moveAnnotationMap = (LinkedHashMap<Integer, String>) args.getSerializable(ANNOTATION_MAP_KEY);
-            alternateMoveSequence = (LinkedHashMap<Integer, String>) args.getSerializable(ALTERNATE_MOVE_SEQUENCE_KEY);
-            opening = args.getString(OPENING_KEY);
-            FEN = tagsMap.getOrDefault(PGN.TAG_FEN, "");
-            if (FEN != null && !FEN.isEmpty()) newGame = true;
-
-            white = tagsMap.get(PGN.TAG_WHITE);
-            black = tagsMap.get(PGN.TAG_BLACK);
-            date = tagsMap.get(PGN.TAG_DATE);
-        }
         if (args.containsKey(FEN_KEY)) {
-            FEN = args.getString(FEN_KEY);
-            Log.d(TAG, "onViewCreated: Loading FEN: " + FEN);
-            reset();
+            String FEN = args.getString(FEN_KEY);
+            gameLogic = new GameLogic(this, chessBoard, FEN);
+            resetTimer();
             newGame = false;
         }
 
         binding.btnSaveExit.setOnClickListener(v -> getParentFragmentManager().popBackStack());
-        binding.btnReset.setOnClickListener(v -> reset());
-        binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", pgn.toString()));
-        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", boardModel.toFEN()));
+        binding.btnReset.setOnClickListener(v -> {
+            resetTimer();
+            gameLogic.reset();
+        });
+        binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", gameLogic.getPGN().toString()));
+        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameLogic.getBoardModel().toFEN(gameLogic)));
 
         btn_draw.setOnClickListener(v -> createDialog("Draw", "Are you sure you want to draw?", (d, i) -> {
-            pgn.setTermination("Draw by agreement");
-            terminateGame(ChessState.DRAW);
+            gameLogic.getPGN().setTermination("Draw by agreement");
+            gameLogic.terminateGame(ChessState.DRAW);
         }));
         btn_resign.setOnClickListener(v -> createDialog("Resign", "Are you sure you want to resign?", (d, i) -> {
-            pgn.setTermination(opponentPlayer(playerToPlay()).getName() + " won by Resignation");
-            terminateGame(ChessState.RESIGN);
+            gameLogic.getPGN().setTermination(opponentPlayer(gameLogic.playerToPlay()).getName() + " won by Resignation");
+            gameLogic.terminateGame(ChessState.RESIGN);
         }));
-        btn_undo_move.setOnClickListener(v -> undoLastMove());
+        btn_undo_move.setOnClickListener(v -> gameLogic.undoLastMove());
 
-        if (newGame) reset();
-        else updateAll();
+        if (newGame) resetTimer();
 
         if (!timerEnabled) {
             whiteTimeLayout.setVisibility(View.GONE);
             blackTimeLayout.setVisibility(View.GONE);
         } else chessTimer.startTimer();
 
-        if (loadingPGN) {
-            pgn.setCommentsMap(commentsMap);
-            pgn.setMoveAnnotationMap(moveAnnotationMap);
-            pgn.setAlternateMoveSequence(alternateMoveSequence);
-            long start = System.nanoTime();
-            boolean result = parsePGN();
-            long end = System.nanoTime();
-
-            HomeFragment.printTime(TAG, "loading PGN moves", end - start, moves.size());
-            if (result) Log.i(TAG, "onViewCreated: Game valid");
-        }
+        updateViews();
     }
 
-    @SuppressWarnings("unchecked")
     private void initializeData() {
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.move_sound);
-        gameTerminated = false;
-        loadingPGN = false;
-        FEN = "";
-
         timerEnabled = dataManager.isTimerEnabled();
-        vibrationEnabled = dataManager.getVibration();
-        sound = dataManager.getSound();
-        animate = dataManager.getAnimation();
 
-        SimpleDateFormat pgnDate = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
-
-        white = dataManager.getWhite();
+        String white = dataManager.getWhite(), black = dataManager.getBlack();
         Player.WHITE.setName(white);
-        black = dataManager.getBlack();
         Player.BLACK.setName(black);
-        app = PGN.APP_NAME;
-        date = pgnDate.format(new Date());
 
         if (timerEnabled)
-            chessTimer = new ChessTimer(this, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
+            chessTimer = new ChessTimer(this, gameLogic, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
 
         if (!newGame) {
             boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
             pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
-            boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.STACK_FILE);
-            FENs = (LinkedList<String>) dataManager.readObject(DataManager.FENS_LIST_FILE);
         }
 
-        if (boardModel == null || pgn == null) {
-            boardModel = new BoardModel(requireContext(), true, loadingPGN);
-            boardModelStack = new Stack<>();
-            FENs = new LinkedList<>();
-            boardModelStack.push(boardModel);
-            FENs.push(boardModel.toFEN());
-            pgn = new PGN(PGN.APP_NAME, white, black, pgnDate.format(new Date()), true);
-            if (timerEnabled) chessTimer = new ChessTimer(this);
-        }
-
-        gameState = ChessState.ONGOING;
-        whiteToPlay = pgn.isWhiteToPlay();
-        pgn.setWhiteBlack(white, black);        //Set the white and the black players' names
+        if (boardModel == null || pgn == null)
+            if (timerEnabled) chessTimer = new ChessTimer(this, gameLogic);
 
         whiteName.setText(white);
         blackName.setText(black);
-
-        chessBoard.boardInterface = this;
-        chessBoard.invalidate = true;
-
-        vibrator = (Vibrator) requireContext().getSystemService(VIBRATOR_SERVICE);
     }
 
-    public void reset() {
-        chessBoard.clearSelection();
-        gameTerminated = false;
-        whiteToPlay = true;
-
+    /**
+     * Reset timer
+     */
+    public void resetTimer() {
         if (timerEnabled) {
             if (chessTimer != null) chessTimer.stopTimer();
-            chessTimer = new ChessTimer(this);
+            chessTimer = new ChessTimer(this, gameLogic);
             chessTimer.startTimer();
         }
-
-        if (FEN.isEmpty()) {
-            boardModel = new BoardModel(requireContext(), true, loadingPGN);
-            pgn = new PGN(app, white, black, date, true);
-        } else {
-            long start = System.nanoTime();
-            boardModel = BoardModel.parseFEN(FEN, requireContext());
-
-            Matcher player = activePlayerPattern.matcher(FEN);
-            if (player.find()) whiteToPlay = player.group().trim().equals("w");
-            long end = System.nanoTime();
-            HomeFragment.printTime(TAG, "parsing FEN", end - start, FEN.length());
-            pgn = new PGN(app, white, black, date, whiteToPlay, FEN);
-        }
-        boardModelStack = new Stack<>();
-        FENs = new LinkedList<>();
-        fromSquare = "";
-        toSquare = "";
-        pushToStack();
-        Log.v(TAG, "reset: New PGN created " + date);
-//        updateAll();
-    }
-
-    private boolean parsePGN() {
-        char ch;
-        int i, startRow, startCol, destRow, destCol;
-        boolean promotion;
-        Rank rank = null, promotionRank;
-        Piece piece;
-        Player player;
-
-        for (String move : moves) {
-            move = move.trim();
-            Log.d(TAG, "parsePGN: Move: " + move);
-            startRow = -1;
-            startCol = -1;
-            destRow = -1;
-            destCol = -1;
-            promotion = false;
-            promotionRank = null;
-            piece = null;
-            player = playerToPlay();
-
-            try {
-                if (move.equals(PGN.SHORT_CASTLE)) {
-                    King king = whiteToPlay ? boardModel.getWhiteKing() : boardModel.getBlackKing();
-                    if (king.canShortCastle(this))
-                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() + 2);
-                    continue;
-                } else if (move.equals(PGN.LONG_CASTLE)) {
-                    King king = whiteToPlay ? boardModel.getWhiteKing() : boardModel.getBlackKing();
-                    if (king.canLongCastle(this))
-                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2);
-                    continue;
-                }
-
-                ch = move.charAt(0);
-                if (Character.isLetter(ch)) switch (ch) {
-                    case 'K':
-                        rank = Rank.KING;
-                        break;
-                    case 'Q':
-                        rank = Rank.QUEEN;
-                        break;
-                    case 'R':
-                        rank = Rank.ROOK;
-                        break;
-                    case 'N':
-                        rank = Rank.KNIGHT;
-                        break;
-                    case 'B':
-                        rank = Rank.BISHOP;
-                        break;
-                    case 'P':
-                    default:
-                        rank = Rank.PAWN;
-                }
-                label:
-                for (i = 0; i < move.length(); i++) {
-                    ch = move.charAt(i);
-                    switch (ch) {
-                        case 'a':
-                        case 'b':
-                        case 'c':
-                        case 'd':
-                        case 'e':
-                        case 'f':
-                        case 'g':
-                        case 'h':
-                            if (destCol != -1) startCol = destCol;
-                            destCol = ch - 'a';
-                            break;
-
-                        case '1':
-                        case '2':
-                        case '3':
-                        case '4':
-                        case '5':
-                        case '6':
-                        case '7':
-                        case '8':
-                            if (destRow != -1) startRow = destRow;
-                            destRow = ch - '1';
-                            break;
-
-                        case '=':
-                            promotion = true;
-                            ch = move.charAt(i + 1);
-                            Log.d(TAG, "parsePGN: Promotion");
-                            switch (ch) {
-                                case 'Q':
-                                    promotionRank = Rank.QUEEN;
-                                    break;
-                                case 'R':
-                                    promotionRank = Rank.ROOK;
-                                    break;
-                                case 'N':
-                                    promotionRank = Rank.KNIGHT;
-                                    break;
-                                case 'B':
-                                    promotionRank = Rank.BISHOP;
-                                    break;
-                            }
-                            Log.d(TAG, "parsePGN: Promotion rank: " + promotionRank);
-                            if (promotionRank == null) return false;
-                            break label;
-
-                        case 'Q':
-                        case 'R':
-                        case 'N':
-                        case 'B':
-                            if (destCol != -1 && destRow != -1) {
-                                promotion = true;
-                                Log.d(TAG, "parsePGN: Promotion");
-                                switch (ch) {
-                                    case 'Q':
-                                        promotionRank = Rank.QUEEN;
-                                        break;
-                                    case 'R':
-                                        promotionRank = Rank.ROOK;
-                                        break;
-                                    case 'N':
-                                        promotionRank = Rank.KNIGHT;
-                                        break;
-                                    case 'B':
-                                        promotionRank = Rank.BISHOP;
-                                        break;
-                                }
-                                Log.d(TAG, "parsePGN: Promotion rank: " + promotionRank);
-                                break label;
-                            }
-
-                        case 'K':
-                        case 'P':
-                        case 'x':
-                        case '+':
-                        case '#':
-                            break;
-                    }
-                }
-
-                if (startRow != -1 && startCol != -1) {
-                    piece = boardModel.pieceAt(startRow, startCol);
-                    Log.d(TAG, String.format("parsePGN: piece at %s piece: %s", toNotation(startRow, startCol), piece));
-                } else if (startCol != -1) {
-                    piece = boardModel.searchCol(this, player, rank, startCol, destRow, destCol);
-                    Log.d(TAG, String.format("parsePGN: searched col: %d piece:%s", startCol, piece));
-                } else if (startRow != -1) {
-                    piece = boardModel.searchRow(this, player, rank, startRow, destRow, destCol);
-                    Log.d(TAG, String.format("parsePGN: searched row: %d piece: %s", startRow, piece));
-                }
-
-                if (piece == null) {
-                    piece = boardModel.searchPiece(this, player, rank, destRow, destCol);
-                    Log.d(TAG, "parsePGN: piece searched");
-                }
-
-                if (piece != null && promotion) {
-                    Pawn pawn = (Pawn) piece;
-                    if (promote(pawn, destRow, destCol, startRow, startCol, promotionRank)) {
-                        Log.d(TAG, String.format("parsePGN: Promoted to %s at %s", promotionRank, toNotation(destRow, destCol)));
-                        continue;
-                    }
-                }
-
-                if (piece != null) {
-                    if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
-                        Log.d(TAG, String.format("parsePGN: Move success %s", move));
-                    else {
-                        Log.d(TAG, "parsePGN: Second search!");
-                        LinkedHashSet<Piece> pieces = boardModel.pieces, tempPieces = new LinkedHashSet<>();
-                        for (Piece tempPiece : pieces)
-                            if (tempPiece.getPlayer() == player && tempPiece.getRank() == rank) {
-                                if (startRow != -1 && tempPiece.getRow() == startRow)
-                                    tempPieces.add(tempPiece);
-                                else if (startCol != -1 && tempPiece.getCol() == startCol)
-                                    tempPieces.add(tempPiece);
-                                else tempPieces.add(tempPiece);
-                            }
-
-                        for (Piece tempPiece : tempPieces)
-                            if (getLegalMoves().containsKey(tempPiece) && Objects.requireNonNull(getLegalMoves().get(tempPiece)).contains(destCol + destRow * 8))
-                                piece = tempPiece;
-
-                        if (piece != null && movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
-                            Log.d(TAG, "parsePGN: Move success after 2nd search! " + move);
-                        else {
-                            StringBuilder legalMoves = new StringBuilder();
-                            HashSet<Integer> pieceLegalMoves = getLegalMoves().get(piece);
-                            if (pieceLegalMoves != null) for (int legalMove : pieceLegalMoves)
-                                legalMoves.append(toNotation(legalMove)).append(' ');
-                            Log.d(TAG, String.format("parsePGN: Move failed: %s%nPiece: %s%nLegalMoves: %s", move, piece, legalMoves));
-                            return false;
-                        }
-                    }
-                } else {
-                    Log.d(TAG, String.format("parsePGN: Move invalid! Piece not found! %s %s (%d,%d) -> %s move: %s", player, rank, startRow, startCol, toNotation(destRow, destCol), move));
-                    Toast.makeText(requireContext(), "Invalid move " + move, Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-            } catch (Exception e) {
-                Toast.makeText(requireContext(), "Error occurred after move " + move, Toast.LENGTH_LONG).show();
-                Log.e(TAG, "parsePGN: Error occurred after move " + move, e);
-                return false;
-            }
-        }
-
-        Set<String> tags = tagsMap.keySet();
-        for (String tag : tags) {
-            String value = tagsMap.get(tag);
-            if (value != null && !value.isEmpty()) pgn.addTag(tag, value);
-            Log.d(TAG, String.format("parsePGN: Tag: [%s \"%s\"]", tag, value));
-        }
-
-        loadGame();
-        return true;
-    }
-
-    @Override
-    public Piece pieceAt(int row, int col) {
-        return boardModel.pieceAt(row, col);
-    }
-
-    @Override
-    public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        if (gameTerminated) return false;
-        if (dataManager.cheatModeEnabled()) {
-            Piece movingPiece = boardModel.pieceAt(fromRow, fromCol);
-            if (movingPiece != null) {
-                Piece toPiece = boardModel.pieceAt(toRow, toCol);
-                if (toPiece != null) {
-                    if (toPiece.getPlayer() == movingPiece.getPlayer()) return false;
-                    else boardModel.capturePiece(toPiece);
-                }
-                movingPiece.moveTo(toRow, toCol);
-                chessBoard.invalidate();
-                return true;
-            }
-            return false;
-        } else {
-            Piece movingPiece = pieceAt(fromRow, fromCol);
-            if (movingPiece == null) return false;
-
-            if (isPieceToPlay(movingPiece)) if (legalMoves.get(movingPiece) != null) {
-                HashSet<Integer> pieceLegalMoves = legalMoves.get(movingPiece);
-                if (pieceLegalMoves != null)
-                    if (!pieceLegalMoves.contains(toCol + toRow * 8)) return false;
-            }
-            boolean result = chessBoard.movePiece(fromRow, fromCol, toRow, toCol);
-            if (result) {
-                if (!loadingPGN && sound) mediaPlayer.start();
-                boardModel.fromSquare = toNotation(fromRow, fromCol);
-                boardModel.toSquare = toNotation(toRow, toCol);
-                if (movingPiece.getRank() == Rank.PAWN) if (Math.abs(fromRow - toRow) == 2) {
-                    Pawn enPassantPawn = (Pawn) movingPiece;
-                    boardModel.enPassantPawn = enPassantPawn;
-                    boardModel.enPassantSquare = toNotation(enPassantPawn.getRow() - enPassantPawn.direction, enPassantPawn.getCol());
-                    Log.d(TAG, "movePiece: EnPassantPawn: " + boardModel.enPassantPawn.getPosition() + " EnPassantSquare: " + boardModel.enPassantSquare);
-                } else {
-                    boardModel.enPassantPawn = null;
-                    boardModel.enPassantSquare = "";
-                }
-                fromSquare = toNotation(fromRow, fromCol);
-                toSquare = toNotation(toRow, toCol);
-                toggleGameState();
-                pushToStack();
-                if (playerToPlay().isInCheck()) printLegalMoves();
-            }
-            return result;
-        }
-    }
-
-    public void saveGame() {
-        if (gameTerminated || loadingPGN) return;
-        dataManager.saveData(boardModel, pgn, boardModelStack, FENs);
-    }
-
-    @Override
-    public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
-        String position, capture = "";
-        StringBuilder moveStringBuilder = new StringBuilder(piece.getPosition());
-        position = toNotation(fromRow, fromCol);
-        if (move.contains(PGN.CAPTURE)) capture = "x";
-        moveStringBuilder.insert(1, position + capture);
-
-        if (move.contains(PGN.PROMOTE)) {
-            moveStringBuilder.append('=').append(piece.getRankChar());
-            moveStringBuilder.deleteCharAt(0);
-        }
-
-        if (move.equals(PGN.LONG_CASTLE) || move.equals(PGN.SHORT_CASTLE))
-            moveStringBuilder = new StringBuilder(move);
-
-        pgn.addToPGN(piece, moveStringBuilder.toString());
-    }
-
-    @Override
-    public boolean capturePiece(Piece piece) {
-        return boardModel.capturePiece(piece);
-    }
-
-    @Override
-    public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
-        PromoteDialog promoteDialog = new PromoteDialog(requireContext());
-        promoteDialog.show();
-
-//        Set image buttons as respective color pieces
-        Integer queenResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString());
-        Integer rookResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.ROOK.toString());
-        Integer bishopResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString());
-        Integer knightResID = boardModel.resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString());
-        if (queenResID != null)
-            promoteDialog.findViewById(R.id.promote_to_queen).setBackgroundResource(queenResID);
-        if (rookResID != null)
-            promoteDialog.findViewById(R.id.promote_to_rook).setBackgroundResource(rookResID);
-        if (bishopResID != null)
-            promoteDialog.findViewById(R.id.promote_to_bishop).setBackgroundResource(bishopResID);
-        if (knightResID != null)
-            promoteDialog.findViewById(R.id.promote_to_knight).setBackgroundResource(knightResID);
-
-//        Invalidate chess board to show new promoted piece
-        promoteDialog.setOnDismissListener(dialogInterface -> {
-            Piece tempPiece = pieceAt(row, col);
-            Rank rank = promoteDialog.getRank();
-            Piece promotedPiece = boardModel.promote(pawn, rank, row, col);
-            if (tempPiece != null) {
-                if (tempPiece.getPlayer() != promotedPiece.getPlayer()) {
-                    capturePiece(tempPiece);
-                    addToPGN(promotedPiece, PGN.PROMOTE + PGN.CAPTURE, fromRow, fromCol);
-                }
-            } else addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
-            Log.v(TAG, "promote: Promoted to " + rank);
-            fromSquare = toNotation(fromRow, fromCol);
-            toSquare = toNotation(row, col);
-            toggleGameState();
-            pushToStack();
-        });
-    }
-
-    public boolean promote(Pawn pawn, int row, int col, int fromRow, int fromCol, Rank rank) {
-        boolean promoted = false;
-        Piece tempPiece = pieceAt(row, col);
-        Piece promotedPiece = boardModel.promote(pawn, rank, row, col);
-        if (tempPiece != null) {
-            if (tempPiece.getPlayer() != promotedPiece.getPlayer()) {
-                capturePiece(tempPiece);
-                addToPGN(promotedPiece, PGN.PROMOTE + PGN.CAPTURE, fromRow, fromCol);
-                promoted = true;
-            }
-        } else {
-            addToPGN(promotedPiece, PGN.PROMOTE, fromRow, fromCol);
-            promoted = true;
-        }
-        if (promoted) {
-            fromSquare = toNotation(fromRow, fromCol);
-            toSquare = toNotation(row, col);
-            toggleGameState();
-            pushToStack();
-        }
-        return promoted;
-    }
-
-    private void toggleGameState() {
-        whiteToPlay = !whiteToPlay;
-        pgn.setWhiteToPlay(whiteToPlay);
-        chessBoard.clearSelection();
-        if (timerEnabled) chessTimer.toggleTimer();
-        if (animate) chessBoard.initializeAnimation();
-    }
-
-    private void pushToStack() {
-        boardModelStack.push(boardModel.clone());
-        FENs.push(boardModel.toFEN());
-        boardModel.fromSquare = fromSquare;
-        boardModel.toSquare = toSquare;
-        fromSquare = "";
-        toSquare = "";
-        updateAll();
-    }
-
-    private void undoLastMove() {
-        if (gameTerminated) return;
-        pgn.removeLast();
-        if (boardModelStack.size() > 1) {
-            boardModelStack.pop();
-            FENs.pop();
-            boardModel = boardModelStack.peek().clone();
-            if (boardModel.enPassantPawn != null)
-                Log.d(TAG, "undoLastMove: EnPassantPawn: " + boardModel.enPassantPawn.getPosition() + " EnPassantSquare: " + boardModel.enPassantSquare);
-            toggleGameState();
-            updateAll();
-        }
     }
 
     /**
-     * Updates all necessary fields and views
+     * Terminate game, disable buttons and timer
      */
-    private void updateAll() {
-        saveGame();
-        long start, end;
-
-        count = 0;
-        start = System.nanoTime();
-        computeLegalMoves();
-        end = System.nanoTime();
-        isChecked();
-        HomeFragment.printTime(TAG, "updating LegalMoves", end - start, count);
-
-        start = System.nanoTime();
-        checkGameTermination();
-        end = System.nanoTime();
-        HomeFragment.printTime(TAG, "checking Game Termination", end - start, -1);
-
-        updateViews();
-
-        chessBoard.invalidate();
-        Log.i(TAG, "updateAll: Updated and saved game");
-    }
-
-    /**
-     * Checks for termination of the game after each move
-     */
-    private void checkGameTermination() {
-        ChessState terminationState;
-//      Check for draw by insufficient material
-        if (drawByInsufficientMaterial()) {
-            termination = "Draw by insufficient material";
-            terminationState = ChessState.DRAW;
-            pgn.setTermination(termination);
-            terminateGame(terminationState);
-            return;
-        }
-
-        if (!loadingPGN) {
-//          Check for draw by repetition
-            if (drawByRepetition()) {
-                termination = "Draw by repetition";
-                terminationState = ChessState.DRAW;
-                pgn.setTermination(termination);
-                terminateGame(terminationState);
-                return;
-            }
-        }
-        if (noLegalMoves()) {
-            Log.v(TAG, "checkGameTermination: No Legal Moves for: " + playerToPlay());
-            isChecked();
-
-            if (!playerToPlay().isInCheck()) {
-                termination = "Draw by Stalemate";
-                terminationState = ChessState.STALEMATE;
-            } else {
-                termination = opponentPlayer(playerToPlay()).getName() + " won by Checkmate";
-                terminationState = ChessState.CHECKMATE;
-            }
-
-            pgn.setTermination(termination);
-            Toast.makeText(requireContext(), termination, Toast.LENGTH_SHORT).show();
-            terminateGame(terminationState);
-        }
-    }
-
-    private boolean noLegalMoves() {
-        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
-        for (Map.Entry<Piece, HashSet<Integer>> entry : pieces)
-            if (!entry.getValue().isEmpty()) return false;
-        return true;
-    }
-
-    /**
-     * Terminates the game and displays Game Over dialog
-     *
-     * @param terminationState State of the termination
-     */
-    private void terminateGame(ChessState terminationState) {
-        saveGame();
-        gameState = terminationState;
-        if (!loadingPGN && dataManager.deleteGameFiles())
-            Log.d(TAG, "deleteGameFiles: Game files deleted successfully!");
-        gameTerminated = true;
-
-        if (pgn.getMoveCount() == 0)
-            Toast.makeText(requireContext(), "Game aborted", Toast.LENGTH_SHORT).show();
-
-        if (!loadingPGN && pgn.getMoveCount() != 0) {
-            SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd_HH-mm", Locale.ENGLISH);
-            String name = "pgn_" + white + "vs" + black + "_" + date.format(new Date()) + ".pgn";
-            if (dataManager.savePGN(pgn, name))
-                Log.d(TAG, String.format("terminateGame: Game PGN saved successfully!\n%s----------------------------------------", pgn.toString()));
-        }
-
+    public void terminateGame() {
         if (timerEnabled && chessTimer != null) chessTimer.stopTimer();
         chessBoard.invalidate();
 
@@ -785,178 +194,65 @@ public class GameFragment extends Fragment implements BoardInterface {
         setImageButtonAlpha(btn_resign);
         setImageButtonAlpha(btn_draw);
 
-        Log.i(TAG, "terminateGame: Game terminated by: " + terminationState);
+        pgn = gameLogic.getPGN();
         showGameOverDialog();
     }
 
+    /**
+     * Terminate game due to timeout of one player
+     */
+    public void terminateByTimeOut() {
+        termination = opponentPlayer(gameLogic.playerToPlay()).getName() + " won on time";
+        gameLogic.getPGN().setTermination(termination);
+        gameLogic.terminateGame(ChessState.TIMEOUT);
+    }
+
+    /**
+     * Load the game in LoadGameFragment
+     */
     private void loadGame() {
         Bundle args = new Bundle();
-        args.putSerializable(LoadGameFragment.LOAD_GAME_KEY, boardModelStack);
-        args.putSerializable(LoadGameFragment.LOAD_PGN_KEY, pgn);
+        String opening;
+
+        long start = System.nanoTime();
+        Openings openings = Openings.getInstance(requireContext());
+        String openingResult = openings.searchOpening(pgn.getMoves());
+        long end = System.nanoTime();
+
+        String[] split = openingResult.split(Openings.separator);
+        int lastBookMove = Integer.parseInt(split[0]);
+        if (lastBookMove != -1 && split.length == 2) {
+            HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
+            opening = split[1];
+            for (int i = 0; i <= lastBookMove; i++)
+                pgn.moveAnnotationMap.put(i, BOOK);
+        } else {
+            opening = "";
+            Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getMoves().subList(0, Math.min(pgn.getMoves().size(), 10))));
+        }
+
+        args.putSerializable(LoadGameFragment.BOARD_MODEL_STACK_KEY, gameLogic.getBoardModelStack());
+        args.putSerializable(LoadGameFragment.PGN_KEY, gameLogic.getPGN());
+        args.putSerializable(LoadGameFragment.FENS_KEY, gameLogic.getFENs());
         args.putString(OPENING_KEY, opening);
-        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, fileExists);
+        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
         navController.popBackStack();
         navController.navigate(R.id.nav_load_game, args);
     }
 
-    public void terminateByTimeOut() {
-        gameTerminated = true;
-        termination = opponentPlayer(playerToPlay()).getName() + " won on time";
-        pgn.setTermination(termination);
-        terminateGame(ChessState.TIMEOUT);
-    }
-
-    private boolean drawByInsufficientMaterial() {
-        boolean KB = false, kb = false, BLight = false, bLight = false;
-        LinkedHashSet<Piece> pieces = boardModel.pieces;
-        HashSet<Piece> whitePieces = new HashSet<>(), blackPieces = new HashSet<>();
-        for (Piece piece : pieces) {
-            if (piece.isCaptured()) continue;
-            if (piece.isWhite()) whitePieces.add(piece);
-            else blackPieces.add(piece);
-        }
-
-        if (whitePieces.size() == 1 && blackPieces.size() == 1) return true;
-        else if (whitePieces.size() <= 2 && blackPieces.size() == 1 || whitePieces.size() == 1 && blackPieces.size() <= 2) {
-            for (Piece whitePiece : whitePieces)
-                if (whitePiece.getRank() == Rank.BISHOP || whitePiece.getRank() == Rank.KNIGHT)
-                    return true;
-            for (Piece blackPiece : blackPieces)
-                if (blackPiece.getRank() == Rank.BISHOP || blackPiece.getRank() == Rank.KNIGHT)
-                    return true;
-        } else if (whitePieces.size() <= 2 && blackPieces.size() <= 2) {
-            for (Piece whitePiece : whitePieces)
-                if (whitePiece.getRank() == Rank.BISHOP) {
-                    KB = true;
-                    BLight = (whitePiece.getRow() + whitePiece.getCol()) % 2 == 0;
-                }
-            for (Piece blackPiece : blackPieces)
-                if (blackPiece.getRank() == Rank.BISHOP) {
-                    kb = true;
-                    bLight = (blackPiece.getRow() + blackPiece.getCol()) % 2 == 0;
-                }
-            return KB && kb && BLight == bLight;
-        }
-        return false;
-    }
-
-    private boolean drawByRepetition() {
-        int i = 0, j, l = FENs.size();
-        String[] positions = new String[l];
-        for (String FEN : FENs) positions[l - i++ - 1] = FEN;
-
-        String lastPosition = positions[l - 1];
-        for (i = 0; i < l - 2; i++)
-            if (lastPosition.equals(positions[i])) {
-                Log.d(TAG, String.format("drawByRepetition: One repetition found:\n%d: %s\n%d: %s", i / 2 + 1, positions[i], (l - 1) / 2 + 1, lastPosition));
-                for (j = i + 1; j < l - 1; j++)
-                    if (positions[i].equals(positions[j])) {
-                        Log.i(TAG, "Draw by repetition");
-                        Log.i(TAG, String.format("Position : %d, %d & %d", i / 2 + 1, j / 2 + 1, (l - 1) / 2 + 1));
-                        Log.i(TAG, String.format("Repeated moves FEN:\n%d - %s\n%d - %s\n%d - %s", i / 2 + 1, positions[i], j / 2 + 1, positions[j], (l - 1) / 2 + 1, lastPosition));
-                        return true;
-                    }
-                positions[i] = "";
-            }
-        return false;
-    }
-
     /**
-     * Checks if any of the player is checked
+     * Update all the views in the fragment
      */
-    private void isChecked() {
-        boolean isChecked = false;
-        King whiteKing = boardModel.getWhiteKing();
-        King blackKing = boardModel.getBlackKing();
-        Player.WHITE.setInCheck(false);
-        Player.BLACK.setInCheck(false);
-        if (whiteKing.isChecked(this)) {
-            isChecked = true;
-            Player.WHITE.setInCheck(true);
-            Log.i(TAG, "isChecked: White King checked");
-        }
-        if (blackKing.isChecked(this)) {
-            isChecked = true;
-            Player.BLACK.setInCheck(true);
-            Log.i(TAG, "isChecked: Black King checked");
-        }
-
-        if (!loadingPGN && vibrationEnabled && isChecked) {
-            long vibrationDuration = 150;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                vibrator.vibrate(VibrationEffect.createOneShot(vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE));
-            else vibrator.vibrate(vibrationDuration);
-        }
-    }
-
-    /**
-     * Prints all legal moves for the player in check
-     */
-    private void printLegalMoves() {
-        if (legalMoves == null) return;
-        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
-        for (Map.Entry<Piece, HashSet<Integer>> entry : pieces) {
-            Piece piece = entry.getKey();
-            HashSet<Integer> moves = entry.getValue();
-            if (!moves.isEmpty()) {
-                StringBuilder allMoves = new StringBuilder();
-                for (int move : moves)
-                    allMoves.append(toNotation(move)).append(" ");
-                Log.v(TAG, "printLegalMoves: Legal Moves for " + piece.getPosition() + ": " + allMoves);
-            }
-//            else Log.v(TAG, "printLegalMoves: No legal moves for " + piece.getPosition());
-        }
-    }
-
-    /**
-     * Computes and updates all legal moves for the player to play
-     */
-    private void computeLegalMoves() {
-        legalMoves = new HashMap<>();
-        LinkedHashSet<Piece> pieces = boardModel.pieces;
-        for (Piece piece : pieces) {
-            if (!isPieceToPlay(piece) || piece.isCaptured()) continue;
-
-            HashSet<Integer> possibleMoves = piece.getPossibleMoves(this), illegalMoves = new HashSet<>();
-            for (int move : possibleMoves) {
-                if (isIllegalMove(piece, move)) illegalMoves.add(move);
-                count++;
-            }
-
-            possibleMoves.removeAll(illegalMoves);
-            legalMoves.put(piece, possibleMoves);
-        }
-    }
-
-    /**
-     * Finds if a move is illegal for the given piece
-     *
-     * @param piece <code>Piece</code> to move
-     * @param move  Move for the piece
-     * @return <code>True|False</code>
-     */
-    private boolean isIllegalMove(Piece piece, int move) {
-        TempBoardInterface tempBoardInterface = new TempBoardInterface();
-        tempBoardInterface.tempBoardModel = boardModel.clone();
-        boolean isChecked;
-        int row = piece.getRow(), col = piece.getCol(), toRow = toRow(move), toCol = toCol(move);
-        tempBoardInterface.movePiece(row, col, toRow, toCol);
-        if (piece.isWhite())
-            isChecked = tempBoardInterface.tempBoardModel.getWhiteKing().isChecked(tempBoardInterface);
-        else
-            isChecked = tempBoardInterface.tempBoardModel.getBlackKing().isChecked(tempBoardInterface);
-        return isChecked;
-    }
-
     @SuppressLint("SetTextI18n")
-    private void updateViews() {
+    public void updateViews() {
+        if (gameLogic == null) return;
         StringBuilder whiteText = new StringBuilder(), blackText = new StringBuilder();
         int blackCapturedValue = 0, whiteCapturedValue = 0, difference;
-        PGN_textView.setText(pgn.getPGNMoves());
+        PGN_textView.setText(gameLogic.getPGN().getPGNMoves());
         horizontalScrollView.post(() -> horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT));
 
-        if (gameTerminated) gameStateView.setText(termination);
-        else gameStateView.setText(playerToPlay().getName() + "'s turn");
+        if (gameLogic.isGameTerminated()) gameStateView.setText(termination);
+        else gameStateView.setText(gameLogic.playerToPlay().getName() + "'s turn");
 
         whiteCaptured.setText("");
         blackCaptured.setText("");
@@ -964,7 +260,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         whiteValue.setText("");
         blackValue.setText("");
 
-        ArrayList<Piece> capturedPieces = boardModel.getCapturedPieces();
+        ArrayList<Piece> capturedPieces = gameLogic.getBoardModel().getCapturedPieces();
         for (Piece piece : capturedPieces) {
             if (piece.isWhite()) {
                 blackText.append(piece.getUnicode());
@@ -984,7 +280,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         whiteCaptured.setText(whiteText);
         blackCaptured.setText(blackText);
 
-        btn_undo_move.setEnabled(!gameTerminated && boardModelStack.size() > 1);
+        btn_undo_move.setEnabled(!gameLogic.isGameTerminated() && gameLogic.getBoardModelStack().size() > 1);
 
         setImageButtonAlpha(btn_undo_move);
         setImageButtonAlpha(btn_resign);
@@ -995,8 +291,7 @@ public class GameFragment extends Fragment implements BoardInterface {
         button.setAlpha(button.isEnabled() ? 1f : 0.5f);
     }
 
-    private void showGameOverDialog() {
-        if (loadingPGN) return;
+    public void showGameOverDialog() {
         GameOverDialog gameOverDialog = new GameOverDialog(requireContext(), pgn);
         gameOverDialog.show();
         gameOverDialog.findViewById(R.id.btn_view_game).setOnClickListener(v -> {
@@ -1019,148 +314,8 @@ public class GameFragment extends Fragment implements BoardInterface {
         alertDialog.show();
     }
 
-    public static boolean isGameTerminated() {
-        return gameTerminated;
-    }
-
-    /**
-     * Opponent player for the given <code>Player</code>
-     *
-     * @return <code>White|Black</code>
-     */
-    public static Player opponentPlayer(Player player) {
-        return player == Player.WHITE ? Player.BLACK : Player.WHITE;
-    }
-
-    /**
-     * Returns whether the piece belongs to the current player
-     *
-     * @param piece <code>Piece</code> to check
-     * @return <code>True|False</code>
-     */
-    public static boolean isPieceToPlay(@NonNull Piece piece) {
-        return piece.getPlayer() == playerToPlay();
-    }
-
-    /**
-     * Returns the current player to play
-     *
-     * @return <code>White|Black</code>
-     */
-    public static Player playerToPlay() {
-        return whiteToPlay ? Player.WHITE : Player.BLACK;
-    }
-
-    public static boolean isWhiteToPlay() {
-        return whiteToPlay;
-    }
-
-    @Override
-    public BoardModel getBoardModel() {
-        return boardModel;
-    }
-
-    public static ChessState getGameState() {
-        return gameState;
-    }
-
-    @Override
-    public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
-        return legalMoves;
-    }
-
     private void copyToClipboard(String label, String content) {
         clipboard.setPrimaryClip(ClipData.newPlainText(label, content));
         Toast.makeText(requireContext(), label + " copied", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Converts absolute position to column number
-     */
-    public static int toCol(int position) {
-        return position % 8;
-    }
-
-    /**
-     * Converts absolute position to row number
-     */
-    public static int toRow(int position) {
-        return position / 8;
-    }
-
-    /**
-     * Converts notation to column number
-     */
-    public static int toCol(String position) {
-        return position.charAt(0) - 'a';
-    }
-
-    /**
-     * Converts notation to row number
-     */
-    public static int toRow(String position) {
-        return position.charAt(1) - '1';
-    }
-
-    /**
-     * Converts absolute position to Standard Notation
-     */
-    public static String toNotation(int position) {
-        return "" + (char) ('a' + position % 8) + (position / 8 + 1);
-    }
-
-    /**
-     * Converts row and column numbers to Standard Notation
-     */
-    public static String toNotation(int row, int col) {
-        return "" + (char) ('a' + col) + (row + 1);
-    }
-
-    public static String getTAG() {
-        return TAG;
-    }
-
-    /**
-     * Temporary BoardInterface for computing Legal Moves
-     */
-    static class TempBoardInterface implements BoardInterface {
-        private BoardModel tempBoardModel;
-
-        @Override
-        public Piece pieceAt(int row, int col) {
-            return tempBoardModel.pieceAt(row, col);
-        }
-
-        @Override
-        public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-            Piece opponentPiece = pieceAt(toRow, toCol), movingPiece = pieceAt(fromRow, fromCol);
-            if (movingPiece != null) movingPiece.moveTo(toRow, toCol);
-            else Log.e("TempBoardInterface", "movePiece: Error! movingPiece is null");
-            if (opponentPiece != null) tempBoardModel.capturePiece(opponentPiece);
-            return true;
-        }
-
-        @Override
-        public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
-        }
-
-        @Override
-        public boolean capturePiece(Piece piece) {
-            return false;
-        }
-
-        @Override
-        public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
-        }
-
-        @Override
-        public BoardModel getBoardModel() {
-            return tempBoardModel;
-        }
-
-        @Override
-        public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
-            return null;
-        }
     }
 }

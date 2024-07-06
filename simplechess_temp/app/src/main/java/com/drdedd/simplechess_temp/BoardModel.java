@@ -1,5 +1,8 @@
 package com.drdedd.simplechess_temp;
 
+import static com.drdedd.simplechess_temp.data.DataConverter.getPieceChar;
+import static com.drdedd.simplechess_temp.data.DataConverter.toCol;
+import static com.drdedd.simplechess_temp.data.DataConverter.toRow;
 import static com.drdedd.simplechess_temp.data.Regexes.FENPattern;
 
 import android.content.Context;
@@ -7,11 +10,11 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
-import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.pieces.Bishop;
 import com.drdedd.simplechess_temp.pieces.King;
@@ -29,6 +32,9 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
+/**
+ * Stores pieces location, enPassant square and other board UI data<br>
+ */
 public class BoardModel implements Serializable, Cloneable {
     /**
      * Set of all the pieces on the board
@@ -167,6 +173,17 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
+    /**
+     * Search for piece from a specific row
+     *
+     * @param boardInterface BoardInterface
+     * @param player         Player of the piece
+     * @param rank           Rank of the piece
+     * @param row            Row to be searched
+     * @param destRow        Destination row
+     * @param destCol        Destination column
+     * @return <code>Piece|null</code>
+     */
     public Piece searchRow(BoardInterface boardInterface, Player player, Rank rank, int row, int destRow, int destCol) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
@@ -176,6 +193,17 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
+    /**
+     * Search for piece from a specific column
+     *
+     * @param boardInterface BoardInterface
+     * @param player         Player of the piece
+     * @param rank           Rank of the piece
+     * @param col            Column to be searched
+     * @param destRow        Destination row
+     * @param destCol        Destination column
+     * @return <code>Piece|null</code>
+     */
     public Piece searchCol(BoardInterface boardInterface, Player player, Rank rank, int col, int destRow, int destCol) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
@@ -185,6 +213,16 @@ public class BoardModel implements Serializable, Cloneable {
         return null;
     }
 
+    /**
+     * Search for piece from a specific position
+     *
+     * @param boardInterface BoardInterface
+     * @param player         Player of the piece
+     * @param rank           Rank of the piece
+     * @param row            Row to be searched
+     * @param col            Col to be searched
+     * @return <code>Piece|null</code>
+     */
     public Piece searchPiece(BoardInterface boardInterface, Player player, Rank rank, int row, int col) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
@@ -223,14 +261,19 @@ public class BoardModel implements Serializable, Cloneable {
      */
     public Piece promote(Piece pawn, Rank rank, int row, int col) {
         Piece piece = null;
-        if (rank == Rank.QUEEN)
-            piece = new Queen(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString()), unicodes.get("Q" + pawn.getPlayer().toString().charAt(0)));
-        if (rank == Rank.ROOK)
-            piece = new Rook(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.ROOK.toString()), unicodes.get("R" + pawn.getPlayer().toString().charAt(0)));
-        if (rank == Rank.BISHOP)
-            piece = new Bishop(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString()), unicodes.get("B" + pawn.getPlayer().toString().charAt(0)));
-        if (rank == Rank.KNIGHT)
-            piece = new Knight(pawn.getPlayer(), row, col, resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString()), unicodes.get("N" + pawn.getPlayer().toString().charAt(0)));
+        Integer queen = resIDs.get(pawn.getPlayer() + Rank.QUEEN.toString());
+        Integer rook = resIDs.get(pawn.getPlayer() + Rank.ROOK.toString());
+        Integer bishop = resIDs.get(pawn.getPlayer() + Rank.BISHOP.toString());
+        Integer knight = resIDs.get(pawn.getPlayer() + Rank.KNIGHT.toString());
+
+        if (rank == Rank.QUEEN && queen != null)
+            piece = new Queen(pawn.getPlayer(), row, col, queen, unicodes.get("Q" + pawn.getPlayer().toString().charAt(0)));
+        if (rank == Rank.ROOK && rook != null)
+            piece = new Rook(pawn.getPlayer(), row, col, rook, unicodes.get("R" + pawn.getPlayer().toString().charAt(0)));
+        if (rank == Rank.BISHOP && bishop != null)
+            piece = new Bishop(pawn.getPlayer(), row, col, bishop, unicodes.get("B" + pawn.getPlayer().toString().charAt(0)));
+        if (rank == Rank.KNIGHT && knight != null)
+            piece = new Knight(pawn.getPlayer(), row, col, knight, unicodes.get("N" + pawn.getPlayer().toString().charAt(0)));
 
         if (piece != null) {
             addPiece(piece);
@@ -292,12 +335,12 @@ public class BoardModel implements Serializable, Cloneable {
      * @return <code>String</code> - FEN of the <code>BoardModel</code>
      * @see <a href="https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation">More about FEN</a>
      */
-    public String toFEN() {
-        String[] fenStrings = toFENStrings();
+    public String toFEN(BoardInterface boardInterface) {
+        String[] fenStrings = toFENStrings(boardInterface);
         return String.format(Locale.ENGLISH, "%s %s %s %s", fenStrings[0], fenStrings[1], fenStrings[2], fenStrings[3]);
     }
 
-    public String[] toFENStrings() {
+    private String[] toFENStrings(BoardInterface boardInterface) {
         String[] FEN = new String[4];
 
         StringBuilder position = new StringBuilder();
@@ -323,7 +366,7 @@ public class BoardModel implements Serializable, Cloneable {
 
         FEN[0] = String.valueOf(position);
 
-        if (GameFragment.isWhiteToPlay()) FEN[1] = "w";
+        if (boardInterface.isWhiteToPlay()) FEN[1] = "w";
         else FEN[1] = "b";
 
         StringBuilder castleRights = getCastleRights();
@@ -350,12 +393,14 @@ public class BoardModel implements Serializable, Cloneable {
         return castleRights;
     }
 
-    private char getPieceChar(Piece piece) {
-        char ch = piece.getRank().getLetter();
-        if (!piece.isWhite()) ch = Character.toLowerCase(ch);
-        return ch;
-    }
-
+    /**
+     * Parses the valid FEN to BoardModel
+     *
+     * @param FEN     Valid FEN String
+     * @param context Context for resources
+     * @return <code>BoardModel|null</code>
+     */
+    @Nullable
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
         BoardModel boardModel = new BoardModel(context, false, false);
@@ -375,7 +420,7 @@ public class BoardModel implements Serializable, Cloneable {
         String castlingAvailability = FENTokens.nextToken();
         String enPassantSquare = FENTokens.nextToken();
         String halfMoveClock = "", fullMoveNumber = "";
-        Player playerToPlay;
+        Player activePlayer;
         boolean whiteShortCastle = false, whiteLongCastle = false, blackShortCastle = false, blackLongCastle = false;
 
         if (FENTokens.hasMoreTokens()) halfMoveClock = FENTokens.nextToken();
@@ -434,8 +479,9 @@ public class BoardModel implements Serializable, Cloneable {
             }
             row--;
         }
+
 //        Player to play next move
-        playerToPlay = nextPlayer.equals("w") ? Player.WHITE : Player.BLACK;
+        activePlayer = nextPlayer.equals("w") ? Player.WHITE : Player.BLACK;
 
 //        Castling availability for each player
         if (!castlingAvailability.equals("-")) {
@@ -447,11 +493,11 @@ public class BoardModel implements Serializable, Cloneable {
 
         if (!enPassantSquare.equals("-")) {
             boardModel.enPassantSquare = enPassantSquare;
-            boardModel.enPassantPawn = (Pawn) boardModel.pieceAt(GameFragment.toRow(enPassantSquare) - (playerToPlay == Player.WHITE ? 1 : -1), GameFragment.toCol(enPassantSquare));
+            boardModel.enPassantPawn = (Pawn) boardModel.pieceAt(toRow(enPassantSquare) - (activePlayer == Player.WHITE ? 1 : -1), toCol(enPassantSquare));
         }
         Log.v(TAG, "parseFEN: Successfully parsed FEN to BoardModel");
 
-        Log.v(TAG, String.format(Locale.ENGLISH, "\nGiven FEN: %s\nConverted BoardModel:%s\nConverted BoardModel FEN: %s\nPlayer to play: %s\nWhite ShortCastle: %b\tLongCastle: %b\nBlack ShortCastle: %b\tLongCastle: %b\nEnPassantPawn: %s", FEN, boardModel, boardModel.toFENStrings()[0], playerToPlay, whiteShortCastle, whiteLongCastle, blackShortCastle, blackLongCastle, boardModel.enPassantPawn == null ? "-" : boardModel.enPassantPawn.getPosition()));
+//        Log.v(TAG, String.format(Locale.ENGLISH, "\nGiven FEN: %s\nConverted BoardModel:%s\nConverted BoardModel FEN: %s\nPlayer to play: %s\nWhite ShortCastle: %b\tLongCastle: %b\nBlack ShortCastle: %b\tLongCastle: %b\nEnPassantPawn: %s", FEN, boardModel, boardModel.toFENStrings()[0], activePlayer, whiteShortCastle, whiteLongCastle, blackShortCastle, blackLongCastle, boardModel.enPassantPawn == null ? "-" : boardModel.enPassantPawn.getPosition()));
         if (!halfMoveClock.isEmpty() && !fullMoveNumber.isEmpty())
             Log.v(TAG, String.format("parseFEN: Half move clock: %s, Full move count: %s", halfMoveClock, fullMoveNumber));
 
@@ -459,6 +505,9 @@ public class BoardModel implements Serializable, Cloneable {
         return boardModel;
     }
 
+    /**
+     * @return List of all captured pieces
+     */
     public ArrayList<Piece> getCapturedPieces() {
         ArrayList<Piece> capturedPieces = new ArrayList<>();
         for (Piece piece : pieces) if (piece.isCaptured()) capturedPieces.add(piece);

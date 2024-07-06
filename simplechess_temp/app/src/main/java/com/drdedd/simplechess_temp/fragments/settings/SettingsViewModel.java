@@ -8,7 +8,7 @@ import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 
 public class SettingsViewModel extends ViewModel {
-    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound;
+    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound, restartActivity;
     private String whiteName, blackName;
     private int minutes, seconds;
     private BoardTheme boardTheme;
@@ -93,6 +93,7 @@ public class SettingsViewModel extends ViewModel {
 
     public void setFullScreen(boolean fullScreen) {
         this.fullScreen = fullScreen;
+        restartActivity = true;
     }
 
     public void setCheatMode(boolean cheatMode) {
@@ -137,5 +138,9 @@ public class SettingsViewModel extends ViewModel {
 
     public void setSound(boolean sound) {
         this.sound = sound;
+    }
+
+    public boolean isRestartActivity() {
+        return restartActivity;
     }
 }

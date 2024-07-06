@@ -2,7 +2,6 @@ package com.drdedd.simplechess_temp;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.interfaces.PGNRecyclerViewInterface;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
@@ -22,7 +19,7 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
- * <p>PGN (Portable Game Notation) is a standard text format used to record Chess game moves with standard notations</p>
+ * PGN (Portable Game Notation) is a standard text format used to record Chess game moves with standard notations
  *
  * @see <a href="https://en.wikipedia.org/wiki/Portable_Game_Notation"> More about PGN </a>
  */
@@ -30,10 +27,10 @@ public class PGN implements Serializable {
     /**
      * Constant String for special moves
      */
-    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote", APP_NAME = "Simple Chess";
+    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote";
     public static final String RESULT_DRAW = "1/2-1/2", RESULT_WHITE_WON = "1-0", RESULT_BLACK_WON = "0-1", RESULT_ONGOING = "*";
     public static final String TAG_APP = "App", TAG_WHITE = "White", TAG_DATE = "Date", TAG_BLACK = "Black", TAG_SET_UP = "SetUp", TAG_FEN = "FEN", TAG_RESULT = "Result", TAG_TERMINATION = "Termination";
-    public static final String TAG_ECO = "ECO", TAG_OPENING = "Opening";
+    //    public static final String TAG_ECO = "ECO", TAG_OPENING = "Opening";
     private final String FEN;
     private boolean whiteToPlay;
     private String termination = "";
@@ -82,19 +79,35 @@ public class PGN implements Serializable {
         alternateMoveSequence = new LinkedHashMap<>();
     }
 
+    /**
+     * Adds move to PGN
+     *
+     * @param piece Piece moved
+     * @param move  Special move if any
+     */
     public void addToPGN(Piece piece, String move) {
         if (move.isEmpty()) moves.addLast(piece.getPosition());
         else moves.addLast(move);
     }
 
+    /**
+     * Removes last move from PGN
+     */
     public void removeLast() {
         if (!moves.isEmpty()) moves.removeLast();
     }
 
+    /**
+     * @return <code>true|false</code> - White to play
+     */
     public boolean isWhiteToPlay() {
         return whiteToPlay;
     }
 
+    /**
+     * Sets white to play
+     * @param whiteToPlay White to play
+     */
     public void setWhiteToPlay(boolean whiteToPlay) {
         this.whiteToPlay = whiteToPlay;
     }
@@ -164,21 +177,16 @@ public class PGN implements Serializable {
      */
     public String getResult() {
         if (allTags.containsKey(TAG_RESULT)) return allTags.get(TAG_RESULT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            switch (GameFragment.getGameState()) {
-                case ONGOING:
-                    return PGN.RESULT_ONGOING;
-                case RESIGN:
-                case TIMEOUT:
-                    return termination.contains(Player.WHITE.getName()) ? PGN.RESULT_WHITE_WON : PGN.RESULT_BLACK_WON;
-                case CHECKMATE:
-                    return Player.WHITE.isInCheck() ? PGN.RESULT_BLACK_WON : PGN.RESULT_WHITE_WON;
-                case STALEMATE:
-                case DRAW:
-                    return PGN.RESULT_DRAW;
-            }
-        }
-        return PGN.RESULT_ONGOING;
+        return "";
+    }
+
+    /**
+     * Adds game result to the tag data
+     *
+     * @param result Result of the game
+     */
+    public void setResult(String result) {
+        if (!result.isEmpty()) addTag(TAG_RESULT, result);
     }
 
     /**
@@ -237,11 +245,28 @@ public class PGN implements Serializable {
         return moves.size();
     }
 
+    /**
+     * @param moveNo Move number
+     * @return <code>String|null</code> - Move at given position
+     */
     public String getMoveAt(int moveNo) {
         if (moveNo < moves.size()) return moves.get(moveNo);
         return null;
     }
 
+    /**
+     * @return List of moves
+     */
+    public LinkedList<String> getMoves() {
+        return moves;
+    }
+
+    /**
+     * Adds tag to PGN tags
+     *
+     * @param tag   Tag name
+     * @param value Tag value
+     */
     public void addTag(String tag, String value) {
         allTags.put(tag, value);
     }

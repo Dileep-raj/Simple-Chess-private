@@ -26,6 +26,8 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.text.TextUtils;
@@ -52,6 +54,7 @@ import com.drdedd.simplechess_temp.BoardModel;
 import com.drdedd.simplechess_temp.ChessBoard;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
+import com.drdedd.simplechess_temp.GameLogic;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.data.MoveAnnotation;
@@ -77,15 +80,19 @@ import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
 
+/**
+ * Fragment to load and view chess games
+ */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class LoadGameFragment extends Fragment {
     private static final String TAG = "LoadGameFragment";
-    protected static final String LOAD_GAME_KEY = "LoadGame", LOAD_PGN_KEY = "LoadPGN", PGN_FILE_KEY = "PGNFile", FILE_EXISTS_KEY = "FileExists";
+    public static final String PGN_CONTENT_KEY = "PGNContent", FILE_EXISTS_KEY = "FileExists";
+    public static final String PGN_KEY = "PGN", BOARD_MODEL_STACK_KEY = "boardModelStack", FENS_KEY = "FENs", READ_RESULT_KEY = "readResult", PARSE_RESULT_KEY = "parseResult";
     public LinkedHashMap<String, String> tagsMap;
-    public LinkedList<String> moves, invalidWords;
+    public LinkedList<String> moves;
     public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
     private FragmentLoadGameBinding binding;
-    boolean gameLoaded = false, fileExists;
+    private boolean gameLoaded = false, fileExists;
     private final static int gone = View.GONE, visible = View.VISIBLE;
     private ClipboardManager clipboardManager;
     private NavController navController;
@@ -93,8 +100,7 @@ public class LoadGameFragment extends Fragment {
     private ProgressBarDialog progressBarDialog;
     private Dialog dialog;
     private EditText pgnTxt;
-    private String opening;
-//    private ChessBoard analysisBoard;
+    public Handler handler;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -103,36 +109,33 @@ public class LoadGameFragment extends Fragment {
         clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         navController = Navigation.findNavController(container);
         binding.notLoadedLayout.findViewById(R.id.btn_load_game).setOnClickListener(v -> inputPGNDialog());
+
         tagsMap = new LinkedHashMap<>();
         moves = new LinkedList<>();
         commentsMap = new LinkedHashMap<>();
         moveAnnotationMap = new LinkedHashMap<>();
         alternateMoveSequence = new LinkedHashMap<>();
-        invalidWords = new LinkedList<>();
+
         Bundle args = getArguments();
         if (args != null) {
             fileExists = args.getBoolean(FILE_EXISTS_KEY, false);
-            if (args.containsKey(LOAD_GAME_KEY) && args.containsKey(LOAD_PGN_KEY)) {
-                Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(LOAD_GAME_KEY);
-                PGN pgn = (PGN) args.getSerializable(LOAD_PGN_KEY);
-                opening = args.getString(GameFragment.OPENING_KEY, "");
-                if (boardModelStack != null) try {
+            if (args.containsKey(BOARD_MODEL_STACK_KEY) && args.containsKey(PGN_KEY)) {
+                Stack<BoardModel> boardModelStack = (Stack<BoardModel>) args.getSerializable(BOARD_MODEL_STACK_KEY);
+                Stack<String> FENs = (Stack<String>) args.getSerializable(FENS_KEY);
+                PGN pgn = (PGN) args.getSerializable(PGN_KEY);
+                String opening = args.getString(GameFragment.OPENING_KEY, "");
+                if (boardModelStack != null && FENs != null) try {
                     this.pgn = pgn;
                     if (!opening.isEmpty()) binding.openingName.setText(opening);
-                    loadGameView(new ArrayList<>(boardModelStack));
+                    loadGameView(new ArrayList<>(boardModelStack), new ArrayList<>(FENs));
                     gameLoaded = true;
                 } catch (Exception e) {
                     Log.e(TAG, "onCreateView: Error while loading game", e);
                 }
-            } else if (args.containsKey(PGN_FILE_KEY)) {
-                String pgn = args.getString(PGN_FILE_KEY);
-                gameLoaded = true;
-                long s = System.nanoTime();
-                readPGN(pgn);
-                long e = System.nanoTime();
-                if (pgn != null)
-                    HomeFragment.printTime(TAG, "reading parsed PGN", e - s, pgn.length());
-                parsePGN();
+            } else if (args.containsKey(PGN_CONTENT_KEY)) {
+                String pgnContent = args.getString(PGN_CONTENT_KEY);
+//                if (dialog != null) dialog.dismiss();
+                readPGN(pgnContent);
             }
         }
         return binding.getRoot();
@@ -145,6 +148,13 @@ public class LoadGameFragment extends Fragment {
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) actionBar.hide();
         }
+        refresh();
+    }
+
+    /**
+     * Refreshes fragment layouts visibility
+     */
+    private void refresh() {
         if (gameLoaded) {
             binding.loadedLayout.setVisibility(visible);
             binding.notLoadedLayout.setVisibility(gone);
@@ -156,6 +166,75 @@ public class LoadGameFragment extends Fragment {
         }
     }
 
+    /**
+     * Reads, validates and parses PGN content
+     *
+     * @param pgnContent Content of the PGN
+     */
+    @SuppressWarnings("unchecked")
+    private void readPGN(String pgnContent) {
+        progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
+        progressBarDialog.show();
+
+        handler = new Handler(requireActivity().getMainLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message message) {
+                super.handleMessage(message);
+                Bundle data = message.getData();
+                if (data.getBoolean(READ_RESULT_KEY)) {
+                    Log.v(TAG, "handleMessage: No errors in PGN");
+                    if (dialog != null) dialog.dismiss();
+
+                    if (data.getBoolean(PARSE_RESULT_KEY)) {
+                        Stack<BoardModel> boardModelStack = (Stack<BoardModel>) data.getSerializable(BOARD_MODEL_STACK_KEY);
+                        Stack<String> FENs = (Stack<String>) data.getSerializable(FENS_KEY);
+                        if (boardModelStack != null && FENs != null) {
+                            pgn = (PGN) data.getSerializable(PGN_KEY);
+
+                            String opening;
+                            long start = System.nanoTime();
+                            Openings openings = Openings.getInstance(requireContext());
+                            String openingResult = openings.searchOpening(pgn.getMoves());
+                            long end = System.nanoTime();
+
+                            String[] split = openingResult.split(Openings.separator);
+                            int lastBookMove = Integer.parseInt(split[0]);
+                            if (lastBookMove != -1 && split.length == 2) {
+                                HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
+                                opening = split[1];
+                                for (int i = 0; i <= lastBookMove; i++)
+                                    pgn.moveAnnotationMap.put(i, BOOK);
+                            } else {
+                                opening = "";
+                                Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getMoves().subList(0, Math.min(pgn.getMoves().size(), 10))));
+                            }
+
+                            if (!opening.isEmpty()) binding.openingName.setText(opening);
+                            gameLoaded = true;
+                            loadGameView(new ArrayList<>(boardModelStack), new ArrayList<>(FENs));
+                        } else Log.d(TAG, "handleMessage: BoardModelStack is null!");
+                    } else {
+                        Log.d(TAG, "handleMessage: Game not parsed!");
+                        gameLoaded = false;
+                    }
+                } else {
+                    Log.v(TAG, "readPGN: Invalid PGN!");
+                    Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
+                    if (pgnTxt != null) pgnTxt.getText().clear();
+                    gameLoaded = false;
+                }
+                if (progressBarDialog != null) progressBarDialog.dismiss();
+                refresh();
+            }
+        };
+
+        PGNParser pgnParser = new PGNParser(requireContext(), tagsMap, moves, commentsMap, moveAnnotationMap, alternateMoveSequence, pgnContent, handler);
+        pgnParser.start();
+    }
+
+    /**
+     * Opens dialog to input and load PGN or FEN
+     */
     private void inputPGNDialog() {
         dialog = new Dialog(requireContext());
         dialog.setContentView(R.layout.dialog_load_game);
@@ -175,9 +254,9 @@ public class LoadGameFragment extends Fragment {
                 pgnTxt.requestFocus();
                 return;
             }
-            String pgn = pgnTxt.getText().toString();
+            String pgnContent = pgnTxt.getText().toString();
 
-            String FEN = isFEN(pgn);
+            String FEN = isFEN(pgnContent);
             if (!FEN.isEmpty()) {
                 Bundle args = new Bundle();
                 args.putString(GameFragment.FEN_KEY, FEN);
@@ -188,27 +267,8 @@ public class LoadGameFragment extends Fragment {
                 return;
             }
 
-            moves.clear();
-            tagsMap.clear();
-            commentsMap.clear();
-            moveAnnotationMap.clear();
-            alternateMoveSequence.clear();
-
-            long start = System.nanoTime();
-            boolean result = readPGN(pgn);
-            long end = System.nanoTime();
-
-            if (result) {
-                HomeFragment.printTime(TAG, "Reading PGN", end - start, pgn.length());
-                Log.v(TAG, "inputPGNDialog: No errors in PGN");
-                dialog.dismiss();
-                fileExists = false;
-                parsePGN();
-            } else {
-                Log.v(TAG, "inputPGNDialog: Invalid PGN!");
-                Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
-                pgnTxt.getText().clear();
-            }
+            fileExists = false;
+            readPGN(pgnContent);
         });
 
         ImageButton paste = dialog.findViewById(R.id.paste_from_clipboard);
@@ -229,8 +289,14 @@ public class LoadGameFragment extends Fragment {
         dialog.show();
     }
 
-    private void loadGameView(ArrayList<BoardModel> boardModels) {
-        GameViewer gameViewer = new GameViewer(requireActivity(), binding, boardModels, pgn);
+    /**
+     * Loads the game objects to view the game
+     *
+     * @param boardModels List of BoardModels
+     * @param FENs        List of FENs of BoardModels
+     */
+    private void loadGameView(ArrayList<BoardModel> boardModels, ArrayList<String> FENs) {
+        GameViewer gameViewer = new GameViewer(requireActivity(), binding, boardModels, FENs, pgn);
         binding.movePrevious.setOnClickListener(v -> {
             gameViewer.movePrevious();
             if (gameViewer.autoplayRunning) gameViewer.stopAutoplay();
@@ -248,11 +314,14 @@ public class LoadGameFragment extends Fragment {
             return gameViewer.moveToLast();
         });
         binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", pgn.toString()));
-        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameViewer.boardModel.toFEN()));
+        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameViewer.getFEN()));
         if (fileExists) binding.btnSavePgn.setVisibility(gone);
         else binding.btnSavePgn.setOnClickListener(v -> savePGN());
     }
 
+    /**
+     * Save the loaded PGN to PGN library
+     */
     private void savePGN() {
         DataManager dataManager = new DataManager(requireContext());
         String white = tagsMap.containsKey(PGN.TAG_WHITE) ? tagsMap.get(PGN.TAG_WHITE) : "White";
@@ -264,193 +333,27 @@ public class LoadGameFragment extends Fragment {
         binding.btnSavePgn.setVisibility(View.GONE);
     }
 
+    /**
+     * Copies content to clipboard
+     *
+     * @param label   Label for clipboard content
+     * @param content Content to copy to clipboard
+     */
     private void copyToClipboard(String label, String content) {
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, content));
         Toast.makeText(requireContext(), label + " copied", Toast.LENGTH_SHORT).show();
     }
 
-    private void parsePGN() {
-        progressBarDialog = new ProgressBarDialog(requireContext(), "Loading PGN");
-        progressBarDialog.show();
-        boolean newGame = true;
-        Bundle args = new Bundle();
-        if (tagsMap.containsKey(PGN.TAG_SET_UP) && tagsMap.containsKey(PGN.TAG_FEN))
-            if ("1".equals(tagsMap.get(PGN.TAG_SET_UP))) {
-                String FEN = tagsMap.get(PGN.TAG_FEN);
-                if (FEN != null && !FEN.isEmpty()) {
-                    args.putString(GameFragment.LOAD_GAME_KEY, FEN);
-                    newGame = false;
-                }
-            }
-        args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
-        args.putBoolean(GameFragment.LOAD_PGN_KEY, true);
-        args.putSerializable(GameFragment.MOVES_LIST_KEY, moves);
-        args.putSerializable(GameFragment.TAGS_MAP_KEY, tagsMap);
-        args.putSerializable(GameFragment.COMMENTS_KEY, commentsMap);
-        args.putSerializable(GameFragment.ANNOTATION_MAP_KEY, moveAnnotationMap);
-        args.putSerializable(GameFragment.ALTERNATE_MOVE_SEQUENCE_KEY, alternateMoveSequence);
-        args.putString(GameFragment.OPENING_KEY, opening);
-        args.putBoolean(FILE_EXISTS_KEY, fileExists);
-        if (navController != null) {
-            navController.popBackStack();
-            navController.navigate(R.id.nav_game, args);
-        }
-    }
-
+    /**
+     * Checks whether the given input is FEN
+     *
+     * @param PGN PGN input
+     * @return <code>String</code> - FEN or empty string
+     */
     private String isFEN(String PGN) {
         Matcher FENmatcher = FENPattern.matcher(PGN);
-        String FEN = "";
-        if (FENmatcher.find()) FEN = FENmatcher.group();
-        return FEN;
-    }
-
-    private boolean readPGN(String pgnContent) {
-        int moveCount = -1;
-        readTags(pgnContent);
-
-        Matcher startingMoveMatcher = startingMovePattern.matcher(pgnContent);
-        boolean foundMoves = startingMoveMatcher.find();
-        if (!foundMoves) {
-            Log.v(TAG, "readPGN: No moves found in pgn!\n" + pgnContent);
-            Toast.makeText(requireContext(), "No moves in PGN!", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        Scanner PGNReader = new Scanner(pgnContent.substring(startingMoveMatcher.start()));
-
-//      Iterate through every word in the PGN
-        while (PGNReader.hasNext()) {
-            String word = null;
-            try {
-                word = PGNReader.next();
-
-//              If comment is found, extract full comment
-                if (word.startsWith("{")) {
-                    StringBuilder comment = new StringBuilder(word);
-                    while (PGNReader.hasNext()) {
-                        if (word.endsWith("}")) break;
-                        else if (word.contains("}")) {
-                            comment = new StringBuilder(word.substring(0, word.indexOf('}') + 1));
-                            if (word.contains("("))
-                                extractAlternateMoves(moveCount, word.substring(word.indexOf('(')), PGNReader);
-                            break;
-                        }
-
-                        word = PGNReader.next();
-                        if (word.contains("}")) {
-                            comment.append(' ').append(word, 0, word.indexOf('}') + 1);
-                            if (word.contains("("))
-                                extractAlternateMoves(moveCount, word.substring(word.indexOf('(')), PGNReader);
-                            break;
-                        }
-                        comment.append(' ').append(word);
-                    }
-                    commentsMap.put(moveCount, comment.toString());
-                    findMoveFeedback(comment.toString(), moveCount);
-                    continue;
-                }
-
-                if (word.startsWith("(")) {
-                    extractAlternateMoves(moveCount, word, PGNReader);
-                    continue;
-                }
-
-//              If a move is found add move to the moves list
-                if (word.matches(singleMoveStrictRegex)) {
-                    String move = word.replaceAll(moveNumberRegex, "");
-                    moves.add(move);
-                    moveCount++;
-                    findMoveFeedback(word, moveCount);
-                    continue;
-                }
-
-                if (word.matches(numberedAnnotationRegex)) {
-                    moveAnnotationMap.put(moveCount, MoveAnnotation.parseNumberedAnnotation(word));
-                    continue;
-                }
-
-                if (word.matches(moveNumberStrictRegex) || word.matches(commentNumberStrictRegex) || word.matches(resultRegex))
-                    continue;
-                invalidWords.add(word + ",after move: " + moves.getLast());
-            } catch (Exception e) {
-                Log.e(TAG, "readPGN: Error at :" + word, e);
-            }
-        }
-
-        long start = System.nanoTime();
-        Openings openings = Openings.getInstance(requireContext());
-        String openingResult = openings.searchOpening(moves);
-        long end = System.nanoTime();
-
-        String[] split = openingResult.split(Openings.separator);
-        int lastBookMove = Integer.parseInt(split[0]);
-        if (lastBookMove != -1 && split.length == 2) {
-            HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
-            opening = split[1];
-            for (int i = 0; i <= lastBookMove; i++) moveAnnotationMap.put(i, BOOK);
-        } else {
-            opening = "";
-            Log.d(TAG, "readPGN: Opening not found!\n" + Arrays.toString(split));
-        }
-
-        return true;
-    }
-
-    private void extractAlternateMoves(int moveCount, String word, Scanner PGNReader) {
-        StringBuilder movesBuilder = new StringBuilder(word.substring(word.indexOf("(")));
-        while (PGNReader.hasNext()) {
-            if (word.endsWith(")")) break;
-            word = PGNReader.next();
-            movesBuilder.append(' ').append(word);
-            if (word.endsWith(")")) break;
-        }
-        alternateMoveSequence.put(moveCount, movesBuilder.toString());
-    }
-
-    /**
-     * Extracts move feedback if any
-     *
-     * @param word      Move word or comment
-     * @param moveCount Move number
-     */
-    private void findMoveFeedback(String word, int moveCount) {
-        String feedback = null;
-        Matcher feedbackMatcher = moveAnnotationPattern.matcher(word);
-        if (feedbackMatcher.find()) feedback = feedbackMatcher.group();
-        if (feedback != null) moveAnnotationMap.put(moveCount, feedback);
-    }
-
-    /**
-     * Extracts Tags from the PGN
-     *
-     * @param pgn PGN in <code>String</code> format
-     */
-    private void readTags(String pgn) {
-        Scanner tagReader = new Scanner(pgn);
-        String word = null;
-        while (tagReader.hasNext()) {
-            try {
-                word = tagReader.next();
-                if (word.startsWith("1.")) return;
-                if (word.startsWith("[")) {
-                    String tag = word.substring(1);
-                    StringBuilder tagBuilder = new StringBuilder();
-                    while (tagReader.hasNext()) {
-                        word = tagReader.next();
-                        tagBuilder.append(word).append(' ');
-                        if (word.endsWith("]")) break;
-                    }
-                    String value = tagBuilder.substring(tagBuilder.indexOf("\"") + 1, tagBuilder.lastIndexOf("\""));
-                    tagsMap.put(tag, value);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "readTags: Error at : " + word, e);
-            }
-        }
-    }
-
-    public static String getTAG() {
-        return TAG;
+        if (FENmatcher.find()) return FENmatcher.group().trim();
+        return "";
     }
 
     @Override
@@ -462,12 +365,212 @@ public class LoadGameFragment extends Fragment {
     }
 
     /**
+     * PGN parser to validate PGN moves and convert to game objects
+     */
+    static class PGNParser extends Thread {
+        private static final String TAG = "PGNParser";
+        private final LinkedHashMap<String, String> tagsMap;
+        private final LinkedList<String> moves, invalidWords;
+        private final LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
+        private final Context context;
+        private final Bundle data;
+        private final String pgnContent;
+        private final Handler handler;
+
+        PGNParser(Context context, LinkedHashMap<String, String> tagsMap, LinkedList<String> moves, LinkedHashMap<Integer, String> commentsMap, LinkedHashMap<Integer, String> moveAnnotationMap, LinkedHashMap<Integer, String> alternateMoveSequence, String pgnContent, Handler handler) {
+            this.context = context;
+            this.tagsMap = tagsMap;
+            this.moves = moves;
+            this.commentsMap = commentsMap;
+            this.moveAnnotationMap = moveAnnotationMap;
+            this.alternateMoveSequence = alternateMoveSequence;
+            this.pgnContent = pgnContent;
+            this.handler = handler;
+            invalidWords = new LinkedList<>();
+
+            data = new Bundle();
+        }
+
+        @Override
+        public void run() {
+            super.run();
+
+            moves.clear();
+            tagsMap.clear();
+            commentsMap.clear();
+            moveAnnotationMap.clear();
+            alternateMoveSequence.clear();
+
+            long start = System.nanoTime();
+            boolean readResult = readPGN(pgnContent);
+            long end = System.nanoTime();
+
+            data.putBoolean(READ_RESULT_KEY, readResult);
+            if (readResult) {
+                HomeFragment.printTime(TAG, "Reading PGN", end - start, pgnContent.length());
+                Log.v(TAG, "run: No errors in PGN");
+
+                GameLogic gameLogic = new GameLogic(context, tagsMap, moves, commentsMap, moveAnnotationMap, alternateMoveSequence);
+
+                start = System.nanoTime();
+                boolean parseResult = gameLogic.parsePGN();
+                end = System.nanoTime();
+
+                data.putBoolean(PARSE_RESULT_KEY, parseResult);
+                if (parseResult) {
+                    Log.d(TAG, String.format("run: Time to Parse: %,3d ns", end - start));
+                    Log.d(TAG, String.format("run: Game valid and parsed!%nFinal position:%s", gameLogic.getBoardModel()));
+
+                    data.putSerializable(PGN_KEY, gameLogic.getPGN());
+                    data.putSerializable(BOARD_MODEL_STACK_KEY, gameLogic.getBoardModelStack());
+                    data.putSerializable(FENS_KEY, gameLogic.getFENs());
+                } else Log.d(TAG, "run: Game not parsed!");
+            }
+
+            Log.d(TAG, "run: Total invalid words: " + invalidWords.size());
+            Message message = new Message();
+            message.setData(data);
+            handler.sendMessage(message);
+        }
+
+        private boolean readPGN(String pgnContent) {
+            int moveCount = -1;
+            readTags(pgnContent);
+
+            Matcher startingMoveMatcher = startingMovePattern.matcher(pgnContent);
+            boolean foundMoves = startingMoveMatcher.find();
+            if (!foundMoves) {
+                Log.v(TAG, "readPGN: No moves found in pgn!\n" + pgnContent);
+                Toast.makeText(context, "No moves in PGN!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            Scanner PGNReader = new Scanner(pgnContent.substring(startingMoveMatcher.start()));
+
+//      Iterate through every word in the PGN
+            while (PGNReader.hasNext()) {
+                String word = null;
+                try {
+                    word = PGNReader.next();
+
+//              If comment is found, extract full comment
+                    if (word.startsWith("{")) {
+                        StringBuilder comment = new StringBuilder(word);
+                        while (PGNReader.hasNext()) {
+                            if (word.endsWith("}")) break;
+                            else if (word.contains("}")) {
+                                comment = new StringBuilder(word.substring(0, word.indexOf('}') + 1));
+                                if (word.contains("("))
+                                    extractAlternateMoves(moveCount, word.substring(word.indexOf('(')), PGNReader);
+                                break;
+                            }
+
+                            word = PGNReader.next();
+                            if (word.contains("}")) {
+                                comment.append(' ').append(word, 0, word.indexOf('}') + 1);
+                                if (word.contains("("))
+                                    extractAlternateMoves(moveCount, word.substring(word.indexOf('(')), PGNReader);
+                                break;
+                            }
+                            comment.append(' ').append(word);
+                        }
+                        commentsMap.put(moveCount, comment.toString());
+                        findMoveFeedback(comment.toString(), moveCount);
+                        continue;
+                    }
+
+                    if (word.startsWith("(")) {
+                        extractAlternateMoves(moveCount, word, PGNReader);
+                        continue;
+                    }
+
+//              If a move is found add move to the moves list
+                    if (word.matches(singleMoveStrictRegex)) {
+                        String move = word.replaceAll(moveNumberRegex, "");
+                        moves.add(move);
+                        moveCount++;
+                        findMoveFeedback(word, moveCount);
+                        continue;
+                    }
+
+                    if (word.matches(numberedAnnotationRegex)) {
+                        moveAnnotationMap.put(moveCount, MoveAnnotation.parseNumberedAnnotation(word));
+                        continue;
+                    }
+
+                    if (word.matches(moveNumberStrictRegex) || word.matches(commentNumberStrictRegex) || word.matches(resultRegex))
+                        continue;
+                    invalidWords.add(word + ",after move: " + moves.getLast());
+                } catch (Exception e) {
+                    Log.e(TAG, "readPGN: Error at :" + word, e);
+                }
+            }
+
+            return true;
+        }
+
+        private void extractAlternateMoves(int moveCount, String word, Scanner PGNReader) {
+            StringBuilder movesBuilder = new StringBuilder(word.substring(word.indexOf("(")));
+            while (PGNReader.hasNext()) {
+                if (word.endsWith(")")) break;
+                word = PGNReader.next();
+                movesBuilder.append(' ').append(word);
+                if (word.endsWith(")")) break;
+            }
+            alternateMoveSequence.put(moveCount, movesBuilder.toString());
+        }
+
+        /**
+         * Extracts move feedback if any
+         *
+         * @param word      Move word or comment
+         * @param moveCount Move number
+         */
+        private void findMoveFeedback(String word, int moveCount) {
+            String feedback = null;
+            Matcher feedbackMatcher = moveAnnotationPattern.matcher(word);
+            if (feedbackMatcher.find()) feedback = feedbackMatcher.group();
+            if (feedback != null) moveAnnotationMap.put(moveCount, feedback);
+        }
+
+        /**
+         * Extracts Tags from the PGN
+         *
+         * @param pgn PGN in <code>String</code> format
+         */
+        private void readTags(String pgn) {
+            Scanner tagReader = new Scanner(pgn);
+            String word = null;
+            while (tagReader.hasNext()) {
+                try {
+                    word = tagReader.next();
+                    if (word.startsWith("1.")) return;
+                    if (word.startsWith("[")) {
+                        String tag = word.substring(1);
+                        StringBuilder tagBuilder = new StringBuilder();
+                        while (tagReader.hasNext()) {
+                            word = tagReader.next();
+                            tagBuilder.append(word).append(' ');
+                            if (word.endsWith("]")) break;
+                        }
+                        String value = tagBuilder.substring(tagBuilder.indexOf("\"") + 1, tagBuilder.lastIndexOf("\""));
+                        tagsMap.put(tag, value);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "readTags: Error at : " + word, e);
+                }
+            }
+        }
+    }
+
+    /**
      * Game viewer to display and view game
      * {@inheritDoc}
      */
     static class GameViewer implements BoardInterface, PGNRecyclerViewInterface {
         private static final String TAG = "GameViewer";
         private final ArrayList<BoardModel> boardModels;
+        private final ArrayList<String> FENs;
         private final ChessBoard analysisBoard;
         private final boolean vibrationEnabled, sound, animate;
         private final int length;
@@ -478,7 +581,7 @@ public class LoadGameFragment extends Fragment {
         private BoardModel boardModel;
         private int pointer, previousPosition;
         private final ImageButton moveAutoplay;
-        private boolean autoplayRunning;
+        private boolean autoplayRunning, reverse;
         private final long delay = 800;
         private CountDownTimer countDownTimer;
         private MediaPlayer mediaPlayer;
@@ -488,9 +591,10 @@ public class LoadGameFragment extends Fragment {
          * @param boardModels List of board models
          * @param pgn         PGN of the game
          */
-        public GameViewer(Activity activity, FragmentLoadGameBinding binding, ArrayList<BoardModel> boardModels, PGN pgn) {
+        public GameViewer(Activity activity, FragmentLoadGameBinding binding, ArrayList<BoardModel> boardModels, ArrayList<String> FENs, PGN pgn) {
             DataManager dataManager = new DataManager(activity);
             this.boardModels = boardModels;
+            this.FENs = FENs;
             this.binding = binding;
 
             this.commentsMap = pgn.commentsMap == null ? new LinkedHashMap<>() : pgn.commentsMap;
@@ -501,12 +605,10 @@ public class LoadGameFragment extends Fragment {
             analysisBoard = binding.analysisBoard;
             pgnRecyclerView = binding.pgnRecyclerView;
 
-            String whiteName = pgn.getWhite();
-            String blackName = pgn.getBlack();
+            String whiteName = pgn.getWhite(), blackName = pgn.getBlack();
 
             Resources resources = activity.getResources();
-            String draw = resources.getString(R.string.draw);
-            String victory = resources.getString(R.string.peace);
+            String draw = resources.getString(R.string.draw), victory = resources.getString(R.string.peace);
 
             String result = pgn.getResult();
 
@@ -540,8 +642,7 @@ public class LoadGameFragment extends Fragment {
             if (sound) mediaPlayer = MediaPlayer.create(activity, R.raw.move_sound);
             animate = dataManager.getAnimation();
 
-            analysisBoard.boardInterface = this;
-            analysisBoard.invalidate = false;
+            analysisBoard.setData(this, true);
             update();
 
             PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(activity, pgn, this);
@@ -614,10 +715,26 @@ public class LoadGameFragment extends Fragment {
             return null;
         }
 
+        @Override
+        public boolean isWhiteToPlay() {
+            return false;
+        }
+
+        @Override
+        public boolean isGameTerminated() {
+            return false;
+        }
+
+        @Override
+        public boolean isPieceToPlay(Piece piece) {
+            return false;
+        }
+
         private void movePrevious() {
             if (pointer > 0) {
                 previousPosition = pointer;
                 pointer--;
+                reverse = true;
                 update();
             }
         }
@@ -674,14 +791,17 @@ public class LoadGameFragment extends Fragment {
                     holder1.itemView.findViewById(R.id.move).setBackgroundResource(R.drawable.pgn_move_highlight);
             });
 
+            if (animate && reverse)
+                analysisBoard.initializeReverseAnimation(boardModel.toSquare, boardModel.fromSquare);
             boardModel = boardModels.get(pointer);
+            Log.d(TAG, "update: FEN of current boardModel:" + FENs.get(pointer));
             analysisBoard.annotation = -1;
             if (moveAnnotationMap.containsKey(pointer - 1)) {
                 Log.d(TAG, "update: Annotation: " + moveAnnotationMap.get(pointer - 1));
                 analysisBoard.annotation = MoveAnnotation.getAnnotationResource(moveAnnotationMap.get(pointer - 1));
             }
             analysisBoard.invalidate();
-            if (animate) analysisBoard.initializeAnimation();
+            if (animate && !reverse) analysisBoard.initializeAnimation();
 
             long start = System.nanoTime();
             boolean isChecked = false;
@@ -747,6 +867,11 @@ public class LoadGameFragment extends Fragment {
                 Log.d(TAG, "update: Comment: " + commentsMap.get(pointer - 1));
             if (alternateMoveSequence.containsKey(pointer - 1))
                 Log.d(TAG, "update: Alternate Move Sequence: " + alternateMoveSequence.get(pointer - 1));
+            reverse = false;
+        }
+
+        public String getFEN() {
+            return FENs.get(pointer);
         }
     }
 }

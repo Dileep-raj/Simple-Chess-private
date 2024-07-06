@@ -1,10 +1,17 @@
 package com.drdedd.simplechess_temp.GameData;
 
 /**
- * Player type (White/Black)
+ * Player type (White|Black)
  */
 public enum Player {
-    WHITE("White", false), BLACK("Black", false);
+    /**
+     * White player
+     */
+    WHITE("White", false),
+    /**
+     * Black player
+     */
+    BLACK("Black", false);
     private boolean inCheck;
     private String name;
 

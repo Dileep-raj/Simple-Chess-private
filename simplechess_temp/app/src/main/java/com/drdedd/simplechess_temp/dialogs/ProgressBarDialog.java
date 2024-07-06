@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 
 import com.drdedd.simplechess_temp.R;
 
+/**
+ * Custom dialog to show circle progress with custom text
+ */
 public class ProgressBarDialog extends Dialog {
     private final String title;
 

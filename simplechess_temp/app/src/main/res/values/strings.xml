@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simple Chess</string>
+    <string name="app_name">Simpli Chess</string>
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="app_icon">App icon</string>

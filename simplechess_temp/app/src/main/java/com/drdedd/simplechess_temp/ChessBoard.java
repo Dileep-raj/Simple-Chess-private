@@ -1,5 +1,8 @@
 package com.drdedd.simplechess_temp;
 
+import static com.drdedd.simplechess_temp.data.DataConverter.toCol;
+import static com.drdedd.simplechess_temp.data.DataConverter.toRow;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,12 +29,10 @@ import androidx.core.content.ContextCompat;
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.GameData.Rank;
-import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.data.MoveAnnotation;
 import com.drdedd.simplechess_temp.fragments.HomeFragment;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.pieces.King;
-import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
 import java.util.HashMap;
@@ -44,26 +45,23 @@ import java.util.Set;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class ChessBoard extends View {
     private static final String TAG = "ChessBoard";
-    public BoardInterface boardInterface;
+    private final static int animationSpeed = 10;
+    private BoardInterface boardInterface;
     private final float offsetX = 0f, offsetY = 0f;
-    private float sideLength = 130f;
-    private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1;
+    private final boolean cheatMode;
     private final Set<Integer> resIDs = Set.of(R.drawable.kb, R.drawable.qb, R.drawable.rb, R.drawable.bb, R.drawable.nb, R.drawable.pb, R.drawable.kbi, R.drawable.qbi, R.drawable.rbi, R.drawable.bbi, R.drawable.nbi, R.drawable.pbi, R.drawable.kw, R.drawable.qw, R.drawable.rw, R.drawable.bw, R.drawable.nw, R.drawable.pw, R.drawable.guide_blue, R.drawable.highlight, R.drawable.check, R.drawable.move_square);
     private final HashMap<Integer, Bitmap> bitmaps = new HashMap<>();
     private final Paint p = new Paint();
+    private final Resources res = getResources();
+    private float sideLength = 130f, x, y;
+    private int lightColor, darkColor, fromCol = -1, fromRow = -1, floatingPieceX = -1, floatingPieceY = -1, startX = -1, startY = -1, endX = -1, endY = -1;
+    public int annotation = -1;
     private Piece previousSelectedPiece = null;
     public String fromSquare, toSquare;
     private HashMap<Piece, HashSet<Integer>> allLegalMoves;
     private HashSet<Integer> legalMoves = new HashSet<>();
-    private final boolean cheatMode;
-    public boolean invalidate;
-    private final Resources res = getResources();
-    public int annotation = -1;
-
-    private float x, y;
+    private boolean viewOnly;
     private Bitmap bitmap;
-    private final static int animationSpeed = 10;
-    private int startX = -1, startY = -1, endX = -1, endY = -1;
 
     public ChessBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -71,6 +69,12 @@ public class ChessBoard extends View {
         DataManager dataManager = new DataManager(this.getContext());
         setTheme(dataManager.getBoardTheme());
         cheatMode = dataManager.cheatModeEnabled();
+        MoveAnnotation.loadBitmaps(context);
+    }
+
+    public void setData(BoardInterface boardInterface, boolean invalidate) {
+        this.boardInterface = boardInterface;
+        this.viewOnly = invalidate;
     }
 
     @Override
@@ -95,26 +99,25 @@ public class ChessBoard extends View {
         toSquare = boardInterface.getBoardModel().toSquare;
 //        Log.d(TAG, String.format("onDraw: fromSquare: %s toSquare: %s", fromSquare, toSquare));
         if (fromSquare != null && !fromSquare.isEmpty())
-            highlightSquare(canvas, GameFragment.toRow(fromSquare), GameFragment.toCol(fromSquare), R.drawable.move_square);
+            highlightSquare(canvas, toRow(fromSquare), toCol(fromSquare), R.drawable.move_square);
         if (toSquare != null && !toSquare.isEmpty())
-            highlightSquare(canvas, GameFragment.toRow(toSquare), GameFragment.toCol(toSquare), R.drawable.move_square);
+            highlightSquare(canvas, toRow(toSquare), toCol(toSquare), R.drawable.move_square);
 
         drawPieces(canvas);
-        if (!cheatMode && !GameFragment.isGameTerminated()) {
+        if (!cheatMode && !boardInterface.isGameTerminated()) {
             if (previousSelectedPiece != null)
                 legalMoves = allLegalMoves.getOrDefault(previousSelectedPiece, null);
             drawGuides(canvas);
         }
 
         King whiteKing = boardInterface.getBoardModel().getWhiteKing(), blackKing = boardInterface.getBoardModel().getBlackKing();
-        if (previousSelectedPiece != null && !GameFragment.isGameTerminated())
+        if (previousSelectedPiece != null && !boardInterface.isGameTerminated())
             highlightSquare(canvas, previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), R.drawable.highlight);
         if (Player.WHITE.isInCheck())
             highlightSquare(canvas, whiteKing.getRow(), whiteKing.getCol(), R.drawable.check);
         if (Player.BLACK.isInCheck())
             highlightSquare(canvas, blackKing.getRow(), blackKing.getCol(), R.drawable.check);
-        if (annotation != -1)
-            drawAnnotation(canvas, GameFragment.toRow(toSquare), GameFragment.toCol(toSquare), annotation);
+        if (annotation != -1) drawAnnotation(canvas, toRow(toSquare), toCol(toSquare), annotation);
         long end = System.nanoTime();
         HomeFragment.printTime(TAG, "drawing board", end - start, -1);
     }
@@ -166,7 +169,7 @@ public class ChessBoard extends View {
         else {
             piece = boardInterface.pieceAt(fromRow, fromCol);
             if (piece != null)
-                if (cheatMode || !GameFragment.isGameTerminated() && GameFragment.isPieceToPlay(piece)) {
+                if (cheatMode || !boardInterface.isGameTerminated() && boardInterface.isPieceToPlay(piece)) {
                     Bitmap b = bitmaps.get(piece.getResID());
                     if (b != null)
                         canvas.drawBitmap(b, null, new RectF(floatingPieceX - sideLength / 2, floatingPieceY - sideLength / 2, floatingPieceX + sideLength / 2, floatingPieceY + sideLength / 2), p);
@@ -224,7 +227,7 @@ public class ChessBoard extends View {
     }
 
     private void drawAnnotation(Canvas canvas, int row, int col, int annotation) {
-        Bitmap b = BitmapFactory.decodeResource(res, annotation);
+        Bitmap b = MoveAnnotation.getBitmap(annotation);
         if (b != null)
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * (col + 0.6f), offsetY + sideLength * (7 - row - 0.1f), offsetX + sideLength * (col + 1.1f), offsetY + sideLength * (7 - row + 0.4f)), p);
     }
@@ -233,18 +236,33 @@ public class ChessBoard extends View {
         fromSquare = boardInterface.getBoardModel().fromSquare;
         toSquare = boardInterface.getBoardModel().toSquare;
         if (fromSquare != null && !fromSquare.isEmpty()) {
-            startY = 7 - GameFragment.toRow(fromSquare);
-            startX = GameFragment.toCol(fromSquare);
+            startY = 7 - toRow(fromSquare);
+            startX = toCol(fromSquare);
             x = offsetX + sideLength * startX;
             y = offsetY + sideLength * startY;
         } else Log.d(TAG, "initializeAnimation: From square empty");
         if (toSquare != null && !toSquare.isEmpty()) {
-            endY = 7 - GameFragment.toRow(toSquare);
-            endX = GameFragment.toCol(toSquare);
+            endY = 7 - toRow(toSquare);
+            endX = toCol(toSquare);
             Piece piece = boardInterface.pieceAt(7 - endY, endX);
             if (piece != null) bitmap = bitmaps.get(piece.getResID());
         } else Log.d(TAG, "initializeAnimation: To square empty");
 //        Log.d(TAG, "initializeAnimation: Animation initialized");
+    }
+
+    public void initializeReverseAnimation(String fromSquare, String toSquare) {
+        if (fromSquare != null && !fromSquare.isEmpty()) {
+            startY = 7 - toRow(fromSquare);
+            startX = toCol(fromSquare);
+            x = offsetX + sideLength * startX;
+            y = offsetY + sideLength * startY;
+            Piece piece = boardInterface.pieceAt(7 - startY, startX);
+            if (piece != null) bitmap = bitmaps.get(piece.getResID());
+        } else Log.d(TAG, "initializeAnimation: From square empty");
+        if (toSquare != null && !toSquare.isEmpty()) {
+            endY = 7 - toRow(toSquare);
+            endX = toCol(toSquare);
+        } else Log.d(TAG, "initializeAnimation: To square empty");
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -252,12 +270,7 @@ public class ChessBoard extends View {
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int toCol, toRow;
         Piece selectedPiece;
-        if (GameFragment.isGameTerminated() || !invalidate) return true;
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "onTouchEvent: Sleep failed", e);
-        }
+        if (viewOnly || boardInterface.isGameTerminated()) return true;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 allLegalMoves = boardInterface.getLegalMoves();
@@ -278,7 +291,7 @@ public class ChessBoard extends View {
                 selectedPiece = boardInterface.pieceAt(toRow, toCol);
 
                 if (selectedPiece != null) {
-                    if (GameFragment.isPieceToPlay(selectedPiece)) {
+                    if (boardInterface.isPieceToPlay(selectedPiece)) {
                         if (fromRow == toRow && fromCol == toCol)
                             previousSelectedPiece = selectedPiece;
                         if (!cheatMode)
@@ -304,77 +317,6 @@ public class ChessBoard extends View {
                 break;
         }
         return true;
-    }
-
-    public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        if (GameFragment.isGameTerminated()) return false;
-
-        Piece movingPiece = boardInterface.pieceAt(fromRow, fromCol);
-        if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7) {
-//            Log.d(TAG, "movePiece: Moving piece is null");
-            return false;
-        }
-        if (!GameFragment.isPieceToPlay(movingPiece)) return false;
-
-        Piece toPiece = boardInterface.pieceAt(toRow, toCol);
-        if (toPiece != null) if (toPiece.isKing()) return false;
-        else if (movingPiece.getPlayer() != toPiece.getPlayer() && movingPiece.canCapture(boardInterface, toPiece)) {
-            if (movingPiece.getRank() == Rank.PAWN) {
-                Pawn pawn = (Pawn) movingPiece;
-                if (pawn.canPromote()) {
-                    previousSelectedPiece = null;
-                    boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
-                    Log.d(TAG, "movePiece: Pawn promotion");
-                    return false;
-                }
-            }
-            movingPiece.moveTo(toRow, toCol);
-            boardInterface.capturePiece(toPiece);
-            boardInterface.addToPGN(movingPiece, PGN.CAPTURE, fromRow, fromCol);
-            return true;
-        }
-        if (toPiece == null) {
-            if (movingPiece.getRank() == Rank.KING) {
-                King king = (King) movingPiece;
-                if (!king.isCastled() && king.canMoveTo(boardInterface, toRow, toCol)) {
-                    if (toCol - fromCol == -2 && king.canLongCastle(boardInterface)) {
-                        king.longCastle(boardInterface);
-                        boardInterface.addToPGN(movingPiece, PGN.LONG_CASTLE, fromRow, fromCol);
-                        return true;
-                    }
-                    if (toCol - fromCol == 2 && king.canShortCastle(boardInterface)) {
-                        king.shortCastle(boardInterface);
-                        boardInterface.addToPGN(movingPiece, PGN.SHORT_CASTLE, fromRow, fromCol);
-                        return true;
-                    }
-                }
-            }
-            if (movingPiece.canMoveTo(boardInterface, toRow, toCol)) {
-                if (movingPiece.getRank() == Rank.PAWN) {
-                    Pawn pawn = (Pawn) movingPiece;
-                    if (pawn.canCaptureEnPassant(boardInterface))
-                        if (boardInterface.getBoardModel().enPassantSquare.equals(GameFragment.toNotation(toRow, toCol)))
-                            if (boardInterface.capturePiece(boardInterface.pieceAt(toRow - pawn.direction, toCol))) {
-                                Log.d(TAG, "movePiece: EnPassant Capture");
-                                movingPiece.moveTo(toRow, toCol);
-                                boardInterface.addToPGN(pawn, PGN.CAPTURE, fromRow, fromCol);
-                                return true;
-                            }
-                    if (pawn.canPromote()) {
-                        previousSelectedPiece = null;
-                        boardInterface.promote(pawn, toRow, toCol, fromRow, fromCol);
-                        Log.d(TAG, "movePiece: Pawn promotion");
-                        return false;
-                    }
-                }
-                movingPiece.moveTo(toRow, toCol);
-                boardInterface.addToPGN(movingPiece, "", fromRow, fromCol);
-                return true;
-            }
-        }
-        Log.d(TAG, "movePiece: Illegal move");
-        previousSelectedPiece = null;
-        return false;   //Default return false
     }
 
     private static Bitmap getBitmap(VectorDrawable vectorDrawable) {

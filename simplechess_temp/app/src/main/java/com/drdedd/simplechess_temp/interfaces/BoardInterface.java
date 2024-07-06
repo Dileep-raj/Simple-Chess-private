@@ -45,6 +45,12 @@ public interface BoardInterface {
 
     /**
      * Promote a pawn to higher rank
+     *
+     * @param pawn    Pawn to be promoted
+     * @param row     Row of the promotion square
+     * @param col     Column of the promotion square
+     * @param fromRow Starting row of the pawn
+     * @param fromCol Starting column of the pawn
      */
     void promote(Pawn pawn, int row, int col, int fromRow, int fromCol);
 
@@ -57,4 +63,20 @@ public interface BoardInterface {
      * Legal moves for all pieces
      */
     HashMap<Piece, HashSet<Integer>> getLegalMoves();
+
+    /**
+     * @return <code>true|false</code> - White to play
+     */
+    boolean isWhiteToPlay();
+
+    /**
+     * @return <code>true|false</code> - Game terminated
+     */
+    boolean isGameTerminated();
+
+    /**
+     * @param piece Piece to check
+     * @return <code>true|false</code> - Whether piece belongs to active player
+     */
+    boolean isPieceToPlay(Piece piece);
 }

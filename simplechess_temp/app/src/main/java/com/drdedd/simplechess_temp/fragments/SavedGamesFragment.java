@@ -45,6 +45,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
+/**
+ * {@inheritDoc}
+ * Fragment to load or delete games from PGN library
+ */
 public class SavedGamesFragment extends Fragment implements GameRecyclerViewInterface {
     private final static String TAG = "SavedGamesFragment";
     private FragmentSavedGamesBinding binding;
@@ -96,6 +100,9 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         }
     }
 
+    /**
+     * Delete all PGNs in the library
+     */
     private void deleteAll() {
         if (savedGames.isEmpty()) return;
 
@@ -126,6 +133,9 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         refresh();
     }
 
+    /**
+     * Refreshes views visibility and content
+     */
     private void refresh() {
         savedGames = dataManager.savedGames();
         if (savedGames.isEmpty()) {
@@ -142,7 +152,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     public void openGame(int position) {
         Bundle args = new Bundle();
         try {
-            args.putString(LoadGameFragment.PGN_FILE_KEY, new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + savedGames.get(position)))));
+            args.putString(LoadGameFragment.PGN_CONTENT_KEY, new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + savedGames.get(position)))));
             args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, true);
         } catch (IOException e) {
             Log.e(TAG, "openGame: Error while reading pgn:", e);
@@ -151,6 +161,9 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         navController.navigate(R.id.nav_load_game, args);
     }
 
+    /**
+     * RecyclerView adapter for saved games
+     */
     static class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecyclerViewAdapter.GamesViewHolder> {
         private final Context context;
         private final ArrayList<String> games;
@@ -209,6 +222,9 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
             return games.size();
         }
 
+        /**
+         * ViewHolder for saved games RecyclerView adapter
+         */
         static class GamesViewHolder extends RecyclerView.ViewHolder {
             TextView name, result;
 
@@ -230,9 +246,5 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
                 });
             }
         }
-    }
-
-    public static String getTAG() {
-        return TAG;
     }
 }

@@ -38,6 +38,9 @@ public abstract class Piece implements Serializable, Cloneable {
         this.captured = false;
     }
 
+    /**
+     * @return <code>String</code> - Unicode character of the piece
+     */
     public String getUnicode() {
         return unicode;
     }
@@ -52,7 +55,7 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     * Returns column number of the piece
+     * Column number of the piece
      *
      * @return <code>int 0-7</code>
      */
@@ -61,7 +64,7 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     * Returns row number of the piece
+     * Row number of the piece
      *
      * @return <code>int 0-7</code>
      */
@@ -79,18 +82,15 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     * Returns whether the piece is white piece or not
-     *
-     * @return <code>True|False</code>
+     * @return <code>true|false</code> - Piece belongs to white
      */
     public boolean isWhite() {
         return player == Player.WHITE;
     }
 
     /**
-     * Returns Resource ID of the piece
      *
-     * @return <code>int</code>
+     * @return <code>int</code> - Resource ID of the piece
      */
     public int getResID() {
         return resID;
@@ -127,28 +127,30 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     * Checks if a piece can move to a new location on the board
-     *
-     * @return <code>True|False</code>
+     * @param boardInterface BoardInterface of the game
+     * @param row Row number
+     * @param col Column number
+     * @return <code>true|false</code> - Piece can move to the position on the board
      */
     public abstract boolean canMoveTo(BoardInterface boardInterface, int row, int col);
 
     /**
-     * Checks if a piece can capture another piece on the board
-     *
-     * @return <code>True|False</code>
+     * @return <code>true|false</code> - Piece can capture another piece on the board
      */
     public abstract boolean canCapture(BoardInterface boardInterface, Piece capturingPiece);
 
     /**
-     * Returns whether the {@link Piece} has moved or not
-     *
-     * @return <code>True|False</code>
+     * @return <code>true|false</code> - Piece has moved
      */
     public boolean hasNotMoved() {
         return !moved;
     }
 
+    /**
+     * Sets piece has moved
+     *
+     * @param moved Piece has moved
+     */
     public void setMoved(boolean moved) {
         this.moved = moved;
     }
@@ -171,18 +173,24 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     * Returns whether the piece is <code>King</code> or not
-     *
-     * @return <code>True|False</code>
+     * @return <code>true|false</code> - Piece is <code>{@link King King}</code>
      */
     public boolean isKing() {
         return rank == Rank.KING;
     }
 
+    /**
+     * @return <code>true|false</code> - Piece is captured
+     */
     public boolean isCaptured() {
         return captured;
     }
 
+    /**
+     * Sets whether piece is captured
+     *
+     * @param captured Piece captured
+     */
     public void setCaptured(boolean captured) {
         this.captured = captured;
     }

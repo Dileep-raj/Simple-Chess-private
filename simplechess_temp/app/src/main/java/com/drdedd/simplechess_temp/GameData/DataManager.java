@@ -23,7 +23,6 @@ import java.io.ObjectOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Stack;
 
 /**
@@ -97,6 +96,11 @@ public class DataManager {
         }
     }
 
+    /**
+     * @param pgn  PGN to be saved
+     * @param name Name of the PGN file
+     * @return <code>true|false</code> - File save result
+     */
     public boolean savePGN(PGN pgn, String name) {
         try {
             File dir = new File(savedGameDir);
@@ -118,6 +122,9 @@ public class DataManager {
         }
     }
 
+    /**
+     * @return List of games in PGN library
+     */
     public ArrayList<String> savedGames() {
         ArrayList<String> savedGames = new ArrayList<>();
         File filesDir = new File(savedGameDir);
@@ -126,17 +133,34 @@ public class DataManager {
         return savedGames;
     }
 
+    /**
+     * Deletes game object file
+     *
+     * @param fileName Name of the file to be deleted
+     * @return <code>true|false</code> - Deletion result
+     */
     private boolean deleteFile(String fileName) {
         File file = new File(context.getFilesDir(), fileName);
         if (file.exists()) return file.delete();
-        else Log.d(TAG, "deleteFile: File does not exist");
+        Log.d(TAG, "deleteFile: File does not exist");
         return false;
     }
 
+    /**
+     * Deletes all game files
+     *
+     * @return <code>true|false</code> - Deletion result
+     */
     public boolean deleteGameFiles() {
         return deleteFile(BOARD_FILE) && deleteFile(STACK_FILE) && deleteFile(PGN_FILE) && deleteFile(FENS_LIST_FILE);
     }
 
+    /**
+     * Delete game from PGN library
+     *
+     * @param fileName Name of the saved game
+     * @return <code>true|false</code> - Deletion result
+     */
     public boolean deleteGame(String fileName) {
         File file = new File(savedGameDir, fileName);
         if (file.exists()) return file.delete();
@@ -170,7 +194,15 @@ public class DataManager {
         editor.commit();
     }
 
-    public void saveData(BoardModel boardModel, PGN pgn, Stack<BoardModel> boardModelStack, LinkedList<String> FENs) {
+    /**
+     * Serializes and saves game objects
+     *
+     * @param boardModel      BoardModel object
+     * @param pgn             PGN object
+     * @param boardModelStack BoardModel stack object
+     * @param FENs            FENs stack object
+     */
+    public void saveData(BoardModel boardModel, PGN pgn, Stack<BoardModel> boardModelStack, Stack<String> FENs) {
         saveObject(DataManager.BOARD_FILE, boardModel);
         saveObject(DataManager.PGN_FILE, pgn);
         saveObject(DataManager.STACK_FILE, boardModelStack);
@@ -191,14 +223,14 @@ public class DataManager {
     }
 
     /**
-     * Get White player's name
+     * @return <code>String</code> - White player's name
      */
     public String getWhite() {
         return sharedPreferences.getString(whiteLabel, "White");
     }
 
     /**
-     * Get Black player's name
+     * @return <code>String</code> - Black player's name
      */
     public String getBlack() {
         return sharedPreferences.getString(blackLabel, "Black");
@@ -215,9 +247,7 @@ public class DataManager {
     }
 
     /**
-     * Returns fullscreen mode setting
-     *
-     * @return <code>true|false</code>
+     * @return <code>true|false</code> - Fullscreen enabled
      */
     public boolean isFullScreen() {
         return sharedPreferences.getBoolean(fullScreenLabel, false);
@@ -234,9 +264,7 @@ public class DataManager {
     }
 
     /**
-     * Returns if cheat mode is enabled
-     *
-     * @return <code>true|false</code>
+     * @return <code>true|false</code> - Cheat mode enabled
      */
     public boolean cheatModeEnabled() {
         return sharedPreferences.getBoolean(cheatModeLabel, false);
@@ -253,9 +281,7 @@ public class DataManager {
     }
 
     /**
-     * Returns if invert black SVGs is enabled
-     *
-     * @return <code>true|false</code>
+     * @return <code>true|false</code> - Invert black SVGs enabled
      */
     public boolean invertBlackSVGEnabled() {
         return sharedPreferences.getBoolean(invertBlackSVGLabel, false);
@@ -272,9 +298,7 @@ public class DataManager {
     }
 
     /**
-     * Returns if timer setting is enabled
-     *
-     * @return <code>true|false</code>
+     * @return <code>true|false</code> - Timer enabled
      */
     public boolean isTimerEnabled() {
         return sharedPreferences.getBoolean(timerLabel, false);
@@ -332,29 +356,53 @@ public class DataManager {
         return sharedPreferences.getLong(blackTimeLeftLabel, 0);
     }
 
+    /**
+     * Sets vibration mode
+     *
+     * @param vibration Vibration flag
+     */
     public void setVibration(boolean vibration) {
         editor.putBoolean(vibrationLabel, vibration);
         editor.commit();
     }
 
+    /**
+     * @return <code>true|false</code> - Vibration enabled
+     */
     public boolean getVibration() {
         return sharedPreferences.getBoolean(vibrationLabel, false);
     }
 
+    /**
+     * Sets move animation
+     *
+     * @param animation Animation flag
+     */
     public void setAnimation(boolean animation) {
         editor.putBoolean(animationLabel, animation);
         editor.commit();
     }
 
+    /**
+     * @return <code>true|false</code> - Animation enabled
+     */
     public boolean getAnimation() {
         return sharedPreferences.getBoolean(animationLabel, false);
     }
 
+    /**
+     * Sets move sound
+     *
+     * @param sound Sound flag
+     */
     public void setSound(boolean sound) {
         editor.putBoolean(soundLabel, sound);
         editor.commit();
     }
 
+    /**
+     * @return <code>true|false</code> - Sound enabled
+     */
     public boolean getSound() {
         return sharedPreferences.getBoolean(soundLabel, false);
     }

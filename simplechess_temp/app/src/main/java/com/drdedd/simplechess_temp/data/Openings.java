@@ -16,6 +16,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Tree collection of opening moves in chess
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Chess_opening">Chess Openings</a> <br> <a href="https://en.wikipedia.org/wiki/Encyclopaedia_of_Chess_Openings">ECO</a>
+ */
 public class Openings {
     private final Node root;
     private static Openings openings;
@@ -75,7 +80,8 @@ public class Openings {
         Node newNode = node;
         while (i < l) {
             move = moves[i];
-            openingName = (i == l - 1) ? name : "";
+//            openingName = (i == l - 1) ? name : "";
+            openingName = name;
             newNode.addNode(new Node(move, openingName));
             newNode = newNode.getNodes().get(newNode.getNodes().size() - 1);
             i++;
@@ -83,7 +89,7 @@ public class Openings {
     }
 
     /**
-     * Use {@link Openings#separator Separator} to separate move number and opening
+     * Use {@link Openings#separator separator} to separate move number and opening
      *
      * @param movesList List of moves
      * @return Opening and move number<br>Format: <code>MoveNumber%Opening</code>
@@ -93,22 +99,27 @@ public class Openings {
         String move, opening = "";
 
         Node node = root;
-        int low, high, mid, pos = -1;
-        for (int i = 0; i < 36 && i < moves.size(); ) {
+        int low, high, mid, pos = -1, i = 0;
+
+//      Iterate through moves to find opening
+        while (i < 36 && i < moves.size()) {
             Node tempNode = null;
             ArrayList<Node> nodes = node.getNodes();
             move = moves.get(i);
             low = 0;
             high = nodes.size() - 1;
+
+//          Perform binary search and find the matching opening move
             while (low <= high) {
                 mid = (low + high) / 2;
                 tempNode = nodes.get(mid);
-                String tempNodeMove = tempNode.getMove();
-                int result = move.compareToIgnoreCase(tempNodeMove);
+                int result = move.compareToIgnoreCase(tempNode.getMove());
+
+//              If move matches node move
                 if (result == 0) {
                     node = tempNode;
-                    if (!tempNode.getOpeningName().isEmpty()) opening = tempNode.getOpeningName();
-//                  Log.d(TAG, move + " " + tempNodeMove + " " + i);
+//                    if (!tempNode.getOpeningName().isEmpty()) opening = tempNode.getOpeningName();
+                    opening = tempNode.getOpeningName();
                     pos = i;
                     i++;
                     break;

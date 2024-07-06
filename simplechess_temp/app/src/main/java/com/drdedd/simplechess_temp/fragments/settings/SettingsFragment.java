@@ -137,6 +137,11 @@ public class SettingsFragment extends Fragment {
         viewModel.setMinutes(minutes);
         viewModel.setSeconds(seconds);
         viewModel.updateSettings();
+
+        if (viewModel.isRestartActivity()) {
+            requireActivity().finish();
+            startActivity(requireActivity().getIntent());
+        }
     }
 
     public static String getTAG() {

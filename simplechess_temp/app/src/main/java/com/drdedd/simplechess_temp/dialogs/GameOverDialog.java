@@ -17,7 +17,9 @@ import com.drdedd.simplechess_temp.R;
 
 import java.util.Objects;
 
-//@RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+/**
+ * Custom dialog to show after game is over
+ */
 public class GameOverDialog extends Dialog {
     private final PGN pgn;
     private final String termination;
@@ -38,9 +40,7 @@ public class GameOverDialog extends Dialog {
         setContentView(R.layout.dialog_game_over);
         findViewById(R.id.close_dialog).setOnClickListener(v -> dismiss());
 
-        TextView terminationMessage, pgnTextView;
-        terminationMessage = findViewById(R.id.termination_message);
-        pgnTextView = findViewById(R.id.copy_pgn_textView);
+        TextView terminationMessage = findViewById(R.id.termination_message), pgnTextView = findViewById(R.id.copy_pgn_textView);
 
         terminationMessage.setText(termination);
         pgnTextView.setText(pgn.toString());
