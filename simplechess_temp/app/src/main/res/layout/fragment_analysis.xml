@@ -69,7 +69,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp">
@@ -78,18 +78,16 @@
                 android:id="@+id/blackNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:text="@string/black"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true">
 
                 <TextView
                     android:id="@+id/blackCaptured"
@@ -107,15 +105,13 @@
                     android:text="@string/plus1"
                     android:textColor="@color/white" />
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
-        <com.drdedd.simplechess_temp.ChessBoard
+        <com.drdedd.simplechess_temp.views.ChessBoard
             android:id="@+id/analysisBoard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ChessBoardStyle" />
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp">
@@ -124,18 +120,16 @@
                 android:id="@+id/whiteNameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:text="@string/white"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true">
 
                 <TextView
                     android:id="@+id/whiteCaptured"
@@ -153,7 +147,7 @@
                     android:text="@string/plus1"
                     android:textColor="@color/white" />
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -166,35 +160,23 @@
 
         <ImageButton
             android:id="@+id/move_previous"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="@style/ImageButton40dp"
             android:layout_marginHorizontal="28dp"
-            android:background="@color/btn_background"
             android:contentDescription="@string/move_previous"
-            android:padding="4dp"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_left" />
 
         <ImageButton
             android:id="@+id/move_autoplay"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="@style/ImageButton40dp"
             android:layout_marginHorizontal="28dp"
-            android:background="@color/btn_background"
             android:contentDescription="@string/autoplay_moves"
-            android:padding="4dp"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_play" />
 
         <ImageButton
             android:id="@+id/move_next"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            style="@style/ImageButton40dp"
             android:layout_marginHorizontal="28dp"
-            android:background="@color/btn_background"
             android:contentDescription="@string/move_next"
-            android:padding="4dp"
-            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_right" />
     </LinearLayout>
 </LinearLayout>

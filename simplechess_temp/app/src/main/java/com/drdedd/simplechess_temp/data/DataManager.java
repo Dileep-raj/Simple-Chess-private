@@ -1,4 +1,4 @@
-package com.drdedd.simplechess_temp.GameData;
+package com.drdedd.simplechess_temp.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import com.drdedd.simplechess_temp.BoardModel;
+import com.drdedd.simplechess_temp.GameData.BoardTheme;
 import com.drdedd.simplechess_temp.PGN;
 
 import org.jetbrains.annotations.Nullable;

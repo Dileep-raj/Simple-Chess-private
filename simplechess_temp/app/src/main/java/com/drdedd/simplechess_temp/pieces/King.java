@@ -44,7 +44,7 @@ public class King extends Piece {
      * @return <code>True|False</code>
      */
     public boolean canShortCastle(BoardInterface boardInterface) {
-        if (hasNotMoved() && !castled) {
+        if (!getPlayer().isInCheck() && hasNotMoved() && !castled) {
             for (int i = getCol() + 1; i < 7; i++)
                 if (boardInterface.pieceAt(getRow(), i) != null) return false;
             Piece rook = boardInterface.pieceAt(getRow(), 7);
@@ -59,7 +59,7 @@ public class King extends Piece {
      * @return <code>True|False</code>
      */
     public boolean canLongCastle(BoardInterface boardInterface) {
-        if (hasNotMoved() && !castled) {
+        if (!getPlayer().isInCheck() && hasNotMoved() && !castled) {
             for (int i = getCol() - 1; i > 0; i--)
                 if (boardInterface.pieceAt(getRow(), i) != null) return false;
             Piece rook = boardInterface.pieceAt(getRow(), 0);

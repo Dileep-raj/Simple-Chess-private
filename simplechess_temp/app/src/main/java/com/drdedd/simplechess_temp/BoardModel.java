@@ -12,7 +12,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;

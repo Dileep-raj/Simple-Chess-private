@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.lifecycle.ViewModel;
 
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
-import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.data.DataManager;
 
 public class SettingsViewModel extends ViewModel {
     private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound, restartActivity;
@@ -28,6 +28,7 @@ public class SettingsViewModel extends ViewModel {
         whiteName = dataManager.getWhite();
         blackName = dataManager.getBlack();
         boardTheme = dataManager.getBoardTheme();
+        restartActivity = false;
     }
 
     public void updateSettings() {
@@ -92,8 +93,8 @@ public class SettingsViewModel extends ViewModel {
     }
 
     public void setFullScreen(boolean fullScreen) {
+        if (this.fullScreen != fullScreen) restartActivity = true;
         this.fullScreen = fullScreen;
-        restartActivity = true;
     }
 
     public void setCheatMode(boolean cheatMode) {

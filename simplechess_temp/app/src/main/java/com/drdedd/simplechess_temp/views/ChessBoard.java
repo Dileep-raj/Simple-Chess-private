@@ -1,4 +1,4 @@
-package com.drdedd.simplechess_temp;
+package com.drdedd.simplechess_temp.views;
 
 import static com.drdedd.simplechess_temp.data.DataConverter.toCol;
 import static com.drdedd.simplechess_temp.data.DataConverter.toRow;
@@ -15,7 +15,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,13 +22,13 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 import com.drdedd.simplechess_temp.GameData.BoardTheme;
-import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
-import com.drdedd.simplechess_temp.data.MoveAnnotation;
+import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.GameData.MoveAnnotation;
 import com.drdedd.simplechess_temp.fragments.HomeFragment;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 import com.drdedd.simplechess_temp.pieces.King;
@@ -42,7 +41,6 @@ import java.util.Set;
 /**
  * Custom View to create a Chess board and design game interface
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class ChessBoard extends View {
     private static final String TAG = "ChessBoard";
     private final static int animationSpeed = 10;
@@ -72,9 +70,15 @@ public class ChessBoard extends View {
         MoveAnnotation.loadBitmaps(context);
     }
 
-    public void setData(BoardInterface boardInterface, boolean invalidate) {
+    /**
+     * Sets board UI data
+     *
+     * @param boardInterface BoardInterface of the board
+     * @param viewOnly       View the game without touch event
+     */
+    public void setData(BoardInterface boardInterface, boolean viewOnly) {
         this.boardInterface = boardInterface;
-        this.viewOnly = invalidate;
+        this.viewOnly = viewOnly;
     }
 
     @Override
@@ -122,22 +126,43 @@ public class ChessBoard extends View {
         HomeFragment.printTime(TAG, "drawing board", end - start, -1);
     }
 
+    /**
+     * Sets theme of the ChessBoard
+     *
+     * @param theme Theme of the board
+     */
     public void setTheme(BoardTheme theme) {
         lightColor = res.getColor(theme.getLightColor());
         darkColor = res.getColor(theme.getDarkColor());
     }
 
+    /**
+     * Loads all bitmaps used in the ChessBoard
+     */
     private void loadBitmaps() {
         for (Integer id : resIDs)
             bitmaps.put(id, getBitmap(getContext(), id));
     }
 
+    /**
+     * Highlights a piece at a particular position
+     *
+     * @param canvas Canvas of the ChessBoard
+     * @param row    Row of the piece
+     * @param col    Column of the piece
+     * @param resID  Resource id highlighting square
+     */
     private void highlightSquare(Canvas canvas, int row, int col, int resID) {
         Bitmap b = bitmaps.get(resID);
         if (b != null)
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
+    /**
+     * Draws every component on the board
+     *
+     * @param canvas Canvas of the ChessBoard
+     */
     private void drawBoard(Canvas canvas) {
         int i, j;
         for (i = 0; i < 8; i++)
@@ -147,6 +172,11 @@ public class ChessBoard extends View {
             }
     }
 
+    /**
+     * Draws coordinates on the board
+     *
+     * @param canvas Canvas of the ChessBoard
+     */
     private void drawCoordinates(Canvas canvas) {
         int i;
         for (i = 0; i < 8; i++) {
@@ -157,6 +187,11 @@ public class ChessBoard extends View {
         }
     }
 
+    /**
+     * Draws all pieces on the board
+     *
+     * @param canvas Canvas of the ChessBoard
+     */
     private void drawPieces(Canvas canvas) {
         Piece piece;
         for (int i = 0; i < 8; i++)
@@ -177,12 +212,26 @@ public class ChessBoard extends View {
         }
     }
 
+    /**
+     * Draws a piece at a particular position
+     *
+     * @param canvas Canvas of the ChessBoard
+     * @param row    Row of the piece
+     * @param col    Column of the piece
+     * @param resID  Resource id of the piece
+     */
     private void drawPieceAt(@NonNull Canvas canvas, int row, int col, int resID) {
         Bitmap b = bitmaps.get(resID);
         if (b != null)
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * col, offsetY + sideLength * (7 - row), offsetX + sideLength * (col + 1), offsetY + sideLength * (7 - row + 1)), p);
     }
 
+    /**
+     * Draws a piece in the path of its animation
+     *
+     * @param canvas      Canvas of the ChessBoard
+     * @param pieceBitmap Bitmap of the piece to be drawn
+     */
     private void drawAnimatedPiece(Canvas canvas, Bitmap pieceBitmap) {
         try {
             if (pieceBitmap != null) {
@@ -212,6 +261,11 @@ public class ChessBoard extends View {
         }
     }
 
+    /**
+     * Draws guides to show legal moves of the selected piece
+     *
+     * @param canvas Canvas of the ChessBoard
+     */
     private void drawGuides(Canvas canvas) {
         if (legalMoves == null) return;
 
@@ -226,12 +280,23 @@ public class ChessBoard extends View {
         }
     }
 
+    /**
+     * Draws annotation for a move
+     *
+     * @param canvas     Canvas of the ChessBoard
+     * @param row        Row of the piece
+     * @param col        Column of the piece
+     * @param annotation Resource id of the annotation
+     */
     private void drawAnnotation(Canvas canvas, int row, int col, int annotation) {
         Bitmap b = MoveAnnotation.getBitmap(annotation);
         if (b != null)
             canvas.drawBitmap(b, null, new RectF(offsetX + sideLength * (col + 0.6f), offsetY + sideLength * (7 - row - 0.1f), offsetX + sideLength * (col + 1.1f), offsetY + sideLength * (7 - row + 0.4f)), p);
     }
 
+    /**
+     * Initializes animation variables
+     */
     public void initializeAnimation() {
         fromSquare = boardInterface.getBoardModel().fromSquare;
         toSquare = boardInterface.getBoardModel().toSquare;
@@ -250,6 +315,12 @@ public class ChessBoard extends View {
 //        Log.d(TAG, "initializeAnimation: Animation initialized");
     }
 
+    /**
+     * Initializes reverse animation for a move
+     *
+     * @param fromSquare Starting position of the piece
+     * @param toSquare   Ending position of the piece
+     */
     public void initializeReverseAnimation(String fromSquare, String toSquare) {
         if (fromSquare != null && !fromSquare.isEmpty()) {
             startY = 7 - toRow(fromSquare);
@@ -278,7 +349,7 @@ public class ChessBoard extends View {
                 fromRow = 7 - (int) ((event.getY() - offsetY) / sideLength);
                 selectedPiece = boardInterface.pieceAt(fromRow, fromCol);
                 if (previousSelectedPiece != null && selectedPiece != previousSelectedPiece)
-                    if (boardInterface.movePiece(previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), fromRow, fromCol)) {
+                    if (boardInterface.move(previousSelectedPiece.getRow(), previousSelectedPiece.getCol(), fromRow, fromCol)) {
                         previousSelectedPiece = null;
                         fromRow = fromCol = -1;
                         break;
@@ -301,7 +372,7 @@ public class ChessBoard extends View {
                 if (selectedPiece != null && previousSelectedPiece != null) {
                     if (selectedPiece != previousSelectedPiece && selectedPiece.getPlayer() == previousSelectedPiece.getPlayer())
                         previousSelectedPiece = selectedPiece;
-                } else if (boardInterface.movePiece(fromRow, fromCol, toRow, toCol))
+                } else if (boardInterface.move(fromRow, fromCol, toRow, toCol))
                     previousSelectedPiece = null;
                 else previousSelectedPiece = null;
 

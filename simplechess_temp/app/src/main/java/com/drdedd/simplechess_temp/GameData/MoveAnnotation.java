@@ -1,4 +1,4 @@
-package com.drdedd.simplechess_temp.data;
+package com.drdedd.simplechess_temp.GameData;
 
 import android.content.Context;
 import android.content.res.Resources;

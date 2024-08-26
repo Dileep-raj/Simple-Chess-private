@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">Simpli Chess</string>
-    <string name="nav_open">Open</string>
-    <string name="nav_close">Close</string>
+    <string name="close">Close</string>
     <string name="app_icon">App icon</string>
 
     <!-- Fragment names -->
     <string name="home">Home</string>
     <string name="game">Game</string>
     <string name="about">About</string>
+    <string name="analysis">Analysis</string>
+    <string name="clock">Clock</string>
     <string name="settings">Settings</string>
     <string name="load_game">Load game</string>
     <string name="test_fragment">Test Fragment</string>
@@ -28,6 +29,7 @@
     <string name="plus1">+1</string>
 
     <!-- Settings fragment strings -->
+    <string name="app">App</string>
     <string name="full_screen">Full Screen</string>
     <string name="vibrate">Vibrate</string>
     <string name="sound">Sound</string>
@@ -35,6 +37,7 @@
     <string name="player_names">Player names</string>
     <string name="black">Black</string>
     <string name="white">White</string>
+    <string name="board">Board</string>
     <string name="select_board_theme">Select board theme</string>
     <string name="invert_black_pieces">Invert Black Pieces</string>
     <string name="cheat_mode">Cheat Mode</string>
@@ -65,6 +68,9 @@
     </string-array>
     <string name="chess_pieces">Chess pieces</string>
     <string name="c_burnett_link"><a href="https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces">Colin M.L. Burnett</a></string>
+
+    <!-- Clock fragment strings -->
+    <string name="time_control">Time Control</string>
 
     <!-- Dialog strings -->
     <string name="export_pgn">Export PGN</string>

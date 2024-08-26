@@ -35,7 +35,7 @@
             android:layout_height="32dp"
             android:layout_margin="8dp"
             android:background="@color/transparent"
-            android:contentDescription="@string/nav_close"
+            android:contentDescription="@string/close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_close" />
@@ -64,10 +64,7 @@
         android:layout_height="200dp"
         android:layout_margin="8dp"
         android:paddingHorizontal="8dp"
-        android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:scrollbars="none">
 
         <TextView
             android:id="@+id/copy_pgn_textView"

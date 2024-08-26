@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.ClockFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/blackTime"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/noto_sans"
+            android:gravity="center"
+            android:rotation="180"
+            android:text="@string/sample_time"
+            android:textFontWeight="500"
+            android:textSize="44sp" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+
+        <TextView
+            android:id="@+id/whiteTime"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/noto_sans"
+            android:gravity="center"
+            android:text="@string/sample_time"
+            android:textFontWeight="500"
+            android:textSize="44sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        tools:ignore="contentDescription">
+
+        <ImageButton
+            android:id="@+id/menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/btn_background"
+            app:srcCompat="@drawable/ic_more_vertical" />
+
+        <ImageButton
+            android:id="@+id/pauseResumeTimer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/btn_background"
+            app:srcCompat="@drawable/ic_pause" />
+
+        <ImageButton
+            android:id="@+id/resetTimer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/btn_background"
+            app:srcCompat="@drawable/ic_reset" />
+
+        <TextView
+            android:id="@+id/moveNumber"
+            style="@style/ImageButton40dp"
+            android:layout_marginHorizontal="16dp"
+            android:fontFamily="@font/noto_sans"
+            android:textFontWeight="600"
+            android:gravity="center"
+            android:rotation="90"
+            android:text="1"
+            android:textSize="20sp" />
+    </LinearLayout>
+</FrameLayout>

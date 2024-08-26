@@ -1,14 +1,14 @@
 package com.drdedd.simplechess_temp.fragments;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
+import static com.drdedd.simplechess_temp.GameData.MoveAnnotation.BOOK;
 import static com.drdedd.simplechess_temp.data.DataConverter.opponentPlayer;
-import static com.drdedd.simplechess_temp.data.MoveAnnotation.BOOK;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,9 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,19 +27,19 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.drdedd.simplechess_temp.BoardModel;
-import com.drdedd.simplechess_temp.ChessBoard;
 import com.drdedd.simplechess_temp.ChessTimer;
 import com.drdedd.simplechess_temp.GameData.ChessState;
-import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameLogic;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.data.Openings;
 import com.drdedd.simplechess_temp.databinding.FragmentGameBinding;
 import com.drdedd.simplechess_temp.dialogs.GameOverDialog;
+import com.drdedd.simplechess_temp.interfaces.GameFragmentInterface;
 import com.drdedd.simplechess_temp.pieces.Piece;
+import com.drdedd.simplechess_temp.views.ChessBoard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,21 +48,19 @@ import java.util.Arrays;
  * Fragment to view and play chess game
  */
 @SuppressLint("NewApi")
-public class GameFragment extends Fragment {
+public class GameFragment extends Fragment implements GameFragmentInterface {
     private final static String TAG = "GameFragment";
     protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", OPENING_KEY = "Opening";
     private FragmentGameBinding binding;
     private String termination;
     private PGN pgn;
-    protected BoardModel boardModel = null;
     private ChessBoard chessBoard;
     private ImageButton btn_undo_move, btn_resign, btn_draw;
     public TextView PGN_textView, gameStateView, whiteName, blackName, whiteCaptured, blackCaptured, whiteValue, blackValue, whiteTimeTV, blackTimeTV;
     private HorizontalScrollView horizontalScrollView;
     private DataManager dataManager;
     protected ClipboardManager clipboard;
-    private boolean timerEnabled, newGame;
-    public LinearLayout whiteTimeLayout, blackTimeLayout;
+    private boolean timerEnabled;
     private ChessTimer chessTimer;
     private NavController navController;
     private GameLogic gameLogic;
@@ -102,21 +98,19 @@ public class GameFragment extends Fragment {
 
         whiteTimeTV = binding.whiteTimeTV;
         blackTimeTV = binding.blackTimeTV;
-        whiteTimeLayout = binding.whiteTimeLayout;
-        blackTimeLayout = binding.blackTimeLayout;
 
         dataManager = new DataManager(requireContext());
 
         clipboard = (ClipboardManager) requireActivity().getSystemService(CLIPBOARD_SERVICE);
 
-        newGame = args.getBoolean(NEW_GAME_KEY);
+        boolean newGame = args.getBoolean(NEW_GAME_KEY);
 
-        gameLogic = new GameLogic(this, chessBoard, newGame);
+        gameLogic = new GameLogic(this, requireContext(), chessBoard, newGame);
         initializeData();
 
         if (args.containsKey(FEN_KEY)) {
             String FEN = args.getString(FEN_KEY);
-            gameLogic = new GameLogic(this, chessBoard, FEN);
+            gameLogic = new GameLogic(this, requireContext(), chessBoard, FEN);
             resetTimer();
             newGame = false;
         }
@@ -126,8 +120,8 @@ public class GameFragment extends Fragment {
             resetTimer();
             gameLogic.reset();
         });
-        binding.btnCopyPgn.setOnClickListener(v -> copyToClipboard("PGN", gameLogic.getPGN().toString()));
-        binding.btnCopyFen.setOnClickListener(v -> copyToClipboard("FEN", gameLogic.getBoardModel().toFEN(gameLogic)));
+        binding.btnCopyPgn.setOnClickListener(v -> shareContent("PGN", gameLogic.getPGN().toString()));
+        binding.btnCopyFen.setOnClickListener(v -> shareContent("FEN", gameLogic.getBoardModel().toFEN(gameLogic)));
 
         btn_draw.setOnClickListener(v -> createDialog("Draw", "Are you sure you want to draw?", (d, i) -> {
             gameLogic.getPGN().setTermination("Draw by agreement");
@@ -142,9 +136,9 @@ public class GameFragment extends Fragment {
         if (newGame) resetTimer();
 
         if (!timerEnabled) {
-            whiteTimeLayout.setVisibility(View.GONE);
-            blackTimeLayout.setVisibility(View.GONE);
-        } else chessTimer.startTimer();
+            whiteTimeTV.setVisibility(View.GONE);
+            blackTimeTV.setVisibility(View.GONE);
+        } else if (chessTimer != null) chessTimer.startTimer();
 
         updateViews();
     }
@@ -156,16 +150,11 @@ public class GameFragment extends Fragment {
         Player.WHITE.setName(white);
         Player.BLACK.setName(black);
 
-        if (timerEnabled)
-            chessTimer = new ChessTimer(this, gameLogic, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
+//        if (timerEnabled)
+//            chessTimer = new ChessTimer(this, gameLogic, dataManager.getWhiteTimeLeft(), dataManager.getBlackTimeLeft());
 
-        if (!newGame) {
-            boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
-            pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
-        }
-
-        if (boardModel == null || pgn == null)
-            if (timerEnabled) chessTimer = new ChessTimer(this, gameLogic);
+//        if ((boardModel == null || pgn == null) && timerEnabled)
+//            chessTimer = new ChessTimer(gameLogic, requireContext(), whiteTimeTV, blackTimeTV, minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds()));
 
         whiteName.setText(white);
         blackName.setText(black);
@@ -177,15 +166,52 @@ public class GameFragment extends Fragment {
     public void resetTimer() {
         if (timerEnabled) {
             if (chessTimer != null) chessTimer.stopTimer();
-            chessTimer = new ChessTimer(this, gameLogic);
-            chessTimer.startTimer();
+//            chessTimer = new ChessTimer(gameLogic, requireContext(), whiteTimeTV, blackTimeTV, minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds()));
+//            chessTimer.startTimer();
         }
+    }
+
+    /**
+     * Load the game in LoadGameFragment
+     */
+    private void loadGame() {
+        Bundle args = new Bundle();
+
+        if (pgn.isFENEmpty()) {
+            String opening;
+            long start = System.nanoTime();
+            Openings openings = Openings.getInstance(requireContext());
+            String openingResult = openings.searchOpening(pgn.getMoves());
+            long end = System.nanoTime();
+
+            String[] split = openingResult.split(Openings.separator);
+            int lastBookMove = Integer.parseInt(split[0]);
+            if (lastBookMove != -1 && split.length == 2) {
+                HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
+                opening = split[1];
+                for (int i = 0; i <= lastBookMove; i++)
+                    pgn.moveAnnotationMap.put(i, BOOK);
+            } else {
+                opening = "";
+                Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getMoves().subList(0, Math.min(pgn.getMoves().size(), 10))));
+            }
+            args.putString(OPENING_KEY, opening);
+        }
+
+        args.putSerializable(LoadGameFragment.BOARD_MODEL_STACK_KEY, gameLogic.getBoardModelStack());
+        args.putSerializable(LoadGameFragment.PGN_KEY, gameLogic.getPGN());
+        args.putSerializable(LoadGameFragment.FENS_KEY, gameLogic.getFENs());
+        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
+        navController.popBackStack();
+        navController.navigate(R.id.nav_load_game, args);
     }
 
     /**
      * Terminate game, disable buttons and timer
      */
-    public void terminateGame() {
+    @Override
+    public void terminateGame(String termination) {
+        this.termination = termination;
         if (timerEnabled && chessTimer != null) chessTimer.stopTimer();
         chessBoard.invalidate();
 
@@ -199,50 +225,9 @@ public class GameFragment extends Fragment {
     }
 
     /**
-     * Terminate game due to timeout of one player
-     */
-    public void terminateByTimeOut() {
-        termination = opponentPlayer(gameLogic.playerToPlay()).getName() + " won on time";
-        gameLogic.getPGN().setTermination(termination);
-        gameLogic.terminateGame(ChessState.TIMEOUT);
-    }
-
-    /**
-     * Load the game in LoadGameFragment
-     */
-    private void loadGame() {
-        Bundle args = new Bundle();
-        String opening;
-
-        long start = System.nanoTime();
-        Openings openings = Openings.getInstance(requireContext());
-        String openingResult = openings.searchOpening(pgn.getMoves());
-        long end = System.nanoTime();
-
-        String[] split = openingResult.split(Openings.separator);
-        int lastBookMove = Integer.parseInt(split[0]);
-        if (lastBookMove != -1 && split.length == 2) {
-            HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
-            opening = split[1];
-            for (int i = 0; i <= lastBookMove; i++)
-                pgn.moveAnnotationMap.put(i, BOOK);
-        } else {
-            opening = "";
-            Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getMoves().subList(0, Math.min(pgn.getMoves().size(), 10))));
-        }
-
-        args.putSerializable(LoadGameFragment.BOARD_MODEL_STACK_KEY, gameLogic.getBoardModelStack());
-        args.putSerializable(LoadGameFragment.PGN_KEY, gameLogic.getPGN());
-        args.putSerializable(LoadGameFragment.FENS_KEY, gameLogic.getFENs());
-        args.putString(OPENING_KEY, opening);
-        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
-        navController.popBackStack();
-        navController.navigate(R.id.nav_load_game, args);
-    }
-
-    /**
      * Update all the views in the fragment
      */
+    @Override
     @SuppressLint("SetTextI18n")
     public void updateViews() {
         if (gameLogic == null) return;
@@ -314,8 +299,10 @@ public class GameFragment extends Fragment {
         alertDialog.show();
     }
 
-    private void copyToClipboard(String label, String content) {
-        clipboard.setPrimaryClip(ClipData.newPlainText(label, content));
-        Toast.makeText(requireContext(), label + " copied", Toast.LENGTH_SHORT).show();
+    private void shareContent(String label, String content) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, content);
+        startActivity(Intent.createChooser(shareIntent, "Share " + label));
     }
 }

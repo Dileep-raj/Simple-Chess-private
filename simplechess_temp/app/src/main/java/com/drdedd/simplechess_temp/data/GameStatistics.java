@@ -44,8 +44,6 @@ public class GameStatistics extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, date);
         values.put(COLUMN_SIZE, size);
         db.insert(TABLE_NAME, null, values);
-//        long ms = db.insert(TABLE_NAME, null, values);
-//        Log.i(TAG, String.format("Query executed in %d ms\nInserted values Name: %s, Time: %d ns, Size: %d\ton %s", ms, name, time, size, date));
     }
 
     public ArrayList<String> getNames() {

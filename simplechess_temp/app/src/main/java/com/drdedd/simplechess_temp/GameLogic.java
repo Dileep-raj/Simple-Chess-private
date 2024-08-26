@@ -11,25 +11,24 @@ import static com.drdedd.simplechess_temp.fragments.HomeFragment.printTime;
 import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaPlayer;
-import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.drdedd.simplechess_temp.GameData.ChessState;
-import com.drdedd.simplechess_temp.GameData.DataManager;
 import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.GameData.Rank;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.dialogs.PromoteDialog;
-import com.drdedd.simplechess_temp.fragments.GameFragment;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
+import com.drdedd.simplechess_temp.interfaces.GameFragmentInterface;
 import com.drdedd.simplechess_temp.pieces.King;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
+import com.drdedd.simplechess_temp.views.ChessBoard;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -48,18 +47,17 @@ import java.util.regex.Matcher;
  * GameLogic to play moves and parse game
  * {@inheritDoc}
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class GameLogic implements BoardInterface {
     private static final String TAG = "GameLogic";
-
     private final Context context;
     private final DataManager dataManager;
     private final ChessBoard chessBoard;
-    private final GameFragment gameFragment;
+    private final GameFragmentInterface gameFragmentInterface;
+    private final String FEN;
     private final boolean newGame;
     private int count;
     private boolean vibrationEnabled, loadingPGN, sound, animate, gameTerminated, whiteToPlay;
-    private String white = "White", black = "Black", app, date, fromSquare, toSquare, termination, FEN = "";
+    private String white = "White", black = "Black", app, date, fromSquare, toSquare, termination;
     private PGN pgn;
     private BoardModel boardModel = null;
     private ChessState gameState;
@@ -74,15 +72,18 @@ public class GameLogic implements BoardInterface {
     /**
      * GameLogic for normal game setup
      *
-     * @param gameFragment Game fragment reference
-     * @param chessBoard   ChessBoard view
+     * @param gameFragmentInterface Game fragment interface reference
+     * @param context               Context of the fragment
+     * @param chessBoard            ChessBoard view
+     * @param newGame               Start new game or resume saved game
      */
-    public GameLogic(GameFragment gameFragment, ChessBoard chessBoard, boolean newGame) {
-        context = gameFragment.requireContext();
+    public GameLogic(GameFragmentInterface gameFragmentInterface, Context context, ChessBoard chessBoard, boolean newGame) {
+        this.context = context;
         dataManager = new DataManager(context);
-        this.gameFragment = gameFragment;
+        this.gameFragmentInterface = gameFragmentInterface;
         this.chessBoard = chessBoard;
         this.newGame = newGame;
+        FEN = "";
         chessBoard.setData(this, false);
         initializeData();
         if (newGame) reset();
@@ -92,15 +93,16 @@ public class GameLogic implements BoardInterface {
     /**
      * GameLogic with a starting position
      *
-     * @param gameFragment Game fragment reference
-     * @param chessBoard   ChessBoard view
-     * @param FEN          FEN of the starting position
+     * @param gameFragmentInterface Game fragment reference
+     * @param context               Context of fragment
+     * @param chessBoard            ChessBoard view
+     * @param FEN                   FEN of the starting position
      */
-    public GameLogic(GameFragment gameFragment, ChessBoard chessBoard, String FEN) {
+    public GameLogic(GameFragmentInterface gameFragmentInterface, Context context, ChessBoard chessBoard, String FEN) {
         newGame = false;
-        context = gameFragment.requireContext();
+        this.context = context;
         dataManager = new DataManager(context);
-        this.gameFragment = gameFragment;
+        this.gameFragmentInterface = gameFragmentInterface;
         this.chessBoard = chessBoard;
         this.FEN = FEN;
         chessBoard.setData(this, false);
@@ -120,13 +122,13 @@ public class GameLogic implements BoardInterface {
      * @param moveAnnotationMap     Map of annotations for moves in the PGN
      * @param alternateMoveSequence Map of alternate move sequences for moves in the PGN
      */
-    public GameLogic(Context context, HashMap<String, String> tagsMap, LinkedList<String> moves, LinkedHashMap<Integer, String> commentsMap, LinkedHashMap<Integer, String> moveAnnotationMap, LinkedHashMap<Integer, String> alternateMoveSequence) {
+    public GameLogic(Context context, HashMap<String, String> tagsMap, LinkedList<String> moves, LinkedHashMap<Integer, String> commentsMap, LinkedHashMap<Integer, String> moveAnnotationMap, LinkedHashMap<Integer, String> alternateMoveSequence, LinkedHashMap<Integer, String> evalMap) {
         this.context = context;
         this.tagsMap = tagsMap;
         this.moves = moves;
         dataManager = new DataManager(context);
         loadingPGN = true;
-        gameFragment = null;
+        gameFragmentInterface = null;
         chessBoard = null;
 
         initializeData();
@@ -143,6 +145,7 @@ public class GameLogic implements BoardInterface {
         pgn.setCommentsMap(commentsMap);
         pgn.setMoveAnnotationMap(moveAnnotationMap);
         pgn.setAlternateMoveSequence(alternateMoveSequence);
+        pgn.setEvalMap(evalMap);
     }
 
     /**
@@ -243,12 +246,12 @@ public class GameLogic implements BoardInterface {
                 if (move.equals(PGN.SHORT_CASTLE)) {
                     King king = whiteToPlay ? boardModel.getWhiteKing() : boardModel.getBlackKing();
                     if (king.canShortCastle(this))
-                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() + 2);
+                        move(king.getRow(), king.getCol(), king.getRow(), king.getCol() + 2);
                     continue;
                 } else if (move.equals(PGN.LONG_CASTLE)) {
                     King king = whiteToPlay ? boardModel.getWhiteKing() : boardModel.getBlackKing();
                     if (king.canLongCastle(this))
-                        movePiece(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2);
+                        move(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2);
                     continue;
                 }
 
@@ -382,7 +385,7 @@ public class GameLogic implements BoardInterface {
                 }
 
                 if (piece != null) {
-                    if (movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
+                    if (move(piece.getRow(), piece.getCol(), destRow, destCol))
                         Log.d(TAG, String.format("parsePGN: Move success %s", move));
                     else {
                         Log.d(TAG, "parsePGN: Second search!");
@@ -400,7 +403,7 @@ public class GameLogic implements BoardInterface {
                             if (getLegalMoves().containsKey(tempPiece) && Objects.requireNonNull(getLegalMoves().get(tempPiece)).contains(destCol + destRow * 8))
                                 piece = tempPiece;
 
-                        if (piece != null && movePiece(piece.getRow(), piece.getCol(), destRow, destCol))
+                        if (piece != null && move(piece.getRow(), piece.getCol(), destRow, destCol))
                             Log.d(TAG, "parsePGN: Move success after 2nd search! " + move);
                         else {
                             StringBuilder legalMoves = new StringBuilder();
@@ -413,11 +416,11 @@ public class GameLogic implements BoardInterface {
                     }
                 } else {
                     Log.d(TAG, String.format("parsePGN: Move invalid! Piece not found! %s %s (%d,%d) -> %s move: %s", player, rank, startRow, startCol, toNotation(destRow, destCol), move));
-                    Toast.makeText(context, "Invalid move " + move, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Invalid move " + move, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             } catch (Exception e) {
-                Toast.makeText(context, "Error occurred after move " + move, Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "Error occurred after move " + move, Toast.LENGTH_LONG).show();
                 Log.e(TAG, "parsePGN: Error occurred after move " + move, e);
                 return false;
             }
@@ -440,7 +443,7 @@ public class GameLogic implements BoardInterface {
     }
 
     @Override
-    public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+    public boolean move(int fromRow, int fromCol, int toRow, int toCol) {
         if (gameTerminated) return false;
         if (dataManager.cheatModeEnabled()) {
             Piece movingPiece = boardModel.pieceAt(fromRow, fromCol);
@@ -463,7 +466,7 @@ public class GameLogic implements BoardInterface {
                 if (pieceLegalMoves != null)
                     if (!pieceLegalMoves.contains(toCol + toRow * 8)) return false;
             }
-            boolean result = move(fromRow, fromCol, toRow, toCol);
+            boolean result = makeMove(fromRow, fromCol, toRow, toCol);
             if (result) {
                 if (!loadingPGN && sound) mediaPlayer.start();
                 boardModel.fromSquare = toNotation(fromRow, fromCol);
@@ -497,15 +500,12 @@ public class GameLogic implements BoardInterface {
      * @param toCol   Ending column of the piece
      * @return Move result
      */
-    private boolean move(int fromRow, int fromCol, int toRow, int toCol) {
+    private boolean makeMove(int fromRow, int fromCol, int toRow, int toCol) {
         if (isGameTerminated()) return false;
 
         Piece movingPiece = pieceAt(fromRow, fromCol);
-        if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7) {
-            //Log.d(TAG, "move: Moving piece is null");
+        if (movingPiece == null || fromRow == toRow && fromCol == toCol || toRow < 0 || toRow > 7 || toCol < 0 || toCol > 7 || !isPieceToPlay(movingPiece))
             return false;
-        }
-        if (!isPieceToPlay(movingPiece)) return false;
 
         Piece toPiece = pieceAt(toRow, toCol);
         if (toPiece != null) if (toPiece.isKing()) return false;
@@ -514,7 +514,7 @@ public class GameLogic implements BoardInterface {
                 Pawn pawn = (Pawn) movingPiece;
                 if (pawn.canPromote()) {
                     promote(pawn, toRow, toCol, fromRow, fromCol);
-                    //Log.d(TAG, "move: Pawn promotion");
+                    //Log.d(TAG, "makeMove: Pawn promotion");
                     return false;
                 }
             }
@@ -545,14 +545,14 @@ public class GameLogic implements BoardInterface {
                     if (pawn.canCaptureEnPassant(this))
                         if (getBoardModel().enPassantSquare.equals(toNotation(toRow, toCol)))
                             if (capturePiece(pieceAt(toRow - pawn.direction, toCol))) {
-                                //Log.d(TAG, "move: EnPassant Capture");
+                                //Log.d(TAG, "makeMove: EnPassant Capture");
                                 movingPiece.moveTo(toRow, toCol);
                                 addToPGN(pawn, PGN.CAPTURE, fromRow, fromCol);
                                 return true;
                             }
                     if (pawn.canPromote()) {
                         promote(pawn, toRow, toCol, fromRow, fromCol);
-                        //Log.d(TAG, "move: Pawn promotion");
+                        //Log.d(TAG, "makeMove: Pawn promotion");
                         return false;
                     }
                 }
@@ -561,7 +561,7 @@ public class GameLogic implements BoardInterface {
                 return true;
             }
         }
-        //Log.d(TAG, "move: Illegal move");
+        //Log.d(TAG, "makeMove: Illegal move");
         return false;   //Default return false
     }
 
@@ -732,7 +732,7 @@ public class GameLogic implements BoardInterface {
         end = System.nanoTime();
         printTime(TAG, "checking Game Termination", end - start, -1);
 
-        if (gameFragment != null) gameFragment.updateViews();
+        if (gameFragmentInterface != null) gameFragmentInterface.updateViews();
         if (chessBoard != null) chessBoard.invalidate();
         Log.d(TAG, "updateAll: Updated and saved game");
     }
@@ -816,7 +816,14 @@ public class GameLogic implements BoardInterface {
         }
 
         Log.v(TAG, "terminateGame: Game terminated by: " + terminationState);
-        if (gameFragment != null) gameFragment.terminateGame();
+        if (gameFragmentInterface != null) gameFragmentInterface.terminateGame(termination);
+    }
+
+    @Override
+    public void terminateByTimeOut(Player player) {
+        termination = opponentPlayer(playerToPlay()).getName() + " won on time";
+        pgn.setTermination(termination);
+        terminateGame(ChessState.TIMEOUT);
     }
 
     /**
@@ -907,9 +914,7 @@ public class GameLogic implements BoardInterface {
 
         if (!loadingPGN && vibrationEnabled && isChecked) {
             long vibrationDuration = 150;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                vibrator.vibrate(VibrationEffect.createOneShot(vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE));
-            else vibrator.vibrate(vibrationDuration);
+            vibrator.vibrate(VibrationEffect.createOneShot(vibrationDuration, VibrationEffect.DEFAULT_AMPLITUDE));
         }
     }
 
@@ -963,7 +968,7 @@ public class GameLogic implements BoardInterface {
         tempBoardInterface.tempBoardModel = boardModel.clone();
         boolean isChecked;
         int row = piece.getRow(), col = piece.getCol(), toRow = toRow(move), toCol = toCol(move);
-        tempBoardInterface.movePiece(row, col, toRow, toCol);
+        tempBoardInterface.move(row, col, toRow, toCol);
         if (piece.isWhite())
             isChecked = tempBoardInterface.tempBoardModel.getWhiteKing().isChecked(tempBoardInterface);
         else
@@ -1029,14 +1034,17 @@ public class GameLogic implements BoardInterface {
      * @param piece <code>Piece</code> to check
      * @return <code>True|False</code>
      */
+    @Override
     public boolean isPieceToPlay(@NonNull Piece piece) {
         return piece.getPlayer() == playerToPlay();
     }
 
+    @Override
     public boolean isWhiteToPlay() {
         return whiteToPlay;
     }
 
+    @Override
     public boolean isGameTerminated() {
         return gameTerminated;
     }
@@ -1058,10 +1066,10 @@ public class GameLogic implements BoardInterface {
         }
 
         @Override
-        public boolean movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        public boolean move(int fromRow, int fromCol, int toRow, int toCol) {
             Piece opponentPiece = pieceAt(toRow, toCol), movingPiece = pieceAt(fromRow, fromCol);
             if (movingPiece != null) movingPiece.moveTo(toRow, toCol);
-            else Log.d(TAG, "movePiece: Error! movingPiece is null");
+            else Log.d(TAG, "move: Error! movingPiece is null");
             if (opponentPiece != null) tempBoardModel.capturePiece(opponentPiece);
             return true;
         }
@@ -1077,6 +1085,10 @@ public class GameLogic implements BoardInterface {
 
         @Override
         public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
+        }
+
+        @Override
+        public void terminateByTimeOut(Player player) {
         }
 
         @Override

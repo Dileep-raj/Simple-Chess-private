@@ -40,4 +40,14 @@
         android:name="com.drdedd.simplechess_temp.fragments.TestFragment"
         android:label="@string/test_fragment"
         tools:layout="@layout/fragment_test" />
+    <fragment
+        android:id="@+id/nav_analysis"
+        android:name="com.drdedd.simplechess_temp.fragments.AnalysisFragment"
+        android:label="@string/analysis"
+        tools:layout="@layout/fragment_analysis" />
+    <fragment
+        android:id="@+id/nav_clock"
+        android:name="com.drdedd.simplechess_temp.fragments.ClockFragment"
+        android:label="@string/clock"
+        tools:layout="@layout/fragment_clock" />
 </navigation>

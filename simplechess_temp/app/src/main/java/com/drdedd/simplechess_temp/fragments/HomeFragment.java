@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.data.GameStatistics;
 import com.drdedd.simplechess_temp.databinding.FragmentHomeBinding;
@@ -34,6 +34,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+//        binding.btnOpenTest.setVisibility(View.GONE);
         return binding.getRoot();
     }
 

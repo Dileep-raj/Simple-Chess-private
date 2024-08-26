@@ -1,6 +1,7 @@
 package com.drdedd.simplechess_temp.interfaces;
 
 import com.drdedd.simplechess_temp.BoardModel;
+import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.pieces.Pawn;
 import com.drdedd.simplechess_temp.pieces.Piece;
 
@@ -24,7 +25,7 @@ public interface BoardInterface {
      *
      * @return Move result
      */
-    boolean movePiece(int fromRow, int fromCol, int toRow, int toCol);
+    boolean move(int fromRow, int fromCol, int toRow, int toCol);
 
     /**
      * Add move to PGN
@@ -53,6 +54,11 @@ public interface BoardInterface {
      * @param fromCol Starting column of the pawn
      */
     void promote(Pawn pawn, int row, int col, int fromRow, int fromCol);
+
+    /**
+     * Terminate game due to timeout of one player
+     */
+    void terminateByTimeOut(Player player);
 
     /**
      * Current <code>BoardModel</code> object

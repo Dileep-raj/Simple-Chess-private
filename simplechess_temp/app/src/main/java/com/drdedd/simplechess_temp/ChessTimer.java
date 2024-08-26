@@ -1,82 +1,67 @@
 package com.drdedd.simplechess_temp;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
+import android.content.Context;
 import android.os.CountDownTimer;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
+import androidx.annotation.NonNull;
 
-import com.drdedd.simplechess_temp.GameData.DataManager;
-import com.drdedd.simplechess_temp.fragments.GameFragment;
+import com.drdedd.simplechess_temp.data.DataManager;
+import com.drdedd.simplechess_temp.GameData.Player;
 import com.drdedd.simplechess_temp.interfaces.BoardInterface;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Timer for a chess game
  */
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class ChessTimer {
-    private final GameFragment gameFragment;
-    private final int INITIAL_TIME;
-    private long whiteTimeLeft, blackTimeLeft;
+    private final static long T1 = 60000;
+    private final Context context;
     private final TextView whiteTimeTV, blackTimeTV;
-    private final LinearLayout whiteLayout, blackLayout;
     private final DataManager dataManager;
-    private final int defaultColor, activeColor, criticalColor;
     private final BoardInterface boardInterface;
-    private boolean whiteTurn, timerRunning;
+    private final long millis;
+    private final int defaultColor, activeColor, criticalColor;
+    private long whiteTimeLeft, blackTimeLeft, increment;
+    private boolean whiteTurn, timerRunning, hasIncrement;
     private CountDownTimer timer;
 
-    public ChessTimer(GameFragment gameFragment, BoardInterface boardInterface) {
-        this.gameFragment = gameFragment;
+    public ChessTimer(BoardInterface boardInterface, Context context, TextView whiteTimeTV, TextView blackTimeTV, long millis) {
+        this.context = context;
+        this.whiteTimeTV = whiteTimeTV;
+        this.blackTimeTV = blackTimeTV;
         this.boardInterface = boardInterface;
-        dataManager = new DataManager(gameFragment.requireContext());
-        INITIAL_TIME = minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds());
-        defaultColor = R.drawable.timer_bg_default;
-        activeColor = R.drawable.timer_bg_active;
-        criticalColor = R.drawable.timer_bg_critical;
-        timerRunning = false;
-        whiteTimeTV = gameFragment.whiteTimeTV;
-        blackTimeTV = gameFragment.blackTimeTV;
-        whiteLayout = gameFragment.whiteTimeLayout;
-        blackLayout = gameFragment.blackTimeLayout;
-
-        whiteLayout.setClipToOutline(true);
-        blackLayout.setClipToOutline(true);
+        this.millis = millis;
+//        this.whiteLayout = whiteLayout;
+//        this.blackLayout = blackLayout;
+        dataManager = null;
+        defaultColor = R.color.timer_default;
+        activeColor = R.color.timer_active;
+        criticalColor = R.color.timer_critical;
 
         resetTimer();
         updateTimeText();
     }
 
-    /**
-     * @param gameFragment  GameFragment instance
-     * @param boardInterface BoardInterface of the game
-     * @param whiteTimeLeft White time left in milliseconds
-     * @param blackTimeLeft Black time left in milliseconds
-     */
-    public ChessTimer(GameFragment gameFragment, BoardInterface boardInterface, long whiteTimeLeft, long blackTimeLeft) {
-        this.gameFragment = gameFragment;
+    public ChessTimer(BoardInterface boardInterface, Context context, TextView whiteTimeTV, TextView blackTimeTV, TimeControl timeControl) {
+        this.context = context;
+        this.whiteTimeTV = whiteTimeTV;
+        this.blackTimeTV = blackTimeTV;
         this.boardInterface = boardInterface;
-        dataManager = new DataManager(gameFragment.requireContext());
-        INITIAL_TIME = minutesSecondsToMillis(dataManager.getTimerMinutes(), dataManager.getTimerSeconds());
-        defaultColor = R.drawable.timer_bg_default;
-        activeColor = R.drawable.timer_bg_active;
-        criticalColor = R.drawable.timer_bg_critical;
-        timerRunning = false;
-        whiteTimeTV = gameFragment.whiteTimeTV;
-        blackTimeTV = gameFragment.blackTimeTV;
-        whiteLayout = gameFragment.whiteTimeLayout;
-        blackLayout = gameFragment.blackTimeLayout;
+        this.millis = timeControl.getMillis();
+        increment = minutesSecondsToMillis(0, timeControl.getIncrement());
+        hasIncrement = timeControl.hasIncrement();
+        dataManager = null;
+        defaultColor = R.color.timer_default;
+        activeColor = R.color.timer_active;
+        criticalColor = R.color.timer_critical;
 
-        whiteLayout.setClipToOutline(true);
-        blackLayout.setClipToOutline(true);
-
-        this.whiteTimeLeft = whiteTimeLeft;
-        this.blackTimeLeft = blackTimeLeft;
+        resetTimer();
         updateTimeText();
     }
 
@@ -86,18 +71,20 @@ public class ChessTimer {
     @SuppressLint("SetTextI18n")
     public void startTimer() {
         if (!timerRunning) {
-            timerRunning = true;
             toggleTimer();
-            Toast.makeText(gameFragment.requireContext(), "Timer started", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Timer started", Toast.LENGTH_SHORT).show();
         }
-//        else stopTimer();
     }
 
     /**
      * Toggles white or black timer
      */
     public void toggleTimer() {
-        if (!boardInterface.isGameTerminated()) whiteTurn = boardInterface.isWhiteToPlay();
+        if (boardInterface.isGameTerminated()) return;
+        if (hasIncrement && timerRunning) if (whiteTurn) whiteTimeLeft += increment;
+        else blackTimeLeft += increment;
+        whiteTurn = boardInterface.isWhiteToPlay();
+        if (!timerRunning) timerRunning = true;
         newTimer(whiteTurn ? whiteTimeLeft : blackTimeLeft);
     }
 
@@ -108,16 +95,13 @@ public class ChessTimer {
      */
     public void newTimer(long timeLeft) {
         if (timer != null) timer.cancel();
-//        String TAG = "ChessTimer";
-//        Log.d(TAG, (whiteTurn ? "White" : "Black") + "'s turn");
-//        Log.d(TAG, "toggleTimer: Timer toggled\nWhite time left: " + formatTime(whiteTimeLeft) + "\nBlack time left: " + formatTime(blackTimeLeft) + "\nTime left param: " + formatTime(timeLeft));
 
         timer = new CountDownTimer(timeLeft, 100) {
             @Override
             public void onTick(long l) {
                 if (whiteTurn) whiteTimeLeft = l;
                 else blackTimeLeft = l;
-                if (l < 60000) {
+                if (l < T1) {
                     cancel();
                     if (whiteTurn) newTimer(whiteTimeLeft);
                     else newTimer(blackTimeLeft);
@@ -128,7 +112,7 @@ public class ChessTimer {
             @Override
             public void onFinish() {
                 stopTimer();
-                gameFragment.terminateByTimeOut();
+                boardInterface.terminateByTimeOut(boardInterface.isWhiteToPlay() ? Player.WHITE : Player.BLACK);
             }
         }.start();
     }
@@ -140,11 +124,9 @@ public class ChessTimer {
         if (timer != null) timer.cancel();
         if (whiteTimeLeft / 100 == 0 || blackTimeLeft / 100 == 0) {
             if (whiteTimeLeft > blackTimeLeft)
-                Toast.makeText(gameFragment.requireContext(), "White wins", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(gameFragment.requireContext(), "Black wins", Toast.LENGTH_SHORT).show();
-        } else
-            Toast.makeText(gameFragment.requireContext(), "Timer stopped", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "White wins", Toast.LENGTH_SHORT).show();
+            else Toast.makeText(context, "Black wins", Toast.LENGTH_SHORT).show();
+        }
         timerRunning = false;
         updateTimeText();
     }
@@ -153,30 +135,34 @@ public class ChessTimer {
      * Resets timer to initial states
      */
     public void resetTimer() {
-        whiteTimeLeft = INITIAL_TIME;
-        blackTimeLeft = INITIAL_TIME;
+        whiteTimeLeft = millis;
+        blackTimeLeft = millis;
+        updateTimeText();
         if (timer != null) timer.cancel();
-        dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
-        whiteLayout.setBackgroundResource(defaultColor);
-        blackLayout.setBackgroundResource(defaultColor);
+        whiteTimeTV.setBackgroundResource(defaultColor);
+        blackTimeTV.setBackgroundResource(defaultColor);
+        if (dataManager != null) dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
     }
 
     /**
      * Updates time in timer TextViews
      */
     private void updateTimeText() {
-        dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
         whiteTimeTV.setText(formatTime(whiteTimeLeft));
         blackTimeTV.setText(formatTime(blackTimeLeft));
-        if (timerRunning) updateLayoutColors();
+        if (timerRunning) {
+            updateLayoutColors();
+            if (dataManager != null)
+                dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
+        }
     }
 
     /**
      * Sets background colors for timer TextViews
      */
     private void updateLayoutColors() {
-        whiteLayout.setBackgroundResource(whiteTurn ? whiteTimeLeft < 60000 ? criticalColor : activeColor : defaultColor);
-        blackLayout.setBackgroundResource(!whiteTurn ? blackTimeLeft < 60000 ? criticalColor : activeColor : defaultColor);
+        whiteTimeTV.setBackgroundResource(whiteTurn ? whiteTimeLeft < 60000 ? criticalColor : activeColor : defaultColor);
+        blackTimeTV.setBackgroundResource(!whiteTurn ? blackTimeLeft < 60000 ? criticalColor : activeColor : defaultColor);
     }
 
     /**
@@ -194,7 +180,61 @@ public class ChessTimer {
         return String.format(Locale.getDefault(), "%02d:%02d", minute, seconds);
     }
 
-    public static int minutesSecondsToMillis(int minutes, int seconds) {
-        return minutes * 60 * 1000 + seconds * 1000;
+    public static long minutesSecondsToMillis(int minutes, int seconds) {
+        return minutes * 60 * 1000L + seconds * 1000L;
+    }
+
+    /**
+     * Time control for chess game
+     * Standard time controls include Classical, Rapid, Blitz and Bullet
+     *
+     * @see <a href="">Time control in chess</a>
+     */
+    public static class TimeControl {
+        public static TimeControl T1 = new TimeControl(1, 0, 0);
+        public static TimeControl T2 = new TimeControl(2, 0, 0), T2_1 = new TimeControl(2, 0, 1);
+        public static TimeControl T3 = new TimeControl(3, 0, 0), T3_2 = new TimeControl(3, 0, 2);
+        public static TimeControl T5 = new TimeControl(5, 0, 0), T5_3 = new TimeControl(5, 0, 3);
+        public static TimeControl T10 = new TimeControl(10, 0, 0), T10_5 = new TimeControl(10, 0, 5);
+        public static TimeControl T15_10 = new TimeControl(15, 0, 10), T20 = new TimeControl(20, 0, 0);
+        public static TimeControl T30 = new TimeControl(30, 0, 0), T30_20 = new TimeControl(30, 0, 20);
+
+        public static ArrayList<TimeControl> bullet = new ArrayList<>(List.of(T1, T2, T2_1));
+        public static ArrayList<TimeControl> blitz = new ArrayList<>(List.of(T3, T3_2, T5, T5_3));
+        public static ArrayList<TimeControl> rapid = new ArrayList<>(List.of(T10, T10_5, T15_10, T20));
+        public static ArrayList<TimeControl> classical = new ArrayList<>(List.of(T30, T30_20));
+        private final int minutes, seconds;
+        private final long millis;
+        private final int increment;
+
+        /**
+         * @param minutes   Time in minutes
+         * @param seconds   Time in seconds
+         * @param increment Increment time in seconds
+         */
+        public TimeControl(int minutes, int seconds, int increment) {
+            this.minutes = minutes;
+            this.seconds = seconds;
+            this.increment = increment;
+            this.millis = minutesSecondsToMillis(minutes, seconds);
+        }
+
+        public long getMillis() {
+            return millis;
+        }
+
+        public int getIncrement() {
+            return increment;
+        }
+
+        public boolean hasIncrement() {
+            return increment != 0;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return String.format(Locale.ENGLISH, "%d%s+%s", minutes, seconds != 0 ? ":" + seconds : "", increment);
+        }
     }
 }

@@ -3,13 +3,12 @@ package com.drdedd.simplechess_temp.data;
 import java.util.regex.Pattern;
 
 public class Regexes {
-    private static final String tagsRegex = "\\[(\\w*) \"([-\\w.,/* ]*)\"]";
+    private static final String tagsRegex = "\\[\\w* \"[-\\w\\s.,/*?]*?\"]";
     public static final Pattern tagsPattern = Pattern.compile(tagsRegex);
 
 //    public static final String commentsRegex = "\\{.*?\\}(\\s?\\([\\w\\s+=#-]*\\))?(\\s?[0-9]*\\.{3})?";
 
-    //    "^[^]]*?.*?1\\."
-    private static final String startingMoveRegex = "1\\.\\s*([KQRNP]?[a-h]x?[1-8]|O-O|P?[a-h]?[1-8]?x?[1-8]=?[QRNB])";
+    private static final String startingMoveRegex = "1\\.\\s*?([KQRNBPkqrnbp]?[a-h]?[1-8]?x?[a-h][1-8](=?[QRNB])?|O-O)";
     public static final Pattern startingMovePattern = Pattern.compile(startingMoveRegex, Pattern.MULTILINE);
 
     public static final String singleMoveStrictRegex = "^(\\d+\\.)??([KQRNBP]?[a-h]?[1-8]?x?[a-h][1-8](=?[QRNB])?|O-O-O|O-O)[+#]?(!!|\\?\\?|\\?!|!\\?|!|\\?)?$";

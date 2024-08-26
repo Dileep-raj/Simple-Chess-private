@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuHost;
@@ -32,7 +30,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.drdedd.simplechess_temp.GameData.DataManager;
+import com.drdedd.simplechess_temp.data.DataManager;
 import com.drdedd.simplechess_temp.PGN;
 import com.drdedd.simplechess_temp.R;
 import com.drdedd.simplechess_temp.databinding.FragmentSavedGamesBinding;
@@ -147,7 +145,6 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void openGame(int position) {
         Bundle args = new Bundle();
@@ -180,10 +177,9 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         @NonNull
         @Override
         public GamesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new GamesViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_view_saved_game_row, parent, false), gameRecyclerViewInterface);
+            return new GamesViewHolder(LayoutInflater.from(context).inflate(R.layout.rv_saved_game, parent, false), gameRecyclerViewInterface);
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(@NonNull GamesViewHolder holder, int position) {
             String name = games.get(position);

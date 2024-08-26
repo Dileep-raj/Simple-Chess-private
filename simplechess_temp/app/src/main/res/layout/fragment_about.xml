@@ -32,11 +32,7 @@
             android:textSize="18sp" />
     </LinearLayout>
 
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_margin="8dp" />
+    <com.google.android.material.divider.MaterialDivider style="@style/Divider2dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

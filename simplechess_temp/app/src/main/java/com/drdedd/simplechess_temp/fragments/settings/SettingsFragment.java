@@ -114,7 +114,6 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView: Destroyed");
         int minutes, seconds;
         String white = whiteName.getText().toString().trim();
         if (white.isEmpty()) white = "White";

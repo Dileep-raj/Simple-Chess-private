@@ -36,7 +36,7 @@ public class PGN implements Serializable {
     private String termination = "";
     private final LinkedList<String> moves = new LinkedList<>();
     private final LinkedHashMap<String, String> allTags = new LinkedHashMap<>();
-    public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence;
+    public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence, evalMap;
 
     /**
      * @param app         Name of app
@@ -106,6 +106,7 @@ public class PGN implements Serializable {
 
     /**
      * Sets white to play
+     *
      * @param whiteToPlay White to play
      */
     public void setWhiteToPlay(boolean whiteToPlay) {
@@ -283,6 +284,14 @@ public class PGN implements Serializable {
         this.alternateMoveSequence = alternateMoveSequence;
     }
 
+    public void setEvalMap(LinkedHashMap<Integer, String> evalMap) {
+        this.evalMap = evalMap;
+    }
+
+    public boolean isFENEmpty() {
+        return FEN.isEmpty();
+    }
+
     /**
      * RecyclerView Adapter for PGN
      */
@@ -301,8 +310,10 @@ public class PGN implements Serializable {
         @Override
         public PGNViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(context);
-            View view = inflater.inflate(R.layout.recycler_view_pgn, parent, false);
-            return new PGNViewHolder(view, pgnRecyclerViewInterface);
+            View view = inflater.inflate(R.layout.rv_pgn_move, parent, false);
+            PGNViewHolder pgnViewHolder = new PGNViewHolder(view, pgnRecyclerViewInterface);
+            pgnViewHolder.setIsRecyclable(false);
+            return pgnViewHolder;
         }
 
         @SuppressLint("SetTextI18n")

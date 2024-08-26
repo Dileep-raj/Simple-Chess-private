@@ -44,7 +44,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_export_pgn"
             app:layout_constraintStart_toEndOf="@+id/btn_copy_pgn"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btn_export_pgn"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_copy_fen"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <HorizontalScrollView
@@ -92,7 +92,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/blackDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -100,11 +100,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="8dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/blackNameTV"
@@ -137,32 +136,27 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/blackTimeLayout"
+            <TextView
+                android:id="@+id/blackTimeTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/timer_bg_default"
-                android:padding="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:fontFamily="@font/noto_sans"
+                android:padding="8dp"
+                android:text="@string/sample_time"
+                android:textFontWeight="500"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/blackTimeTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sample_time"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
-        <com.drdedd.simplechess_temp.ChessBoard
+        <com.drdedd.simplechess_temp.views.ChessBoard
             android:id="@+id/chessBoard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            style="@style/ChessBoardStyle" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/whiteDetailsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -170,11 +164,10 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="8dp"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/whiteNameTV"
@@ -207,26 +200,20 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/whiteTimeLayout"
+            <TextView
+                android:id="@+id/whiteTimeTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
                 android:layout_marginHorizontal="8dp"
                 android:background="@drawable/timer_bg_default"
-                android:padding="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/whiteTimeTV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sample_time"
-                    android:textSize="16sp"
-                    app:fontWeight="700" />
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:fontFamily="@font/noto_sans"
+                android:padding="8dp"
+                android:text="@string/sample_time"
+                android:textFontWeight="500"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -240,12 +227,8 @@
 
         <ImageButton
             android:id="@+id/btn_reset"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/btn_background"
+            style="@style/ImageButton40dp"
             android:contentDescription="@string/reset_board"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_undo_move"
             app:layout_constraintStart_toStartOf="parent"
@@ -254,12 +237,8 @@
 
         <ImageButton
             android:id="@+id/btn_undo_move"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/btn_background"
+            style="@style/ImageButton40dp"
             android:contentDescription="@string/undo"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_draw"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"
@@ -268,12 +247,8 @@
 
         <ImageButton
             android:id="@+id/btn_draw"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/btn_background"
+            style="@style/ImageButton40dp"
             android:contentDescription="@string/offer_draw"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_resign"
             app:layout_constraintStart_toEndOf="@id/btn_undo_move"
@@ -282,12 +257,8 @@
 
         <ImageButton
             android:id="@+id/btn_resign"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/btn_background"
+            style="@style/ImageButton40dp"
             android:contentDescription="@string/resign"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_save_exit"
             app:layout_constraintStart_toEndOf="@id/btn_draw"
@@ -296,12 +267,8 @@
 
         <ImageButton
             android:id="@+id/btn_save_exit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/btn_background"
+            style="@style/ImageButton40dp"
             android:contentDescription="@string/exit"
-            android:padding="6dp"
-            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_resign"
