@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    android:background="@color/timer_default"
+    android:baselineAligned="false"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:ellipsize="end"
+            android:ems="20"
+            android:maxLines="1"
+            android:text="White vs Black"
+            android:textColor="@color/default_text_color"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/result"
+                style="@style/TruncateText"
+                android:layout_width="0dp"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/savedDate"
+                style="@style/TruncateText"
+                android:layout_width="wrap_content"
+                android:layout_margin="2dp"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/open_game"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginHorizontal="16dp"
+        android:contentDescription="@string/load_game"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_open" />
+
+    <ImageView
+        android:id="@+id/delete_game"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginHorizontal="8dp"
+        android:contentDescription="@string/delete_game"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_delete"
+        app:tint="@color/danger_red" />
+</LinearLayout>
