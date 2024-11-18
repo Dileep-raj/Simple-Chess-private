@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
+    <!-- Default teal colors -->
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
 
+    <!-- Brown colors -->
     <color name="brown_200">#c0a490</color>
     <color name="brown_500">#734f2f</color>
     <color name="brown_700">#593921</color>
     <color name="brown_900">#3d1f0f</color>
 
+    <!-- Alice colors -->
+    <color name="alice_light">#43ABC9</color>
+    <color name="alice">#1496BB</color>
+    <color name="alice_dark">#1287A8</color>
+    <color name="alice_darkest">#107896</color>
+
+    <!-- App primary colors -->
     <color name="primary_900">#424242</color>
     <color name="primary_700">#626262</color>
     <color name="primary_500">#9f9f9f</color>
     <color name="primary_200">#EFEFEF</color>
 
+    <!-- App secondary colors -->
     <color name="secondary_200">#83cdc6</color>
     <color name="secondary_500">#189A8C</color>
     <color name="secondary_700">#137C6E</color>
@@ -27,60 +34,72 @@
     <color name="dark_bg">#262421</color>
     <color name="light_bg">#DDDDDD</color>
 
-    <color name="piece_selection">#228B22</color>
-    <color name="checked_square">#d72222</color>
-
     <color name="icon_tint">#FFFFFFFF</color>
+    <color name="dialog_bg">#171717</color>
+
+    <!-- Button and text colors -->
     <color name="btn_background">#424242</color>
     <color name="btn_txt_color">#EFEFEF</color>
     <color name="default_text_color">#DFDFDF</color>
-    <color name="dialog_bg">#202020</color>
 
+    <!-- Timer colors -->
     <color name="timer_default">#242424</color>
     <color name="timer_active">#707070</color>
     <color name="timer_critical">#D72222</color>
     <color name="active3">#4FAA69</color>
 
+    <!-- PGN recycler view colors -->
     <color name="pgn_move">#262421</color>
     <color name="pgn_move_highlight">#189A8C</color>
+
+    <!-- Board item colors -->
+    <color name="piece_selection">#228B22</color>
+    <color name="checked_square">#d72222</color>
     <color name="captured_piece">#626262</color>
     <color name="legal_move_guide">#46F8FF</color>
     <color name="move">#502575F5</color>
 
+    <!-- Board themes -->
     <color name="theme_default_light">#dcc4aa</color>
     <color name="theme_default_dark">#A07655</color>
-
     <color name="theme_grey_light">#e9e9e9</color>
     <color name="theme_grey_dark">#666666</color>
-
     <color name="theme_green_light">#eeeed2</color>
     <color name="theme_green_dark">#769656</color>
-
     <color name="theme_brown_light">#f1cca2</color>
     <color name="theme_brown_dark">#aa6b40</color>
-
     <color name="theme_brown2_light">#FFEDDE</color>
     <color name="theme_brown2_dark">#997151</color>
-
     <color name="theme_lichess_light">#F0D9B5</color>
     <color name="theme_lichess_dark">#B58863</color>
-
     <color name="theme_blue_light">#CEE3F5</color>
     <color name="theme_blue_dark">#3F698F</color>
 
-    <color name="transparent">#00000000</color>
+    <!-- Misc colors -->
     <color name="danger_red">#D72222</color>
-    <color name="light_blue_400">#FF29B6F6</color>
-    <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
 
+    <color name="compact_board_background">#303030</color>
+    <color name="navigation_drawer_background">#A000</color>
+
+    <!-- Translucent -->
+    <color name="transparent">#0000</color>
+    <color name="translucent_75">#3F000000</color>
+    <color name="translucent_50">#7F000000</color>
+    <color name="translucent_25">#BF000000</color>
+
+    <!-- Eval bar -->
     <color name="eval_white">#C5C5C5</color>
     <color name="eval_black">#252525</color>
     <color name="eval_text">#43ABC9</color>
 
-    <color name="alice_light">#43ABC9</color>
-    <color name="alice">#1496BB</color>
-    <color name="alice_dark">#1287A8</color>
-    <color name="alice_darkest">#107896</color>
+    <!-- Annotation colors -->
+    <color name="brilliant">#44DADA</color>
+    <color name="great">#22AAD0</color>
+    <color name="interesting">#2290A5</color>
+    <color name="best">#369B36</color>
+    <color name="dubious">#FDED30</color>
+    <color name="mistake">#FFA600</color>
+    <color name="blunder">#D02323</color>
 </resources>

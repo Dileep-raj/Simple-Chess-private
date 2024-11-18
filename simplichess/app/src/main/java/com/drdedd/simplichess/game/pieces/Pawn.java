@@ -10,6 +10,7 @@ import java.util.HashSet;
 
 /**
  * {@inheritDoc}
+ * ♙ ♟
  */
 public class Pawn extends Piece {
     public final int direction, lastRank, startingRank;

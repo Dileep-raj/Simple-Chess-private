@@ -16,8 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.R;
+import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.data.GameStatistics;
 import com.drdedd.simplichess.databinding.FragmentHomeBinding;
 
@@ -86,7 +86,12 @@ public class HomeFragment extends Fragment {
     }
 
     public static void printTime(String TAG, String message, long time, int size) {
-        Log.i("TimeCalculated", String.format(Locale.ENGLISH, "%s: Time taken for %s: %,3d ns, Size:%d", TAG, message, time, size));
+//        String s = String.valueOf(time), s1 = String.valueOf(size);
+//        String decor = "=".repeat(message.length() + 47 + s.length() + TAG.length() + s1.length());
+        int sec = (int) (time / 1000000000);
+        int min = sec / 60;
+//        Log.i("TimeCalculated", String.format(Locale.ENGLISH, "%s: Time taken for %s: %,3d ns, Size:%d", TAG, message, time, size));
+        Log.i("TimeCalculated", String.format(Locale.ENGLISH, "%s: Time taken for %s : %02dm %02ds %01dms (%d ns) Size: %d", TAG, message, min, sec % 60, time / 1000000, time, size));
         gameStatistics.addRecord(message, time, size);
     }
 }

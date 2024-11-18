@@ -1,46 +1,67 @@
 package com.drdedd.simplichess.fragments.settings;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
 
-import com.drdedd.simplichess.game.gameData.BoardTheme;
 import com.drdedd.simplichess.data.DataManager;
+import com.drdedd.simplichess.game.BoardModel;
+import com.drdedd.simplichess.game.gameData.BoardTheme;
+import com.drdedd.simplichess.game.gameData.Player;
+import com.drdedd.simplichess.game.pieces.Pawn;
+import com.drdedd.simplichess.game.pieces.Piece;
+import com.drdedd.simplichess.interfaces.GameLogicInterface;
 
-public class SettingsViewModel extends ViewModel {
-    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound, restartActivity;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
+public class SettingsViewModel extends ViewModel implements GameLogicInterface {
+    private boolean fullScreen, cheatMode, invertBlackSVGs, timer, vibration, animation, sound, restartActivity, backgroundImage;
     private String whiteName, blackName;
     private int minutes, seconds;
     private BoardTheme boardTheme;
     private DataManager dataManager;
+    private BoardModel boardModel;
+    private HashMap<Piece, HashSet<Integer>> legalMoves;
 
     public void initializeData(Context context) {
+        boardModel = BoardModel.parseFEN("3k4/8/3KQ3/8/8/8/8/8 w - - 0 1", context);
+        if (boardModel == null) boardModel = new BoardModel(context, true);
+        Piece piece = boardModel.pieceAt(5, 4);
+        Log.d("TestFragment", "initializeData: Piece: " + piece);
+        legalMoves = new HashMap<>(Map.of(piece, piece.getPossibleMoves(this)));
         dataManager = new DataManager(context);
-        fullScreen = dataManager.isFullScreen();
-        cheatMode = dataManager.cheatModeEnabled();
-        invertBlackSVGs = dataManager.invertBlackSVGEnabled();
-        timer = dataManager.isTimerEnabled();
-        vibration = dataManager.getVibration();
-        sound = dataManager.getSound();
-        animation = dataManager.getAnimation();
-        minutes = dataManager.getTimerMinutes();
-        seconds = dataManager.getTimerSeconds();
-        whiteName = dataManager.getWhite();
-        blackName = dataManager.getBlack();
+        fullScreen = dataManager.getBoolean(DataManager.FULL_SCREEN);
+        cheatMode = dataManager.getBoolean(DataManager.CHEAT_MODE);
+        invertBlackSVGs = dataManager.getBoolean(DataManager.INVERT_BLACK_PIECES);
+        timer = dataManager.getBoolean(DataManager.TIMER);
+        vibration = dataManager.getBoolean(DataManager.VIBRATION);
+        sound = dataManager.getBoolean(DataManager.SOUND);
+        animation = dataManager.getBoolean(DataManager.ANIMATION);
+        minutes = dataManager.getInt(DataManager.MINUTES);
+        seconds = dataManager.getInt(DataManager.SECONDS);
+        whiteName = dataManager.getString(DataManager.WHITE);
+        blackName = dataManager.getString(DataManager.BLACK);
         boardTheme = dataManager.getBoardTheme();
+        backgroundImage = dataManager.getBoolean(DataManager.USE_BOARD_IMAGE);
         restartActivity = false;
     }
 
     public void updateSettings() {
-        dataManager.setFullScreen(fullScreen);
-        dataManager.saveWhiteBlack(whiteName, blackName);
-        dataManager.setCheatMode(cheatMode);
-        dataManager.setInvertBlackSVG(invertBlackSVGs);
-        dataManager.setTimerEnabled(timer);
-        dataManager.setVibration(vibration);
-        dataManager.setSound(sound);
-        dataManager.setAnimation(animation);
-        dataManager.setTimerMinutesSeconds(minutes, seconds);
+        dataManager.setString(DataManager.WHITE,whiteName);
+        dataManager.setString(DataManager.BLACK,blackName);
+        dataManager.setBoolean(DataManager.FULL_SCREEN, fullScreen);
+        dataManager.setBoolean(DataManager.CHEAT_MODE, cheatMode);
+        dataManager.setBoolean(DataManager.INVERT_BLACK_PIECES, invertBlackSVGs);
+        dataManager.setBoolean(DataManager.TIMER, timer);
+        dataManager.setBoolean(DataManager.VIBRATION, vibration);
+        dataManager.setBoolean(DataManager.SOUND, sound);
+        dataManager.setBoolean(DataManager.ANIMATION, animation);
+        dataManager.setInt(DataManager.MINUTES, minutes);
+        dataManager.setInt(DataManager.SECONDS, seconds);
+        dataManager.setBoolean(DataManager.USE_BOARD_IMAGE, backgroundImage);
         dataManager.setBoardTheme(boardTheme);
     }
 
@@ -141,7 +162,65 @@ public class SettingsViewModel extends ViewModel {
         this.sound = sound;
     }
 
+    public boolean isBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(boolean backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
     public boolean isRestartActivity() {
         return restartActivity;
+    }
+
+    @Override
+    public Piece pieceAt(int row, int col) {
+        return boardModel.pieceAt(row, col);
+    }
+
+    @Override
+    public boolean move(int fromRow, int fromCol, int toRow, int toCol) {
+        return false;
+    }
+
+    @Override
+    public boolean capturePiece(Piece piece) {
+        return false;
+    }
+
+    @Override
+    public void promote(Pawn pawn, int row, int col, int fromRow, int fromCol) {
+
+    }
+
+    @Override
+    public void terminateByTimeOut(Player player) {
+
+    }
+
+    @Override
+    public BoardModel getBoardModel() {
+        return boardModel;
+    }
+
+    @Override
+    public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
+        return legalMoves;
+    }
+
+    @Override
+    public boolean isWhiteToPlay() {
+        return true;
+    }
+
+    @Override
+    public boolean isGameTerminated() {
+        return false;
+    }
+
+    @Override
+    public boolean isPieceToPlay(Piece piece) {
+        return false;
     }
 }

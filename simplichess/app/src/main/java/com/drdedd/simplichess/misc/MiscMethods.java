@@ -2,13 +2,18 @@ package com.drdedd.simplichess.misc;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import androidx.annotation.NonNull;
 
+import com.drdedd.simplichess.data.Regexes;
 import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.game.pieces.Piece;
+
+import java.util.regex.Matcher;
 
 public class MiscMethods {
 
@@ -55,6 +60,13 @@ public class MiscMethods {
     }
 
     /**
+     * Converts column number to the corresponding file character
+     */
+    public static char toColChar(int col) {
+        return (char) ('a' + col);
+    }
+
+    /**
      * Opponent player for the given <code>Player</code>
      *
      * @return <code>White|Black</code>
@@ -89,5 +101,17 @@ public class MiscMethods {
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, content);
         context.startActivity(Intent.createChooser(shareIntent, "Share " + label));
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
+        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        if (nc == null) return false;
+        return nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || nc.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
+    }
+
+    public static boolean isLichessLink(String link) {
+        Matcher matcher = Regexes.lichessGamePattern.matcher(link);
+        return matcher.find();
     }
 }

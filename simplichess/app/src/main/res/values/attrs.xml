@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ChessBoard">
+        <attr name="lightColor" format="color" />
+        <attr name="darkColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="CompactBoard">
+        <attr name="lightColor" />
+        <attr name="darkColor" />
+        <attr name="whiteName" format="string" />
+        <attr name="blackName" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="EvalBar">
+        <attr name="eval" format="float|string" />
+    </declare-styleable>
+</resources>

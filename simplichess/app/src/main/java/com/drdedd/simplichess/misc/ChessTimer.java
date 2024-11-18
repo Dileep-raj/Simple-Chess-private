@@ -9,8 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.drdedd.simplichess.R;
-import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.data.DataManager;
+import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.interfaces.GameLogicInterface;
 
 import java.util.ArrayList;
@@ -142,7 +142,10 @@ public class ChessTimer {
         if (timer != null) timer.cancel();
         whiteTimeTV.setBackgroundResource(defaultColor);
         blackTimeTV.setBackgroundResource(defaultColor);
-        if (dataManager != null) dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
+        if (dataManager != null) {
+            dataManager.setLong(DataManager.WHITE_TIME_LEFT, whiteTimeLeft);
+            dataManager.setLong(DataManager.BLACK_TIME_LEFT, blackTimeLeft);
+        }
     }
 
     /**
@@ -153,8 +156,10 @@ public class ChessTimer {
         blackTimeTV.setText(formatTime(blackTimeLeft));
         if (timerRunning) {
             updateLayoutColors();
-            if (dataManager != null)
-                dataManager.setWhiteBlackTimeLeft(whiteTimeLeft, blackTimeLeft);
+            if (dataManager != null) {
+                dataManager.setLong(DataManager.WHITE_TIME_LEFT, whiteTimeLeft);
+                dataManager.setLong(DataManager.BLACK_TIME_LEFT, blackTimeLeft);
+            }
         }
     }
 

@@ -28,16 +28,6 @@ public interface GameLogicInterface {
     boolean move(int fromRow, int fromCol, int toRow, int toCol);
 
     /**
-     * Add move to PGN
-     *
-     * @param piece   <code>Piece</code> which was moved
-     * @param move    Special moves (if any)
-     * @param fromRow Previous row position
-     * @param fromCol Previous column position
-     */
-    void addToPGN(Piece piece, String move, int fromRow, int fromCol);
-
-    /**
      * Remove a piece from the board
      *
      * @return Result of capturing piece

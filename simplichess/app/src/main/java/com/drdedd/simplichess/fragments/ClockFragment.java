@@ -212,10 +212,6 @@ public class ClockFragment extends Fragment implements GameLogicInterface {
     }
 
     @Override
-    public void addToPGN(Piece piece, String move, int fromRow, int fromCol) {
-    }
-
-    @Override
     public boolean capturePiece(Piece piece) {
         return false;
     }

@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 /**
  * {@inheritDoc}
+ * ♖ ♜
  */
 public class Rook extends Piece {
 

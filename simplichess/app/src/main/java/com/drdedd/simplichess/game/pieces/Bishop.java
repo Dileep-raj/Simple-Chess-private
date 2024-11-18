@@ -8,6 +8,7 @@ import java.util.HashSet;
 
 /**
  * {@inheritDoc}
+ * ♗ ♝
  */
 public class Bishop extends Piece {
 

@@ -19,14 +19,17 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.drdedd.simplichess.game.gameData.BoardTheme;
 import com.drdedd.simplichess.databinding.FragmentSettingsBinding;
+import com.drdedd.simplichess.game.gameData.BoardTheme;
+import com.drdedd.simplichess.views.ChessBoard;
 
 public class SettingsFragment extends Fragment {
 
     private final static String TAG = "SettingsFragment";
+    private FragmentSettingsBinding binding;
+    private ChessBoard previewBoard;
     private EditText whiteName, blackName, minutesInput, secondsInput;
-    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, vibrationToggle, animationToggle, soundToggle;
+    private SwitchCompat fullScreenToggle, cheatToggle, invertBlackSVGToggle, timerToggle, vibrationToggle, animationToggle, soundToggle, backgroundImageToggle;
     private LinearLayout timerInputLayout;
     private Spinner themeSpinnerMenu;
     private final BoardTheme[] themes = BoardTheme.getValues();
@@ -35,7 +38,7 @@ public class SettingsFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        FragmentSettingsBinding binding = FragmentSettingsBinding.inflate(inflater, container, false);
+        binding = FragmentSettingsBinding.inflate(inflater, container, false);
 
         whiteName = binding.whiteName;
         blackName = binding.blackName;
@@ -48,13 +51,15 @@ public class SettingsFragment extends Fragment {
         vibrationToggle = binding.vibrationToggle;
         animationToggle = binding.animationToggle;
         soundToggle = binding.soundToggle;
+        backgroundImageToggle = binding.useBoardBackground;
+        previewBoard = binding.previewBoard;
 
         timerInputLayout = binding.timerInputLayout;
         themeSpinnerMenu = binding.themeSpinnerMenu;
 
         items = new String[themes.length];
         int i = 0;
-        for (BoardTheme theme : themes) items[i++] = theme.getThemeName();
+        for (BoardTheme theme : themes) items[i++] = theme.toString();
 
         timerToggle.setOnCheckedChangeListener((button, isChecked) -> {
             if (isChecked) timerInputLayout.setVisibility(View.VISIBLE);
@@ -66,6 +71,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 viewModel.setBoardTheme(themes[position]);
+                updatePreview();
             }
 
             @Override
@@ -74,12 +80,28 @@ public class SettingsFragment extends Fragment {
         });
         fullScreenToggle.setOnCheckedChangeListener((button, b) -> viewModel.setFullScreen(b));
         cheatToggle.setOnCheckedChangeListener((button, b) -> viewModel.setCheatMode(b));
-        invertBlackSVGToggle.setOnCheckedChangeListener((button, b) -> viewModel.setInvertBlackSVGs(b));
+        invertBlackSVGToggle.setOnCheckedChangeListener((button, b) -> {
+            viewModel.setInvertBlackSVGs(b);
+            updatePreview();
+        });
         vibrationToggle.setOnCheckedChangeListener((button, b) -> viewModel.setVibration(b));
         animationToggle.setOnCheckedChangeListener((button, b) -> viewModel.setAnimation(b));
-        soundToggle.setOnCheckedChangeListener(((button, b) -> viewModel.setSound(b)));
+        soundToggle.setOnCheckedChangeListener((button, b) -> viewModel.setSound(b));
+        backgroundImageToggle.setOnCheckedChangeListener((button, b) -> {
+            viewModel.setBackgroundImage(b);
+            updatePreview();
+        });
 
         return binding.getRoot();
+    }
+
+    private void updatePreview() {
+        previewBoard.setTheme(viewModel.getBoardTheme());
+        previewBoard.setInvertBlackPieces(viewModel.isInvertBlackSVGs());
+        previewBoard.setBoardImage(viewModel.isBackgroundImage());
+        previewBoard.invalidate();
+
+        binding.ThemeMenuLayout.setVisibility(viewModel.isBackgroundImage() ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -93,6 +115,9 @@ public class SettingsFragment extends Fragment {
     }
 
     private void initializeData() {
+        previewBoard.setData(viewModel, true);
+        previewBoard.setSelection(5, 4);
+        previewBoard.setAllLegalMoves(viewModel.getLegalMoves());
         fullScreenToggle.setChecked(viewModel.isFullScreen());
         whiteName.setText(viewModel.getWhiteName());
         blackName.setText(viewModel.getBlackName());
@@ -105,6 +130,7 @@ public class SettingsFragment extends Fragment {
         vibrationToggle.setChecked(viewModel.getVibration());
         animationToggle.setChecked(viewModel.getAnimation());
         soundToggle.setChecked(viewModel.getSound());
+        backgroundImageToggle.setChecked(viewModel.isBackgroundImage());
 
         minutesInput.setText(String.valueOf(viewModel.getMinutes()));
         secondsInput.setText(String.valueOf(viewModel.getSeconds()));

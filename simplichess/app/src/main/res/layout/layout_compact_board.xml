@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:gravity="center"
+    android:maxWidth="500dp"
+    android:orientation="vertical"
+    tools:context=".views.CompactBoard">
+
+    <TextView
+        android:id="@+id/openingName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/default_text_color"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/compact_board_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/topDetailsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/topTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="3dp"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/title_gm"
+                android:textColor="@color/default_text_color"
+                android:textFontWeight="800"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/topName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/black"
+                android:textColor="@color/default_text_color" />
+
+            <TextView
+                android:id="@+id/topTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/sample_time"
+                android:textColor="@color/default_text_color"
+                android:textFontWeight="500" />
+        </LinearLayout>
+
+        <com.drdedd.simplichess.views.ChessBoard
+            android:id="@+id/chessBoard"
+            style="@style/ChessBoardStyle" />
+
+        <LinearLayout
+            android:id="@+id/bottomDetailsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/bottomTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="3dp"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/title_im"
+                android:textColor="@color/default_text_color"
+                android:textFontWeight="800"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/bottomName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/white"
+                android:textColor="@color/default_text_color" />
+
+            <TextView
+                android:id="@+id/bottomTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:fontFamily="@font/noto_sans"
+                android:text="@string/sample_time"
+                android:textColor="@color/default_text_color"
+                android:textFontWeight="500" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

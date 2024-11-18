@@ -10,6 +10,7 @@ import java.util.HashSet;
 
 /**
  * {@inheritDoc}
+ * ♔ ♚
  */
 public class King extends Piece {
     private boolean castled, longCastled, shortCastled;

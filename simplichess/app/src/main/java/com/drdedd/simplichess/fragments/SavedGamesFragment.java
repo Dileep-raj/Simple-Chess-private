@@ -30,10 +30,10 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.drdedd.simplichess.game.PGN;
 import com.drdedd.simplichess.R;
 import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.databinding.FragmentSavedGamesBinding;
+import com.drdedd.simplichess.game.pgn.PGN;
 import com.drdedd.simplichess.interfaces.GameRecyclerViewInterface;
 
 import java.io.IOException;
@@ -238,7 +238,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
                         gameRecyclerViewInterface.deleteGame(adapterPosition);
                 });
 
-                itemView.findViewById(R.id.open_game).setOnClickListener(v -> {
+                itemView.setOnClickListener(v -> {
                     int adapterPosition = getAdapterPosition();
                     if (adapterPosition != RecyclerView.NO_POSITION)
                         gameRecyclerViewInterface.openGame(adapterPosition);

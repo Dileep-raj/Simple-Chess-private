@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,12 +8,82 @@
     android:orientation="vertical"
     tools:context=".fragments.TestFragment">
 
-    <Button
-        android:id="@+id/btn_test"
-        style="@style/DefaultButtonStyle"
-        android:text="@string/test" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:visibility="gone">
 
-    <com.drdedd.simplichess.views.ChessBoard
-        android:id="@+id/testChessBoard"
+        <Button
+            android:id="@+id/btn_test"
+            style="@style/DefaultButtonStyle"
+            android:layout_margin="8dp"
+            android:text="@string/test" />
+
+        <ImageButton
+            android:id="@+id/shrinkExpandButton"
+            style="@style/ImageButton40dp"
+            android:layout_margin="8dp"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/ic_shrink" />
+    </LinearLayout>
+
+    <com.drdedd.simplichess.views.CompactBoard
+        android:id="@+id/compactBoard"
         style="@style/ChessBoardStyle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/testCircular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progress="4"
+            app:indicatorColor="@color/teal_700" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/testLinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:progress="4"
+            app:indicatorColor="@color/teal_700" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:checked="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="TV"
+            android:textSize="16sp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:autofillHints="name"
+            android:hint="Hint"
+            android:inputType="text" />
+    </LinearLayout>
 </LinearLayout>

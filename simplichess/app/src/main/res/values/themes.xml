@@ -1,23 +1,33 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.SimpliChess" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_900</item>
         <item name="colorPrimaryVariant">@color/primary_700</item>
         <item name="colorOnPrimary">@color/primary_700</item>
+
+        <item name="colorAccent">@color/theme_default_dark</item>
+        <item name="android:textColor">@color/default_text_color</item>
+        <item name="textFillColor">@color/default_text_color</item>
+
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/secondary_500</item>
         <item name="colorSecondaryVariant">@color/secondary_500</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="21">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <!-- Customize your theme here. -->
-    </style>
 
-    <style name="ToolBarStyle" parent="Theme.MaterialComponents.DayNight">
-        <item name="itemIconTint">@color/white</item>
-        <item name="itemTextColor">@color/white</item>
+        <!-- Custom button style -->
+        <item name="buttonStyle">@style/DefaultButtonStyle</item>
+        <item name="android:buttonStyle">@style/DefaultButtonStyle</item>
+
+        <!-- Custom action bar style -->
+        <item name="actionBarStyle">@style/ActionBarStyle</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 </resources>

@@ -1,5 +1,7 @@
 package com.drdedd.simplichess.game.gameData;
 
+import androidx.annotation.NonNull;
+
 /**
  * Player type (White|Black)
  */
@@ -49,5 +51,10 @@ public enum Player {
     public void setInCheck(boolean inCheck) {
         this.inCheck = inCheck;
     }
-}
 
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
+    }
+}

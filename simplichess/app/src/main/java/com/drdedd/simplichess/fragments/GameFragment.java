@@ -1,7 +1,6 @@
 package com.drdedd.simplichess.fragments;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
-import static com.drdedd.simplichess.game.gameData.MoveAnnotation.BOOK;
 import static com.drdedd.simplichess.misc.MiscMethods.opponentPlayer;
 import static com.drdedd.simplichess.misc.MiscMethods.shareContent;
 
@@ -27,18 +26,20 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.drdedd.simplichess.misc.ChessTimer;
-import com.drdedd.simplichess.game.gameData.ChessState;
-import com.drdedd.simplichess.game.gameData.Player;
-import com.drdedd.simplichess.game.GameLogic;
-import com.drdedd.simplichess.game.PGN;
 import com.drdedd.simplichess.R;
 import com.drdedd.simplichess.data.DataManager;
-import com.drdedd.simplichess.game.Openings;
 import com.drdedd.simplichess.databinding.FragmentGameBinding;
 import com.drdedd.simplichess.dialogs.GameOverDialog;
-import com.drdedd.simplichess.interfaces.GameFragmentInterface;
+import com.drdedd.simplichess.game.GameLogic;
+import com.drdedd.simplichess.game.Openings;
+import com.drdedd.simplichess.game.ParsedGame;
+import com.drdedd.simplichess.game.gameData.Annotation;
+import com.drdedd.simplichess.game.gameData.ChessState;
+import com.drdedd.simplichess.game.gameData.Player;
+import com.drdedd.simplichess.game.pgn.PGN;
 import com.drdedd.simplichess.game.pieces.Piece;
+import com.drdedd.simplichess.interfaces.GameFragmentInterface;
+import com.drdedd.simplichess.misc.ChessTimer;
 import com.drdedd.simplichess.views.ChessBoard;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ import java.util.Arrays;
 @SuppressLint("NewApi")
 public class GameFragment extends Fragment implements GameFragmentInterface {
     private final static String TAG = "GameFragment";
-    protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", OPENING_KEY = "Opening";
+    protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", OPENING_KEY = "Opening", ECO_KEY = "ECO";
     private FragmentGameBinding binding;
     private String termination;
     private PGN pgn;
@@ -128,7 +129,7 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
             gameLogic.terminateGame(ChessState.DRAW);
         }));
         btn_resign.setOnClickListener(v -> createDialog("Resign", "Are you sure you want to resign?", (d, i) -> {
-            gameLogic.getPGN().setTermination(opponentPlayer(gameLogic.playerToPlay()).getName() + " won by Resignation");
+            gameLogic.getPGN().setTermination(opponentPlayer(gameLogic.playerToPlay()) + " won by Resignation");
             gameLogic.terminateGame(ChessState.RESIGN);
         }));
         btn_undo_move.setOnClickListener(v -> gameLogic.undoLastMove());
@@ -144,9 +145,10 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
     }
 
     private void initializeData() {
-        timerEnabled = dataManager.isTimerEnabled();
+        timerEnabled = dataManager.getBoolean(DataManager.TIMER);
+        chessBoard.setInvertBlackPieces(dataManager.getBoolean(DataManager.INVERT_BLACK_PIECES));
 
-        String white = dataManager.getWhite(), black = dataManager.getBlack();
+        String white = dataManager.getString(DataManager.WHITE), black = dataManager.getString(DataManager.BLACK);
         Player.WHITE.setName(white);
         Player.BLACK.setName(black);
 
@@ -176,31 +178,30 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
      */
     private void loadGame() {
         Bundle args = new Bundle();
-
         if (pgn.isFENEmpty()) {
-            String opening;
+            String opening, eco;
             long start = System.nanoTime();
             Openings openings = Openings.getInstance(requireContext());
-            String openingResult = openings.searchOpening(pgn.getMoves());
+            String openingResult = openings.searchOpening(pgn.getUCIMoves());
             long end = System.nanoTime();
 
             String[] split = openingResult.split(Openings.separator);
             int lastBookMove = Integer.parseInt(split[0]);
-            if (lastBookMove != -1 && split.length == 2) {
+            if (lastBookMove != -1 && split.length == 3) {
                 HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
-                opening = split[1];
+                eco = split[1];
+                opening = split[2];
+                pgn.setLastBookMoveNo(lastBookMove);
+                pgn.addTag(PGN.TAG_ECO, eco);
+                pgn.addTag(PGN.TAG_OPENING, opening);
                 for (int i = 0; i <= lastBookMove; i++)
-                    pgn.moveAnnotationMap.put(i, BOOK);
+                    pgn.getPGNData().addAnnotation(i, Annotation.BOOK);
             } else {
-                opening = "";
-                Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getMoves().subList(0, Math.min(pgn.getMoves().size(), 10))));
+                opening = eco = "";
+                Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getUCIMoves().subList(0, Math.min(pgn.getUCIMoves().size(), 10))));
             }
-            args.putString(OPENING_KEY, opening);
+            args.putSerializable(LoadGameFragment.PARSED_GAME_KEY, new ParsedGame(gameLogic.getBoardModelStack(), gameLogic.getFENs(), gameLogic.getPGN(), eco, opening));
         }
-
-        args.putSerializable(LoadGameFragment.BOARD_MODEL_STACK_KEY, gameLogic.getBoardModelStack());
-        args.putSerializable(LoadGameFragment.PGN_KEY, gameLogic.getPGN());
-        args.putSerializable(LoadGameFragment.FENS_KEY, gameLogic.getFENs());
         args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, true);
         navController.popBackStack();
         navController.navigate(R.id.nav_load_game, args);
@@ -242,7 +243,7 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
         horizontalScrollView.post(() -> horizontalScrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT));
 
         if (gameLogic.isGameTerminated()) gameStateView.setText(termination);
-        else gameStateView.setText(gameLogic.playerToPlay().getName() + "'s turn");
+        else gameStateView.setText(gameLogic.playerToPlay() + "'s turn");
 
         whiteCaptured.setText("");
         blackCaptured.setText("");

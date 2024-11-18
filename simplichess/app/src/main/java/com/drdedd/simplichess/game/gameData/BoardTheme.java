@@ -1,5 +1,7 @@
 package com.drdedd.simplichess.game.gameData;
 
+import androidx.annotation.NonNull;
+
 import com.drdedd.simplichess.R;
 
 /**
@@ -41,13 +43,6 @@ public enum BoardTheme {
     }
 
     /**
-     * Name of the Theme
-     */
-    public String getThemeName() {
-        return themeName;
-    }
-
-    /**
      * Array of values of BoardThemes
      */
     public static BoardTheme[] getValues() {
@@ -66,5 +61,11 @@ public enum BoardTheme {
      */
     public int getLightColor() {
         return lightColor;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return themeName;
     }
 }

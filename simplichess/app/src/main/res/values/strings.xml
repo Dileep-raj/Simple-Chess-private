@@ -38,6 +38,7 @@
     <string name="black">Black</string>
     <string name="white">White</string>
     <string name="board">Board</string>
+    <string name="background_image">Background image</string>
     <string name="select_board_theme">Select board theme</string>
     <string name="invert_black_pieces">Invert Black Pieces</string>
     <string name="cheat_mode">Cheat Mode</string>
@@ -83,15 +84,40 @@
     <string name="paste_your_pgn_here">Paste your PGN here</string>
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="game_over">Game Over</string>
+
+    <!-- Chess pieces -->
+    <string name="king">King</string>
     <string name="queen">Queen</string>
     <string name="rook">Rook</string>
     <string name="knight">Knight</string>
     <string name="bishop">Bishop</string>
+    <string name="pawn">Pawn</string>
+
+    <!-- Chess titles -->
+    <string name="title_gm">GM</string>
+    <string name="title_im">IM</string>
+    <string name="title_fm">FM</string>
+    <string name="title_cm">CM</string>
+    <string name="title_wgm">WGM</string>
+    <string name="title_wim">WIM</string>
+    <string name="title_wfm">WFM</string>
+    <string name="title_wcm">WCM</string>
+    <string-array name="chess_titles">
+        <item>@string/title_gm</item>
+        <item>@string/title_im</item>
+        <item>@string/title_fm</item>
+        <item>@string/title_cm</item>
+        <item>@string/title_wgm</item>
+        <item>@string/title_wim</item>
+        <item>@string/title_wfm</item>
+        <item>@string/title_wcm</item>
+    </string-array>
 
     <!-- Unicodes -->
+    <string name="white_circle">○</string>
+    <string name="black_circle">●</string>
     <string name="draw"> \u00BD</string>
-    <string name="trophy"> \u1F3C6</string>
-    <string name="peace"> \u270C</string>
+    <string name="trophy"> 🏆</string>
     <string name="unicode_kw">\u2654</string>
     <string name="unicode_qw">\u2655</string>
     <string name="unicode_rw">\u2656</string>
@@ -118,4 +144,14 @@
         <item>\u265E</item>
         <item>\u265F</item>
     </string-array>
+
+    <!-- Lipsum -->
+    <string name="lipsum1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="average_cpl">Average CPL</string>
+    <string name="blunder">Blunder</string>
+    <string name="mistake">Mistake</string>
+    <string name="inaccuracy">Inaccuracy</string>
+    <string name="zero">0</string>
+    <string name="zero_percent">0%</string>
 </resources>

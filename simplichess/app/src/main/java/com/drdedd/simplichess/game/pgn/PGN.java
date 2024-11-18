@@ -1,4 +1,4 @@
-package com.drdedd.simplichess.game;
+package com.drdedd.simplichess.game.pgn;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.drdedd.simplichess.R;
 import com.drdedd.simplichess.interfaces.PGNRecyclerViewInterface;
-import com.drdedd.simplichess.game.pieces.Piece;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -28,16 +28,17 @@ public class PGN implements Serializable {
     /**
      * Constant String for special moves
      */
-    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "Capture", PROMOTE = "promote";
+    public static final String LONG_CASTLE = "O-O-O", SHORT_CASTLE = "O-O", CAPTURE = "x";
     public static final String RESULT_DRAW = "1/2-1/2", RESULT_WHITE_WON = "1-0", RESULT_BLACK_WON = "0-1", RESULT_ONGOING = "*";
     public static final String TAG_APP = "App", TAG_WHITE = "White", TAG_DATE = "Date", TAG_BLACK = "Black", TAG_SET_UP = "SetUp", TAG_FEN = "FEN", TAG_RESULT = "Result", TAG_TERMINATION = "Termination";
-    //    public static final String TAG_ECO = "ECO", TAG_OPENING = "Opening";
+    public static final String TAG_ECO = "ECO", TAG_OPENING = "Opening", TAG_WHITE_TITLE = "WhiteTitle", TAG_BLACK_TITLE = "BlackTitle", TAG_WHITE_ELO = "WhiteElo", TAG_BLACK_ELO = "BlackElo";
     private final String FEN;
-    private boolean whiteToPlay;
-    private String termination = "";
-    private final LinkedList<String> moves = new LinkedList<>();
     private final LinkedHashMap<String, String> allTags = new LinkedHashMap<>();
-    public LinkedHashMap<Integer, String> commentsMap, moveAnnotationMap, alternateMoveSequence, evalMap;
+    private String termination = "";
+    private PGNData data;
+    private AnalysisReport report;
+    private boolean whiteToPlay;
+    private int lastBookMoveNo;
 
     /**
      * @param app         Name of app
@@ -53,10 +54,15 @@ public class PGN implements Serializable {
         allTags.put(TAG_DATE, date);
         this.whiteToPlay = whiteToPlay;
         FEN = "";
-        moves.clear();
-        commentsMap = new LinkedHashMap<>();
-        moveAnnotationMap = new LinkedHashMap<>();
-        alternateMoveSequence = new LinkedHashMap<>();
+//        moves.clear();
+//        uciMoves.clear();
+//        commentsMap = new LinkedHashMap<>();
+//        moveAnnotationMap = new LinkedHashMap<>();
+//        annotationMap = new LinkedHashMap<>();
+//        alternateMoveSequence = new LinkedHashMap<>();
+//        evalMap = new LinkedHashMap<>();
+        lastBookMoveNo = -1;
+        data = new PGNData();
     }
 
     /**
@@ -74,28 +80,37 @@ public class PGN implements Serializable {
         allTags.put(TAG_DATE, date);
         this.whiteToPlay = whiteToPlay;
         this.FEN = FEN;
-        moves.clear();
-        commentsMap = new LinkedHashMap<>();
-        moveAnnotationMap = new LinkedHashMap<>();
-        alternateMoveSequence = new LinkedHashMap<>();
+//        moves.clear();
+//        uciMoves.clear();
+//        commentsMap = new LinkedHashMap<>();
+//        moveAnnotationMap = new LinkedHashMap<>();
+//        annotationMap = new LinkedHashMap<>();
+//        alternateMoveSequence = new LinkedHashMap<>();
+//        evalMap = new LinkedHashMap<>();
+        lastBookMoveNo = -1;
+        data = new PGNData();
     }
 
     /**
-     * Adds move to PGN
+     * Adds moves to the PGN moves list
      *
-     * @param piece Piece moved
-     * @param move  Special move if any
+     * @param sanMove Move in Standard Algebraic Notation
+     * @param uciMove Move in UCI format
      */
-    public void addToPGN(Piece piece, String move) {
-        if (move.isEmpty()) moves.addLast(piece.getPosition());
-        else moves.addLast(move);
+    public void addMove(String sanMove, String uciMove) {
+        data.addMove(sanMove, uciMove);
+//        data.getSANMoves().addLast(sanMove);
+//        data.getUCIMoves().addLast(uciMove);
     }
 
     /**
      * Removes last move from PGN
      */
     public void removeLast() {
-        if (!moves.isEmpty()) moves.removeLast();
+        if (!data.getSANMoves().isEmpty()) {
+            data.getSANMoves().removeLast();
+            data.getUCIMoves().removeLast();
+        }
     }
 
     /**
@@ -178,8 +193,7 @@ public class PGN implements Serializable {
      * @return <code> * | 0-1 | 1-0 | 1/2-1/2 </code>
      */
     public String getResult() {
-        if (allTags.containsKey(TAG_RESULT)) return allTags.get(TAG_RESULT);
-        return "";
+        return allTags.getOrDefault(TAG_RESULT, "");
     }
 
     /**
@@ -196,10 +210,10 @@ public class PGN implements Serializable {
      */
     public String getPGNMoves() {
         StringBuilder pgn = new StringBuilder();
-        int length = moves.size();
+        int length = data.getSANMoves().size();
         for (int i = 0; i < length; i++) {
             if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
-            pgn.append(moves.get(i)).append(' ');
+            pgn.append(data.getSANMoves().get(i)).append(' ');
         }
         return pgn.toString();
     }
@@ -209,15 +223,17 @@ public class PGN implements Serializable {
      */
     public String getPGNCommented() {
         StringBuilder pgn = new StringBuilder();
-        int length = moves.size();
+        int length = data.getSANMoves().size();
         for (int i = 0; i < length; i++) {
             if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
-            pgn.append(moves.get(i));
-            if (moveAnnotationMap.containsKey(i)) pgn.append(moveAnnotationMap.get(i));
+            pgn.append(data.getSANMoves().get(i));
+            if (data.getAnnotationMap().containsKey(i))
+                pgn.append(data.getAnnotationMap().get(i).getAnnotation());
             pgn.append(' ');
-            if (commentsMap.containsKey(i)) pgn.append(commentsMap.get(i)).append(' ');
-            if (alternateMoveSequence.containsKey(i))
-                pgn.append(alternateMoveSequence.get(i)).append(' ');
+            if (data.getCommentsMap().containsKey(i))
+                pgn.append(data.getCommentsMap().get(i)).append(' ');
+            if (data.getAlternateMoveSequence().containsKey(i))
+                pgn.append(data.getAlternateMoveSequence().get(i)).append(' ');
         }
         return pgn.toString();
     }
@@ -241,10 +257,10 @@ public class PGN implements Serializable {
     }
 
     /**
-     * @return Number of moves in PGN
+     * @return Number of half moves played
      */
-    public int getMoveCount() {
-        return moves.size();
+    public int getPlyCount() {
+        return data.getSANMoves().size();
     }
 
     /**
@@ -252,7 +268,16 @@ public class PGN implements Serializable {
      * @return <code>String|null</code> - Move at given position
      */
     public String getMoveAt(int moveNo) {
-        if (moveNo < moves.size()) return moves.get(moveNo);
+        if (moveNo < data.getSANMoves().size()) return data.getSANMoves().get(moveNo);
+        return null;
+    }
+
+    /**
+     * @param moveNo Move number
+     * @return <code>String|null</code> - UCI move at given position
+     */
+    public String getUCIMoveAt(int moveNo) {
+        if (moveNo < data.getUCIMoves().size()) return data.getUCIMoves().get(moveNo);
         return null;
     }
 
@@ -260,7 +285,14 @@ public class PGN implements Serializable {
      * @return List of moves
      */
     public LinkedList<String> getMoves() {
-        return moves;
+        return data.getSANMoves();
+    }
+
+    /**
+     * @return List of UCI moves
+     */
+    public LinkedList<String> getUCIMoves() {
+        return data.getUCIMoves();
     }
 
     /**
@@ -273,28 +305,32 @@ public class PGN implements Serializable {
         allTags.put(tag, value);
     }
 
-    public void setCommentsMap(LinkedHashMap<Integer, String> commentsMap) {
-        this.commentsMap = commentsMap;
+    public void addAllTags(HashMap<String, String> tags) {
+        allTags.putAll(tags);
     }
 
-    public void setMoveAnnotationMap(LinkedHashMap<Integer, String> moveAnnotationMap) {
-        this.moveAnnotationMap = moveAnnotationMap;
+    public void setPGNData(PGNData pgnData) {
+        this.data = pgnData;
     }
 
-    public void setAlternateMoveSequence(LinkedHashMap<Integer, String> alternateMoveSequence) {
-        this.alternateMoveSequence = alternateMoveSequence;
+    public PGNData getPGNData() {
+        return data;
     }
 
-    public void setEvalMap(LinkedHashMap<Integer, String> evalMap) {
-        this.evalMap = evalMap;
-    }
-
-    public boolean notHasEval() {
-        return evalMap.isEmpty();
+    public boolean hasNoEval() {
+        return data.getEvalMap().isEmpty() || data.getEvalMap().size() == 1;
     }
 
     public boolean isFENEmpty() {
         return FEN.isEmpty();
+    }
+
+    public void setLastBookMoveNo(int lastBookMoveNo) {
+        this.lastBookMoveNo = lastBookMoveNo;
+    }
+
+    public int getLastBookMoveNo() {
+        return lastBookMoveNo;
     }
 
     /**
@@ -333,7 +369,7 @@ public class PGN implements Serializable {
 
         @Override
         public int getItemCount() {
-            return pgn.getMoveCount();
+            return pgn.getPlyCount();
         }
 
         public static class PGNViewHolder extends RecyclerView.ViewHolder {

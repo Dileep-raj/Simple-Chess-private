@@ -30,4 +30,8 @@ public class Regexes {
     public static final Pattern moveAnnotationPattern = Pattern.compile(moveAnnotationRegex);
 
     public static final String numberedAnnotationRegex = "^\\$\\d+$";
+
+    public static final String lichessGameCodeRegex = "\\w{8}";
+    public static final String lichessGameRegex = "^(https://)??(www\\.)??lichess\\.org/\\w{8}(/white|/black)??(#\\d+)??";
+    public static final Pattern lichessGamePattern = Pattern.compile(lichessGameRegex);
 }

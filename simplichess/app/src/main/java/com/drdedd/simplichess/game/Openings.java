@@ -1,45 +1,53 @@
 package com.drdedd.simplichess.game;
 
-import static com.drdedd.simplichess.data.Regexes.moveNumberRegex;
-
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import com.drdedd.simplichess.R;
 import com.drdedd.simplichess.fragments.HomeFragment;
 import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Tree collection of opening moves in chess
+ * Tree collection of opening moves in chess<br/>
+ * Eg:
+ * <pre>
+ *         *
+ *       / | \
+ *      a3 a4 ... (White's move)
+ *    / | \
+ *   c5 d5 ...    (Black's move)
+ * </pre>
  *
- * @see <a href="https://en.wikipedia.org/wiki/Chess_opening">Chess Openings</a> <br> <a href="https://en.wikipedia.org/wiki/Encyclopaedia_of_Chess_Openings">ECO</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Chess_opening">Chess Openings</a>, <a href="https://en.wikipedia.org/wiki/Encyclopaedia_of_Chess_Openings">ECO</a>
  */
-public class Openings {
-    private final Node root;
+public class Openings implements Serializable {
+    private final MoveNode root;
+    private final ArrayList<Pair<String, ArrayList<String>>> allOpenings = new ArrayList<>();
     private static Openings openings;
     public static final String separator = "%";
     private static final String TAG = "Openings";
 
     private Openings(Context context) {
-        root = new Node("-", "");
+        root = new MoveNode("-", "", "");
         Log.d(TAG, "Openings: Loading Openings");
         try {
             long start = System.nanoTime();
-            List<String[]> lines;
             InputStream inputStream = context.getResources().openRawResource(R.raw.openings);
-            try (CSVReader csvReader = new CSVReaderBuilder(new InputStreamReader(inputStream)).withSkipLines(1).build()) {
-                lines = csvReader.readAll();
-                for (String[] line : lines)
-                    addOpening(line[2], line[0] + ": " + line[1]);
-            }
+            CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream));
+            List<String[]> lines = csvReader.readAll();
+            for (String[] line : lines)
+                addOpening(line[2], line[0], line[1]);
             long end = System.nanoTime();
+            Log.d(TAG, "Openings: Openings loaded");
             HomeFragment.printTime(TAG, "loading openings", end - start, lines.size());
         } catch (Exception e) {
             Log.e(TAG, "Openings: Error while loading openings", e);
@@ -51,39 +59,43 @@ public class Openings {
         return openings;
     }
 
-    private void addOpening(String moveSequence, String name) {
-        String[] moves = moveSequence.replaceAll(moveNumberRegex, "").trim().split("\\s+");
+    private void addOpening(String moveSequence, String eco, String name) {
+//        String[] moves = moveSequence.replaceAll(moveNumberRegex, "").trim().split("\\s+");
+        String[] moves = moveSequence.trim().split("\\s+");
+        allOpenings.add(new Pair<>(name, new ArrayList<>(Arrays.asList(moves))));
         String move, openingName;
-        Node node = root, tempNode;
+        MoveNode moveNode = root, tempMoveNode;
         int i = 0, l = moves.length;
+
         while (i < l) {
-            tempNode = null;
-            ArrayList<Node> nodes = node.getNodes();
-            if (nodes.isEmpty()) break;
+            tempMoveNode = null;
+            ArrayList<MoveNode> moveNodes = moveNode.moveNodes;
+            if (moveNodes.isEmpty()) break;
             move = moves[i];
 
-            int low = 0, high = nodes.size() - 1, mid;
+            int low = 0, high = moveNodes.size() - 1, mid;
             while (low <= high) {
                 mid = (low + high) / 2;
-                tempNode = nodes.get(mid);
-                int result = move.compareToIgnoreCase(tempNode.getMove());
+                tempMoveNode = moveNodes.get(mid);
+                int result = move.compareToIgnoreCase(tempMoveNode.getMove());
                 if (result == 0) {
-                    node = tempNode;
+                    moveNode = tempMoveNode;
                     break;
                 }
                 if (result > 0) low = mid + 1;
                 else high = mid - 1;
             }
-            if (node != tempNode) break;
+            if (moveNode != tempMoveNode) break;
             i++;
         }
-        Node newNode = node;
+
+        MoveNode newMoveNode = moveNode;
         while (i < l) {
             move = moves[i];
 //            openingName = (i == l - 1) ? name : "";
             openingName = name;
-            newNode.addNode(new Node(move, openingName));
-            newNode = newNode.getNodes().get(newNode.getNodes().size() - 1);
+            newMoveNode.addNode(new MoveNode(move, eco, openingName));
+            newMoveNode = newMoveNode.moveNodes.get(newMoveNode.moveNodes.size() - 1);
             i++;
         }
     }
@@ -95,31 +107,34 @@ public class Openings {
      * @return Opening and move number<br>Format: <code>MoveNumber%Opening</code>
      */
     public String searchOpening(LinkedList<String> movesList) {
+        Log.d(TAG, "searchOpening: Searching opening");
+        long start = System.nanoTime(), end;
         ArrayList<String> moves = new ArrayList<>(movesList);
-        String move, opening = "";
+        String move, eco = "", opening = "";
 
-        Node node = root;
+        MoveNode moveNode = root;
         int low, high, mid, pos = -1, i = 0;
 
 //      Iterate through moves to find opening
         while (i < 36 && i < moves.size()) {
-            Node tempNode = null;
-            ArrayList<Node> nodes = node.getNodes();
+            MoveNode tempMoveNode = null;
+            ArrayList<MoveNode> moveNodes = moveNode.moveNodes;
             move = moves.get(i);
             low = 0;
-            high = nodes.size() - 1;
+            high = moveNodes.size() - 1;
 
 //          Perform binary search and find the matching opening move
             while (low <= high) {
                 mid = (low + high) / 2;
-                tempNode = nodes.get(mid);
-                int result = move.compareToIgnoreCase(tempNode.getMove());
+                tempMoveNode = moveNodes.get(mid);
+                int result = move.compareToIgnoreCase(tempMoveNode.getMove());
 
-//              If move matches node move
+//              If player's move matches the opening move, continue the search
                 if (result == 0) {
-                    node = tempNode;
-//                    if (!tempNode.getOpeningName().isEmpty()) opening = tempNode.getOpeningName();
-                    opening = tempNode.getOpeningName();
+                    moveNode = tempMoveNode;
+//                    if (!tempMoveNode.openingName.isEmpty()) opening = tempMoveNode.openingName;
+                    opening = tempMoveNode.openingName;
+                    eco = tempMoveNode.eco;
                     pos = i;
                     i++;
                     break;
@@ -127,35 +142,48 @@ public class Openings {
                 if (result > 0) low = mid + 1;
                 else high = mid - 1;
             }
-            if (node != tempNode) return pos + separator + opening;
+            if (moveNode != tempMoveNode) {
+                end = System.nanoTime();
+                StringBuilder openingMoves = new StringBuilder();
+                for (int j = 0; j <= pos; j++) openingMoves.append(moves.get(j)).append(' ');
+                Log.d(TAG, String.format("searchOpening: Time for searching opening: %,3d ns%nOpening: %s%nMoves: %s", end - start, opening, openingMoves));
+                return pos + separator + eco + separator + opening;
+            }
         }
-        return pos + separator + opening;
+        end = System.nanoTime();
+        StringBuilder openingMoves = new StringBuilder();
+        for (int j = 0; j <= pos; j++) openingMoves.append(moves.get(j)).append(' ');
+        Log.d(TAG, String.format("searchOpening: Time for searching opening: %,3d ns%nOpening: %s%nMoves: %s", end - start, opening, openingMoves));
+        return pos + separator + eco + separator + opening;
     }
 
-    private static class Node {
-        private final String move, openingName;
-        private final ArrayList<Node> nodes;
+    public ArrayList<Pair<String, ArrayList<String>>> getAllOpenings() {
+        return allOpenings;
+    }
 
-        Node(String move, String openingName) {
+    public String buildTree() {
+        StringBuilder tree = new StringBuilder();
+        tree.append(root.move);
+        return tree.toString();
+    }
+
+    private static class MoveNode {
+        private final String move, openingName, eco;
+        private final ArrayList<MoveNode> moveNodes;
+
+        MoveNode(String move, String eco, String openingName) {
             this.move = move;
+            this.eco = eco;
             this.openingName = openingName;
-            nodes = new ArrayList<>();
+            moveNodes = new ArrayList<>();
         }
 
-        public void addNode(Node node) {
-            nodes.add(node);
+        public void addNode(MoveNode moveNode) {
+            moveNodes.add(moveNode);
         }
 
         public String getMove() {
             return move;
-        }
-
-        public ArrayList<Node> getNodes() {
-            return nodes;
-        }
-
-        public String getOpeningName() {
-            return openingName;
         }
     }
 }

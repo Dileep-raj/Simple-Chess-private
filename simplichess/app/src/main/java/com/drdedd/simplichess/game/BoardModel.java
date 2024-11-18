@@ -1,9 +1,9 @@
 package com.drdedd.simplichess.game;
 
+import static com.drdedd.simplichess.data.Regexes.FENPattern;
 import static com.drdedd.simplichess.misc.MiscMethods.getPieceChar;
 import static com.drdedd.simplichess.misc.MiscMethods.toCol;
 import static com.drdedd.simplichess.misc.MiscMethods.toRow;
-import static com.drdedd.simplichess.data.Regexes.FENPattern;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.drdedd.simplichess.R;
-import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.game.gameData.Rank;
 import com.drdedd.simplichess.game.pieces.Bishop;
@@ -45,16 +44,12 @@ public class BoardModel implements Serializable, Cloneable {
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
     public String enPassantSquare = "", fromSquare = "", toSquare = "";
-    private final boolean invertBlackSVGs;
     private final HashMap<String, String> unicodes = new HashMap<>();
     private static final String TAG = "BoardModel";
 
-    public BoardModel(Context context, boolean initializeBoard, boolean loadingPGN) {
+    public BoardModel(Context context, boolean initializeBoard) {
         Player.WHITE.setInCheck(false);
         Player.BLACK.setInCheck(false);
-
-        DataManager dataManager = new DataManager(context);
-        invertBlackSVGs = !loadingPGN && dataManager.invertBlackSVGEnabled();
 
         Resources res = context.getResources();
         String[] unicodesArray = res.getStringArray(R.array.unicodes);
@@ -75,18 +70,12 @@ public class BoardModel implements Serializable, Cloneable {
         resIDs.put(Player.WHITE + Rank.BISHOP.toString(), R.drawable.bw);
         resIDs.put(Player.WHITE + Rank.KNIGHT.toString(), R.drawable.nw);
 
-        if (invertBlackSVGs) {
-            resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qbi);
-            resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rbi);
-            resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bbi);
-            resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nbi);
-        } else {
-            resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qb);
-            resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rb);
-            resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bb);
-            resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nb);
-        }
+        resIDs.put(Player.BLACK + Rank.QUEEN.toString(), R.drawable.qb);
+        resIDs.put(Player.BLACK + Rank.ROOK.toString(), R.drawable.rb);
+        resIDs.put(Player.BLACK + Rank.BISHOP.toString(), R.drawable.bb);
+        resIDs.put(Player.BLACK + Rank.KNIGHT.toString(), R.drawable.nb);
     }
+
 
     /**
      * Resets the board to initial state
@@ -99,36 +88,22 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(new Knight(Player.WHITE, 0, 1 + i * 5, R.drawable.nw, res.getString(R.string.unicode_nw)));
             addPiece(new Bishop(Player.WHITE, 0, 2 + i * 3, R.drawable.bw, res.getString(R.string.unicode_bw)));
 
-            if (invertBlackSVGs) {
-                addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rbi, res.getString(R.string.unicode_rb)));
-                addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nbi, res.getString(R.string.unicode_nb)));
-                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bbi, res.getString(R.string.unicode_bb)));
-            } else {
-                addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rb, res.getString(R.string.unicode_rb)));
-                addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb, res.getString(R.string.unicode_nb)));
-                addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb, res.getString(R.string.unicode_bb)));
-            }
+            addPiece(new Rook(Player.BLACK, 7, i * 7, R.drawable.rb, res.getString(R.string.unicode_rb)));
+            addPiece(new Knight(Player.BLACK, 7, 1 + i * 5, R.drawable.nb, res.getString(R.string.unicode_nb)));
+            addPiece(new Bishop(Player.BLACK, 7, 2 + i * 3, R.drawable.bb, res.getString(R.string.unicode_bb)));
         }
 
 //        King and Queen pieces
         addPiece(new King(Player.WHITE, 0, 4, R.drawable.kw, res.getString(R.string.unicode_kw)));
         addPiece(new Queen(Player.WHITE, 0, 3, R.drawable.qw, res.getString(R.string.unicode_qw)));
 
-        if (invertBlackSVGs) {
-            addPiece(new King(Player.BLACK, 7, 4, R.drawable.kbi, res.getString(R.string.unicode_kb)));
-            addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qbi, res.getString(R.string.unicode_qb)));
-        } else {
-            addPiece(new King(Player.BLACK, 7, 4, R.drawable.kb, res.getString(R.string.unicode_kb)));
-            addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb, res.getString(R.string.unicode_qb)));
-        }
+        addPiece(new King(Player.BLACK, 7, 4, R.drawable.kb, res.getString(R.string.unicode_kb)));
+        addPiece(new Queen(Player.BLACK, 7, 3, R.drawable.qb, res.getString(R.string.unicode_qb)));
 
 //        Pawn pieces
         for (i = 0; i < 8; i++) {
             addPiece(new Pawn(Player.WHITE, 1, i, R.drawable.pw, res.getString(R.string.unicode_pw)));
-            if (invertBlackSVGs)
-                addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pbi, res.getString(R.string.unicode_pb)));
-            else
-                addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb, res.getString(R.string.unicode_pb)));
+            addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb, res.getString(R.string.unicode_pb)));
         }
     }
 
@@ -178,11 +153,11 @@ public class BoardModel implements Serializable, Cloneable {
      * Search for piece from a specific row
      *
      * @param gameLogicInterface GameLogicInterface
-     * @param player         Player of the piece
-     * @param rank           Rank of the piece
-     * @param row            Row to be searched
-     * @param destRow        Destination row
-     * @param destCol        Destination column
+     * @param player             Player of the piece
+     * @param rank               Rank of the piece
+     * @param row                Row to be searched
+     * @param destRow            Destination row
+     * @param destCol            Destination column
      * @return <code>Piece|null</code>
      */
     public Piece searchRow(GameLogicInterface gameLogicInterface, Player player, Rank rank, int row, int destRow, int destCol) {
@@ -198,11 +173,11 @@ public class BoardModel implements Serializable, Cloneable {
      * Search for piece from a specific column
      *
      * @param gameLogicInterface GameLogicInterface
-     * @param player         Player of the piece
-     * @param rank           Rank of the piece
-     * @param col            Column to be searched
-     * @param destRow        Destination row
-     * @param destCol        Destination column
+     * @param player             Player of the piece
+     * @param rank               Rank of the piece
+     * @param col                Column to be searched
+     * @param destRow            Destination row
+     * @param destCol            Destination column
      * @return <code>Piece|null</code>
      */
     public Piece searchCol(GameLogicInterface gameLogicInterface, Player player, Rank rank, int col, int destRow, int destCol) {
@@ -218,16 +193,17 @@ public class BoardModel implements Serializable, Cloneable {
      * Search for piece from a specific position
      *
      * @param gameLogicInterface GameLogicInterface
-     * @param player         Player of the piece
-     * @param rank           Rank of the piece
-     * @param row            Row to be searched
-     * @param col            Col to be searched
+     * @param player             Player of the piece
+     * @param rank               Rank of the piece
+     * @param row                Row to be searched
+     * @param col                Col to be searched
      * @return <code>Piece|null</code>
      */
     public Piece searchPiece(GameLogicInterface gameLogicInterface, Player player, Rank rank, int row, int col) {
         for (Piece piece : pieces) {
             if (piece.getPlayer() != player || piece.isCaptured()) continue;
-            if (piece.getRank() == rank && piece.canMoveTo(gameLogicInterface, row, col)) return piece;
+            if (piece.getRank() == rank && piece.canMoveTo(gameLogicInterface, row, col))
+                return piece;
         }
         return null;
     }
@@ -404,7 +380,7 @@ public class BoardModel implements Serializable, Cloneable {
     @Nullable
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
-        BoardModel boardModel = new BoardModel(context, false, false);
+        BoardModel boardModel = new BoardModel(context, false);
         Matcher matcher = FENPattern.matcher(FEN);
         if (!matcher.find()) {
             Log.d(TAG, "parseFEN: Invalid FEN! FEN didn't match the pattern");

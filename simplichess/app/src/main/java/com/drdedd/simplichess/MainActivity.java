@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,7 +20,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.databinding.ActivityMainBinding;
 import com.drdedd.simplichess.fragments.LoadGameFragment;
-import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,42 +42,41 @@ public class MainActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         DataManager dataManager = new DataManager(this);
-        if (dataManager.isFullScreen()) {
+        if (dataManager.getBoolean(DataManager.FULL_SCREEN)) {
             EdgeToEdge.enable(this);
             windowInsetsController.hide(WindowInsetsCompat.Type.systemBars());
         }
 
         setContentView(binding.getRoot());
-        setSupportActionBar(binding.appBarMain.toolBar);
+        setSupportActionBar(binding.materialToolBar);
 
-        DrawerLayout drawerLayout = binding.MainView;
-        NavigationView navigationView = binding.navView;
-
-        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home).setOpenableLayout(drawerLayout).build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_load_game, R.id.nav_saved_games, R.id.nav_analysis).setOpenableLayout(binding.MainView).build();
         navController = Navigation.findNavController(this, R.id.main_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        NavigationUI.setupWithNavController(binding.navView, navController);
 
         Intent intent = getIntent();
         String action = intent.getAction(), type = intent.getType(), scheme = intent.getScheme();
-        if (action != null && !action.equals(Intent.ACTION_MAIN))
-            Log.d(TAG, String.format("onCreate:%nAction: %s%nType: %s%nScheme: %s", action, type, scheme));
+        if (action != null) {
+            if (!action.equals(Intent.ACTION_MAIN))
+                Log.d(TAG, String.format("onCreate:%nAction: %s%nType: %s%nScheme: %s", action, type, scheme));
 
-        if (action != null && action.equals(Intent.ACTION_SEND) && type != null) {
-            if (type.startsWith("text/")) {
-                String content = intent.getStringExtra(Intent.EXTRA_TEXT);
-                Log.d(TAG, "onCreate: Extra text:%n" + content);
-                if (content != null && !content.isEmpty()) loadGame(content);
+            if (action.equals(Intent.ACTION_SEND) && type != null) {
+                if (type.startsWith("text/")) {
+                    String content = intent.getStringExtra(Intent.EXTRA_TEXT);
+                    Log.d(TAG, "onCreate: Extra text:%n" + content);
+                    if (content != null && !content.isEmpty()) loadGame(content);
+                }
+                if (type.startsWith("application/")) {
+                    Uri textURI = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    readUri(textURI);
+                }
             }
-            if (type.startsWith("application/")) {
-                Uri textURI = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                readUri(textURI);
-            }
-        }
 
-        if (action != null && action.equals(Intent.ACTION_VIEW)) {
-            Uri uri = intent.getData();
-            readUri(uri);
+            if (action.equals(Intent.ACTION_VIEW)) {
+                Uri uri = intent.getData();
+                readUri(uri);
+            }
         }
     }
 
@@ -120,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.main_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
 }

@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplichess.game.PGN;
+import com.drdedd.simplichess.game.pgn.PGN;
 import com.drdedd.simplichess.R;
 
 import java.util.Objects;

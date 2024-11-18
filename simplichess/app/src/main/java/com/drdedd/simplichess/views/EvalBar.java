@@ -4,6 +4,7 @@ import static com.drdedd.simplichess.misc.MiscMethods.dpToPixel;
 import static com.drdedd.simplichess.misc.MiscMethods.spToPixel;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -16,8 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import com.drdedd.simplichess.game.PGN;
 import com.drdedd.simplichess.R;
+import com.drdedd.simplichess.game.pgn.PGN;
 
 public class EvalBar extends View {
     private static final String TAG = "EvalBar";
@@ -30,15 +31,27 @@ public class EvalBar extends View {
 
     public EvalBar(@NonNull Context context) {
         super(context);
-        initializeView();
+        initializeView(null);
     }
 
     public EvalBar(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        initializeView();
+        initializeView(context.obtainStyledAttributes(attrs, R.styleable.EvalBar));
     }
 
-    private void initializeView() {
+    public EvalBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        initializeView(context.obtainStyledAttributes(attrs, R.styleable.EvalBar));
+    }
+
+    private void initializeView(TypedArray attrs) {
+        String eval = null;
+        if (attrs != null) {
+            eval = attrs.getString(R.styleable.EvalBar_eval);
+            if (eval == null && attrs.hasValue(R.styleable.EvalBar_eval))
+                eval = String.valueOf(attrs.getFloat(R.styleable.EvalBar_eval, 0.0f));
+        }
+
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         evalColor = ContextCompat.getColor(getContext(), R.color.alice_dark);
         Typeface evalTypeface = getResources().getFont(R.font.noto_sans_bold);
@@ -51,7 +64,9 @@ public class EvalBar extends View {
         dp2 = dpToPixel(displayMetrics, 2);
         dp5 = dpToPixel(displayMetrics, 5);
         dp28 = dpToPixel(displayMetrics, 28);
-        resetEval();
+
+        if (eval == null) resetEval();
+        else setEvaluation(eval);
     }
 
     @Override
