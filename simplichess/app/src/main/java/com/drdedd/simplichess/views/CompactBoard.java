@@ -74,7 +74,7 @@ public class CompactBoard extends LinearLayout {
         }
         chessTitles.addAll(Set.of(getResources().getStringArray(R.array.chess_titles)));
 
-        blackTitle = whiteTitle = "IM";
+        blackTitle = whiteTitle = "";
         whiteName = "White player";
         blackName = "Black player";
         whiteValue = blackValue = "";
@@ -182,8 +182,13 @@ public class CompactBoard extends LinearLayout {
     }
 
     public void setOpening(String eco, String openingName) {
-        if (eco == null || eco.isEmpty()) return;
+        if (eco == null || eco.isEmpty()) {
+            openingNameTV.setText("");
+            openingNameTV.setVisibility(GONE);
+            return;
+        }
         openingNameTV.setText(String.format("%s: %s", eco, openingName));
+        openingNameTV.setVisibility(VISIBLE);
     }
 
     private String validateTitle(String title) {
@@ -192,5 +197,50 @@ public class CompactBoard extends LinearLayout {
 
     public boolean isBoardShrunk() {
         return boardShrunk;
+    }
+
+    public void setAnnotation(String annotationSquare, @DrawableRes int annotation) {
+        board.setAnnotationSquare(annotationSquare);
+        board.setAnnotation(annotation);
+    }
+
+    public void setAnnotation(@DrawableRes int annotation) {
+        board.setAnnotation(annotation);
+    }
+
+    /**
+     * Initializes animation variables
+     */
+    public void initializeAnimation(String fromSquare, String toSquare) {
+        board.initializeAnimation(fromSquare, toSquare);
+    }
+
+    /**
+     * Initializes reverse animation for a move
+     *
+     * @param fromSquare Starting position of the piece
+     * @param toSquare   Ending position of the piece
+     */
+    public void initializeReverseAnimation(String fromSquare, String toSquare) {
+        board.initializeReverseAnimation(fromSquare, toSquare);
+    }
+
+    public void clearSelection() {
+        board.clearSelection();
+        board.invalidate();
+    }
+
+    public void setViewOnly(boolean viewOnly) {
+        board.setViewOnly(viewOnly);
+    }
+
+    public void setPosition(String position) {
+        board.setPosition(position);
+    }
+
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        board.invalidate();
     }
 }

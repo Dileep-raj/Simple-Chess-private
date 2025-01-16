@@ -10,44 +10,58 @@
         android:name="com.drdedd.simplichess.fragments.HomeFragment"
         android:label="@string/home"
         tools:layout="@layout/fragment_home" />
+
     <fragment
         android:id="@+id/nav_game"
         android:name="com.drdedd.simplichess.fragments.GameFragment"
         android:label="@string/game"
         tools:layout="@layout/fragment_game" />
+
     <fragment
         android:id="@+id/nav_settings"
         android:name="com.drdedd.simplichess.fragments.settings.SettingsFragment"
         android:label="@string/settings"
         tools:layout="@layout/fragment_settings" />
+
     <fragment
         android:id="@+id/nav_about"
         android:name="com.drdedd.simplichess.fragments.AboutFragment"
         android:label="@string/about"
         tools:layout="@layout/fragment_about" />
+
     <fragment
         android:id="@+id/nav_load_game"
         android:name="com.drdedd.simplichess.fragments.LoadGameFragment"
         android:label="@string/load_game"
         tools:layout="@layout/fragment_load_game" />
+
     <fragment
         android:id="@+id/nav_saved_games"
         android:name="com.drdedd.simplichess.fragments.SavedGamesFragment"
         android:label="@string/saved_games"
         tools:layout="@layout/fragment_saved_games" />
+
     <fragment
         android:id="@+id/nav_test"
         android:name="com.drdedd.simplichess.fragments.TestFragment"
         android:label="@string/test_fragment"
         tools:layout="@layout/fragment_test" />
+
     <fragment
         android:id="@+id/nav_analysis"
         android:name="com.drdedd.simplichess.fragments.AnalysisFragment"
         android:label="@string/analysis"
         tools:layout="@layout/fragment_analysis" />
+
     <fragment
         android:id="@+id/nav_clock"
         android:name="com.drdedd.simplichess.fragments.ClockFragment"
         android:label="@string/clock"
         tools:layout="@layout/fragment_clock" />
+
+    <fragment
+        android:id="@+id/nav_openings"
+        android:name="com.drdedd.simplichess.fragments.OpeningsFragment"
+        android:label="@string/openings"
+        tools:layout="@layout/fragment_openings" />
 </navigation>

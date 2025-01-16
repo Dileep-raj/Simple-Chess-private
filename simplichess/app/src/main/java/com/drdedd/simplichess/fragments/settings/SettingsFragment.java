@@ -117,7 +117,7 @@ public class SettingsFragment extends Fragment {
     private void initializeData() {
         previewBoard.setData(viewModel, true);
         previewBoard.setSelection(5, 4);
-        previewBoard.setAllLegalMoves(viewModel.getLegalMoves());
+        previewBoard.setAllLegalMoves(viewModel.getAllLegalMoves());
         fullScreenToggle.setChecked(viewModel.isFullScreen());
         whiteName.setText(viewModel.getWhiteName());
         blackName.setText(viewModel.getBlackName());

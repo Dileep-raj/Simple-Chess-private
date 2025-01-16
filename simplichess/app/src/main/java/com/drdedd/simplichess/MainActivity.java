@@ -18,8 +18,10 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.drdedd.simplichess.data.DataManager;
+import com.drdedd.simplichess.data.Regexes;
 import com.drdedd.simplichess.databinding.ActivityMainBinding;
-import com.drdedd.simplichess.fragments.LoadGameFragment;
+import com.drdedd.simplichess.game.Openings;
+import com.drdedd.simplichess.misc.Constants;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 readUri(uri);
             }
         }
+        if (Openings.getInstance(this) != null) Log.v(TAG, "onCreate: Openings loaded!");
     }
 
     /**
@@ -109,10 +112,17 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadGame(String content) {
         Bundle args = new Bundle();
-        args.putString(LoadGameFragment.PGN_CONTENT_KEY, content);
-        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, false);
-        navController.popBackStack();
-        navController.navigate(R.id.nav_load_game, args);
+        if (content.matches(Regexes.FENRegex)) {
+            args.putString(Constants.FEN_KEY, content);
+            args.putBoolean(Constants.NEW_GAME_KEY, false);
+            navController.popBackStack();
+            navController.navigate(R.id.nav_game, args);
+        } else {
+            args.putString(Constants.PGN_CONTENT_KEY, content);
+            args.putBoolean(Constants.FILE_EXISTS_KEY, false);
+            navController.popBackStack();
+            navController.navigate(R.id.nav_load_game, args);
+        }
     }
 
     @Override

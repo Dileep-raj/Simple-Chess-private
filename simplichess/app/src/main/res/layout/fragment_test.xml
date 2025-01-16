@@ -11,8 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:visibility="gone">
+        android:gravity="center">
 
         <Button
             android:id="@+id/btn_test"
@@ -24,66 +23,32 @@
             android:id="@+id/shrinkExpandButton"
             style="@style/ImageButton40dp"
             android:layout_margin="8dp"
-            android:importantForAccessibility="no"
+            android:contentDescription="@string/shrink_expand"
             app:srcCompat="@drawable/ic_shrink" />
+
+        <ImageButton
+            android:id="@+id/resetBoard"
+            style="@style/ImageButton40dp"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/reset_board"
+            android:src="@drawable/ic_reset" />
+
+        <ImageButton
+            android:id="@+id/copyPGN"
+            style="@style/ImageButton40dp"
+            android:layout_margin="8dp"
+            android:contentDescription="@string/copy_pgn"
+            android:src="@drawable/ic_copy" />
     </LinearLayout>
 
     <com.drdedd.simplichess.views.CompactBoard
         android:id="@+id/compactBoard"
         style="@style/ChessBoardStyle" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/uciInput"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:id="@+id/testCircular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:progress="4"
-            app:indicatorColor="@color/teal_700" />
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/testLinear"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:progress="4"
-            app:indicatorColor="@color/teal_700" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:checked="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="TV"
-            android:textSize="16sp" />
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:autofillHints="name"
-            android:hint="Hint"
-            android:inputType="text" />
-    </LinearLayout>
+        android:layout_margin="8dp"
+        android:hint="@string/sample_uci_promotion" />
 </LinearLayout>

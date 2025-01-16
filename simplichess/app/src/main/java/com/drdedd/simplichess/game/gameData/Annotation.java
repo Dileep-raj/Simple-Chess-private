@@ -8,39 +8,38 @@ import com.drdedd.simplichess.R;
  * Collection of chess annotations
  */
 public enum Annotation {
-
     /**
      * Best move (Custom annotation of Simpli Chess)
      */
-    BEST("$9", "$9", R.drawable.best),
+    BEST("$9", "$9", R.drawable.annotation_best),
     /**
      * Blunder move <b color="#D02323">??</b>
      */
-    BLUNDER("$4", "??", R.drawable.blunder),
+    BLUNDER("$4", "??", R.drawable.annotation_blunder),
     /**
      * Book move (Custom annotation of Simpli Chess)
      */
-    BOOK("$0", "$0", R.drawable.book),
+    BOOK(" $0", " $0", R.drawable.annotation_book),
     /**
      * Brilliant move <b color="#44DADA">!!</b>
      */
-    BRILLIANT("$3", "!!", R.drawable.brilliant),
-    /**
-     * Dubious move <b color="#FDED30">?!</b>
-     */
-    INACCURACY("$6", "?!", R.drawable.inaccuracy),
+    BRILLIANT("$3", "!!", R.drawable.annotation_brilliant),
     /**
      * Great move <b color="#22AAD0">!</b>
      */
-    GREAT("$1", "!", R.drawable.great),
+    GREAT("$1", "!", R.drawable.annotation_great),
+    /**
+     * Dubious move <b color="#FDED30">?!</b>
+     */
+    INACCURACY("$6", "?!", R.drawable.annotation_inaccuracy),
     /**
      * Interesting move <b color="#2290A5">!?</b>
      */
-    INTERESTING("$5", "!?", R.drawable.interesting),
+    INTERESTING("$5", "!?", R.drawable.annotation_interesting),
     /**
      * Mistake <b color="#FFA600">?</b>
      */
-    MISTAKE("$2", "?", R.drawable.mistake);
+    MISTAKE("$2", "?", R.drawable.annotation_mistake);
     private static final Annotation[] annotations = values();
 
     private final String number, annotation;
@@ -78,8 +77,9 @@ public enum Annotation {
      * @return <code>Annotation|null</code>
      */
     public static Annotation getAnnotation(String s) {
+        s = s.trim();
         for (Annotation a : annotations)
-            if (a.getAnnotation().equals(s) || a.getNumber().equals(s) || a.toString().equalsIgnoreCase(s))
+            if (a.getAnnotation().equals(s) || a.getNumber().trim().equals(s) || a.toString().equalsIgnoreCase(s))
                 return a;
         return null;
     }

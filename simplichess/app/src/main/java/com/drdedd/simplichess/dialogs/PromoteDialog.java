@@ -9,8 +9,8 @@ import android.view.Window;
 
 import androidx.annotation.NonNull;
 
-import com.drdedd.simplichess.game.gameData.Rank;
 import com.drdedd.simplichess.R;
+import com.drdedd.simplichess.game.gameData.Rank;
 
 /**
  * Custom dialog for pawn promotion

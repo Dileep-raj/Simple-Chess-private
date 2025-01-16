@@ -35,11 +35,12 @@ import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.databinding.FragmentSavedGamesBinding;
 import com.drdedd.simplichess.game.pgn.PGN;
 import com.drdedd.simplichess.interfaces.GameRecyclerViewInterface;
+import com.drdedd.simplichess.misc.Constants;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 
@@ -51,7 +52,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     private final static String TAG = "SavedGamesFragment";
     private FragmentSavedGamesBinding binding;
     private RecyclerView savedGamesRecyclerView;
-    private ArrayList<String> savedGames;
+    private ArrayList<SavedGame> savedGames;
     private DataManager dataManager;
     private NavController navController;
 
@@ -59,7 +60,7 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSavedGamesBinding.inflate(inflater, container, false);
         dataManager = new DataManager(requireContext());
-        savedGames = dataManager.savedGames();
+        loadGames();
         MenuHost menuHost = requireActivity();
         menuHost.addMenuProvider(new MenuProvider() {
             @Override
@@ -89,12 +90,57 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         navController = Navigation.findNavController(view);
         savedGamesRecyclerView = binding.savedGamesRecyclerView;
 
-        if (savedGames.isEmpty()) savedGamesRecyclerView.setVisibility(View.GONE);
-        else {
+        savedGamesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        refresh();
+    }
+
+    /**
+     * Refreshes views visibility and content
+     */
+    private void refresh() {
+        loadGames();
+        if (savedGames.isEmpty()) {
+            binding.noGames.setVisibility(View.VISIBLE);
+            savedGamesRecyclerView.setVisibility(View.GONE);
+        } else {
             binding.noGames.setVisibility(View.GONE);
+            savedGamesRecyclerView.setVisibility(View.VISIBLE);
             GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(requireContext(), savedGames, this);
-            savedGamesRecyclerView.setAdapter(adapter);
-            savedGamesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            savedGamesRecyclerView.swapAdapter(adapter, true);
+        }
+    }
+
+    private void loadGames() {
+        savedGames = new ArrayList<>();
+        ArrayList<String> games = dataManager.savedGames();
+        Collections.reverse(games);
+        for (String fileName : games) {
+            String result = "", date = "?", title = fileName, pgn;
+            try {
+                pgn = new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + fileName)));
+
+                if (!pgn.isEmpty()) {
+                    HashMap<String, String> tagsMap = new HashMap<>();
+                    Matcher tags = tagsPattern.matcher(pgn);
+                    while (tags.find()) {
+                        String tag = tags.group();
+                        String tagName = tag.substring(1, tag.indexOf(' '));
+                        String tagValue = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
+                        tagsMap.put(tagName, tagValue);
+                    }
+                    if (tagsMap.containsKey(PGN.TAG_WHITE) && tagsMap.containsKey(PGN.TAG_BLACK))
+                        title = String.format("%s vs %s", tagsMap.get(PGN.TAG_WHITE), tagsMap.get(PGN.TAG_BLACK));
+
+                    if (tagsMap.containsKey(PGN.TAG_TERMINATION))
+                        result = tagsMap.get(PGN.TAG_TERMINATION);
+                    else result = tagsMap.getOrDefault(PGN.TAG_RESULT, "");
+
+                    date = tagsMap.getOrDefault(PGN.TAG_DATE, "?");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "onBindViewHolder: Exception while finding result", e);
+            }
+            savedGames.add(new SavedGame(fileName, title, date, result));
         }
     }
 
@@ -105,7 +151,8 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
         if (savedGames.isEmpty()) return;
         createDialog("Delete all games?", (d, i) -> {
             boolean result = true;
-            for (String file : savedGames) result = result && dataManager.deleteGame(file);
+            for (SavedGame file : savedGames)
+                result = result && dataManager.deleteGame(file.fileName);
             if (result) {
                 Log.d(TAG, String.format("deleteAll: Deleted all %d files", savedGames.size()));
                 Toast.makeText(requireContext(), "All games deleted", Toast.LENGTH_SHORT).show();
@@ -117,10 +164,23 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     @Override
     public void deleteGame(int position) {
         createDialog("Delete selected game?", (d, i) -> {
-            if (dataManager.deleteGame(savedGames.get(position)))
+            if (dataManager.deleteGame(savedGames.get(position).fileName))
                 Toast.makeText(requireContext(), "Game deleted successfully", Toast.LENGTH_SHORT).show();
             refresh();
         });
+    }
+
+    @Override
+    public void openGame(int position) {
+        Bundle args = new Bundle();
+        try {
+            args.putString(Constants.PGN_CONTENT_KEY, new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + savedGames.get(position).fileName))));
+            args.putBoolean(Constants.FILE_EXISTS_KEY, true);
+        } catch (Exception e) {
+            Log.e(TAG, "openGame: Error while reading pgn:", e);
+        }
+        navController.popBackStack();
+        navController.navigate(R.id.nav_load_game, args);
     }
 
     private void createDialog(String title, DialogInterface.OnClickListener positive) {
@@ -135,46 +195,17 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
     }
 
     /**
-     * Refreshes views visibility and content
-     */
-    private void refresh() {
-        savedGames = dataManager.savedGames();
-        if (savedGames.isEmpty()) {
-            binding.noGames.setVisibility(View.VISIBLE);
-            savedGamesRecyclerView.setVisibility(View.GONE);
-        } else {
-            GamesRecyclerViewAdapter adapter = new GamesRecyclerViewAdapter(requireContext(), savedGames, this);
-            savedGamesRecyclerView.swapAdapter(adapter, true);
-        }
-    }
-
-    @Override
-    public void openGame(int position) {
-        Bundle args = new Bundle();
-        try {
-            args.putString(LoadGameFragment.PGN_CONTENT_KEY, new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + savedGames.get(position)))));
-            args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, true);
-        } catch (IOException e) {
-            Log.e(TAG, "openGame: Error while reading pgn:", e);
-        }
-        navController.popBackStack();
-        navController.navigate(R.id.nav_load_game, args);
-    }
-
-    /**
      * RecyclerView adapter for saved games
      */
     static class GamesRecyclerViewAdapter extends RecyclerView.Adapter<GamesRecyclerViewAdapter.GamesViewHolder> {
         private final Context context;
-        private final ArrayList<String> games;
+        private final ArrayList<SavedGame> games;
         private final GameRecyclerViewInterface gameRecyclerViewInterface;
-        private final DataManager dataManager;
 
-        public GamesRecyclerViewAdapter(Context context, ArrayList<String> games, GameRecyclerViewInterface gameRecyclerViewInterface) {
+        private GamesRecyclerViewAdapter(Context context, ArrayList<SavedGame> games, GameRecyclerViewInterface gameRecyclerViewInterface) {
             this.context = context;
             this.games = games;
             this.gameRecyclerViewInterface = gameRecyclerViewInterface;
-            dataManager = new DataManager(context);
         }
 
         @NonNull
@@ -185,35 +216,10 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
 
         @Override
         public void onBindViewHolder(@NonNull GamesViewHolder holder, int position) {
-            String name = games.get(position);
-
-            String result = "";
-            try {
-                String contents = new String(Files.readAllBytes(Paths.get(dataManager.savedGameDir + games.get(position))));
-
-                if (!contents.isEmpty()) {
-                    HashMap<String, String> tagsMap = new HashMap<>();
-                    Matcher tags = tagsPattern.matcher(contents);
-                    while (tags.find()) {
-                        String tag = tags.group();
-                        String tagName = tag.substring(1, tag.indexOf(' '));
-                        String tagValue = tag.substring(tag.indexOf('"') + 1, tag.lastIndexOf('"'));
-                        tagsMap.put(tagName, tagValue);
-                    }
-                    if (tagsMap.containsKey(PGN.TAG_WHITE) && tagsMap.containsKey(PGN.TAG_BLACK))
-                        name = String.format("%s vs %s", tagsMap.get(PGN.TAG_WHITE), tagsMap.get(PGN.TAG_BLACK));
-
-                    if (tagsMap.containsKey(PGN.TAG_TERMINATION))
-                        result = tagsMap.get(PGN.TAG_TERMINATION);
-                    else if (tagsMap.containsKey(PGN.TAG_RESULT))
-                        result = tagsMap.get(PGN.TAG_RESULT);
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "onBindViewHolder: Exception while finding result", e);
-            }
-
-            holder.name.setText(name);
-            if (result != null) holder.result.setText(result);
+            SavedGame savedGame = games.get(position);
+            holder.date.setText(savedGame.date);
+            holder.result.setText(savedGame.result);
+            holder.name.setText(savedGame.title);
         }
 
         @Override
@@ -225,12 +231,13 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
          * ViewHolder for saved games RecyclerView adapter
          */
         static class GamesViewHolder extends RecyclerView.ViewHolder {
-            TextView name, result;
+            private final TextView name, result, date;
 
-            public GamesViewHolder(@NonNull View itemView, GameRecyclerViewInterface gameRecyclerViewInterface) {
+            private GamesViewHolder(@NonNull View itemView, GameRecyclerViewInterface gameRecyclerViewInterface) {
                 super(itemView);
                 name = itemView.findViewById(R.id.name);
                 result = itemView.findViewById(R.id.result);
+                date = itemView.findViewById(R.id.savedDate);
 
                 itemView.findViewById(R.id.delete_game).setOnClickListener(v -> {
                     int adapterPosition = getAdapterPosition();
@@ -244,6 +251,17 @@ public class SavedGamesFragment extends Fragment implements GameRecyclerViewInte
                         gameRecyclerViewInterface.openGame(adapterPosition);
                 });
             }
+        }
+    }
+
+    static class SavedGame {
+        private final String fileName, title, date, result;
+
+        private SavedGame(String fileName, String title, String date, String result) {
+            this.fileName = fileName;
+            this.title = title;
+            this.date = date;
+            this.result = result;
         }
     }
 }

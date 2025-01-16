@@ -49,14 +49,14 @@
     <color name="active3">#4FAA69</color>
 
     <!-- PGN recycler view colors -->
-    <color name="pgn_move">#262421</color>
+    <color name="pgn_move">#9000</color>
     <color name="pgn_move_highlight">#189A8C</color>
 
     <!-- Board item colors -->
     <color name="piece_selection">#228B22</color>
     <color name="checked_square">#d72222</color>
     <color name="captured_piece">#626262</color>
-    <color name="legal_move_guide">#46F8FF</color>
+    <color name="legal_move_guide">#AA46F8FF</color>
     <color name="move">#502575F5</color>
 
     <!-- Board themes -->

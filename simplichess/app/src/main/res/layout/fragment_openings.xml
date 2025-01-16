@@ -8,7 +8,7 @@
     tools:context=".fragments.OpeningsFragment">
 
     <Spinner
-        android:id="@+id/openingSpinner"
+        android:id="@+id/openingsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -31,24 +31,34 @@
         android:layout_margin="8dp">
 
         <ImageButton
+            android:id="@+id/resetBoard"
+            style="@style/ImageButton40dp"
+            android:contentDescription="@string/reset_board"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/undoMove"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_reset" />
+
+        <ImageButton
+            android:id="@+id/undoMove"
+            style="@style/ImageButton40dp"
+            android:contentDescription="@string/undoLastMove"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/move_previous"
+            app:layout_constraintStart_toEndOf="@+id/resetBoard"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_undo" />
+
+        <ImageButton
             android:id="@+id/move_previous"
             style="@style/ImageButton40dp"
             android:contentDescription="@string/move_previous"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/move_autoplay"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/move_next"
+            app:layout_constraintStart_toEndOf="@id/undoMove"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_left" />
-
-        <ImageButton
-            android:id="@+id/move_autoplay"
-            style="@style/ImageButton40dp"
-            android:contentDescription="@string/autoplay_moves"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/move_next"
-            app:layout_constraintStart_toEndOf="@id/move_previous"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play" />
 
         <ImageButton
             android:id="@+id/move_next"
@@ -56,7 +66,7 @@
             android:contentDescription="@string/move_next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/move_autoplay"
+            app:layout_constraintStart_toEndOf="@+id/move_previous"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_right" />
     </androidx.constraintlayout.widget.ConstraintLayout>

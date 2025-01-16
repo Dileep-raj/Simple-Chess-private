@@ -89,7 +89,6 @@ public abstract class Piece implements Serializable, Cloneable {
     }
 
     /**
-     *
      * @return <code>int</code> - Resource ID of the piece
      */
     public int getResID() {
@@ -103,6 +102,10 @@ public abstract class Piece implements Serializable, Cloneable {
      */
     public String getPosition() {
         return String.format(Locale.ENGLISH, "%s%s%d", getRankChar(), (char) ('a' + col), row + 1);
+    }
+
+    public String getSquare() {
+        return String.format(Locale.ENGLISH, "%s%s", (char) ('a' + col), row + 1);
     }
 
     /**
@@ -128,8 +131,8 @@ public abstract class Piece implements Serializable, Cloneable {
 
     /**
      * @param gameLogicInterface GameLogicInterface of the game
-     * @param row Row number
-     * @param col Column number
+     * @param row                Row number
+     * @param col                Column number
      * @return <code>true|false</code> - Piece can move to the position on the board
      */
     public abstract boolean canMoveTo(GameLogicInterface gameLogicInterface, int row, int col);

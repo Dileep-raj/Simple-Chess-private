@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.Pair;
 import android.util.TypedValue;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 
@@ -13,9 +16,14 @@ import com.drdedd.simplichess.data.Regexes;
 import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.game.pieces.Piece;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 
 public class MiscMethods {
+    private static final String TAG = "MiscMethods";
 
     /**
      * Converts absolute position to column number
@@ -113,5 +121,44 @@ public class MiscMethods {
     public static boolean isLichessLink(String link) {
         Matcher matcher = Regexes.lichessGamePattern.matcher(link);
         return matcher.find();
+    }
+
+    public static Pair<Pair<Integer, Integer>, Pair<Integer, Integer>> uciToRowCol(String uciMove) {
+        int fromRow, fromCol, toRow, toCol;
+        fromCol = uciMove.charAt(0) - 'a';
+        fromRow = uciMove.charAt(1) - '1';
+        toCol = uciMove.charAt(2) - 'a';
+        toRow = uciMove.charAt(3) - '1';
+        return new Pair<>(new Pair<>(fromRow, fromCol), new Pair<>(toRow, toCol));
+    }
+
+    public static void setImageButtonEnabled(ImageButton imageButton, boolean enabled) {
+        imageButton.setEnabled(enabled);
+        imageButton.setAlpha(enabled ? 1f : 0.75f);
+    }
+
+    public static String repeat(String repeat, int n) {
+        StringBuilder builder = new StringBuilder(repeat);
+        for (int i = 1; i < n; i++) builder.append(repeat);
+        return builder.toString();
+    }
+
+    public static String getString(InputStream stream) {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+            String line;
+            StringBuilder response = new StringBuilder();
+            while ((line = br.readLine()) != null) response.append(line).append('\n');
+            br.close();
+            Log.d(TAG, "getString: Response string: " + response);
+            return response.toString();
+        } catch (IOException e) {
+            Log.e(TAG, "getString: Exception occurred!", e);
+        }
+        return "";
+    }
+
+    public static boolean notWithinBounds(int rowCol) {
+        return rowCol > 7 || rowCol < 0;
     }
 }

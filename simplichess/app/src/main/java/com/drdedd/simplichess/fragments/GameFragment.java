@@ -38,8 +38,9 @@ import com.drdedd.simplichess.game.gameData.ChessState;
 import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.game.pgn.PGN;
 import com.drdedd.simplichess.game.pieces.Piece;
-import com.drdedd.simplichess.interfaces.GameFragmentInterface;
+import com.drdedd.simplichess.interfaces.GameUI;
 import com.drdedd.simplichess.misc.ChessTimer;
+import com.drdedd.simplichess.misc.Constants;
 import com.drdedd.simplichess.views.ChessBoard;
 
 import java.util.ArrayList;
@@ -49,9 +50,8 @@ import java.util.Arrays;
  * Fragment to view and play chess game
  */
 @SuppressLint("NewApi")
-public class GameFragment extends Fragment implements GameFragmentInterface {
+public class GameFragment extends Fragment implements GameUI {
     private final static String TAG = "GameFragment";
-    protected static final String FEN_KEY = "FEN", NEW_GAME_KEY = "NewGame", OPENING_KEY = "Opening", ECO_KEY = "ECO";
     private FragmentGameBinding binding;
     private String termination;
     private PGN pgn;
@@ -104,13 +104,13 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
 
         clipboard = (ClipboardManager) requireActivity().getSystemService(CLIPBOARD_SERVICE);
 
-        boolean newGame = args.getBoolean(NEW_GAME_KEY);
+        boolean newGame = args.getBoolean(Constants.NEW_GAME_KEY);
 
         gameLogic = new GameLogic(this, requireContext(), chessBoard, newGame);
         initializeData();
 
-        if (args.containsKey(FEN_KEY)) {
-            String FEN = args.getString(FEN_KEY);
+        if (args.containsKey(Constants.FEN_KEY)) {
+            String FEN = args.getString(Constants.FEN_KEY);
             gameLogic = new GameLogic(this, requireContext(), chessBoard, FEN);
             resetTimer();
             newGame = false;
@@ -142,6 +142,8 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
         } else if (chessTimer != null) chessTimer.startTimer();
 
         updateViews();
+        if (args.getBoolean(Constants.SINGLE_PLAYER, false))
+            gameLogic.setBotPlayer(args.getBoolean(Constants.PLAY_AS_WHITE, true) ? Player.BLACK : Player.WHITE);
     }
 
     private void initializeData() {
@@ -200,9 +202,9 @@ public class GameFragment extends Fragment implements GameFragmentInterface {
                 opening = eco = "";
                 Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), pgn.getUCIMoves().subList(0, Math.min(pgn.getUCIMoves().size(), 10))));
             }
-            args.putSerializable(LoadGameFragment.PARSED_GAME_KEY, new ParsedGame(gameLogic.getBoardModelStack(), gameLogic.getFENs(), gameLogic.getPGN(), eco, opening));
+            args.putSerializable(Constants.PARSED_GAME_KEY, new ParsedGame(gameLogic.getBoardModelStack(), gameLogic.getFENs(), gameLogic.getPGN(), eco, opening));
         }
-        args.putBoolean(LoadGameFragment.FILE_EXISTS_KEY, true);
+        args.putBoolean(Constants.FILE_EXISTS_KEY, true);
         navController.popBackStack();
         navController.navigate(R.id.nav_load_game, args);
     }

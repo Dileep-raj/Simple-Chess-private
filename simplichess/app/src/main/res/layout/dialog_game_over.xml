@@ -30,10 +30,10 @@
 
         <ImageButton
             android:id="@+id/close_dialog"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_margin="8dp"
-            android:background="@color/transparent"
+            android:background="@color/btn_background"
             android:contentDescription="@string/close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -106,6 +106,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/btn_export_pgn"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_launch" />
+            app:srcCompat="@drawable/ic_open" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

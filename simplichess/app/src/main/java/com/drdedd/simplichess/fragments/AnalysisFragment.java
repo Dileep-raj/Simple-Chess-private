@@ -9,11 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.drdedd.simplichess.game.GameLogic;
 import com.drdedd.simplichess.databinding.FragmentAnalysisBinding;
-import com.drdedd.simplichess.interfaces.GameFragmentInterface;
+import com.drdedd.simplichess.game.GameLogic;
+import com.drdedd.simplichess.interfaces.GameUI;
 
-public class AnalysisFragment extends Fragment implements GameFragmentInterface {
+public class AnalysisFragment extends Fragment implements GameUI {
 
     private FragmentAnalysisBinding binding;
     private GameLogic gameLogic;
@@ -30,6 +30,7 @@ public class AnalysisFragment extends Fragment implements GameFragmentInterface 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.analysisBoard.setAnalysis(true);
         //TODO implement game analysis features
     }
 

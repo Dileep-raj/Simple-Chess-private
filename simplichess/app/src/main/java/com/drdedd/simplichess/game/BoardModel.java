@@ -1,6 +1,5 @@
 package com.drdedd.simplichess.game;
 
-import static com.drdedd.simplichess.data.Regexes.FENPattern;
 import static com.drdedd.simplichess.misc.MiscMethods.getPieceChar;
 import static com.drdedd.simplichess.misc.MiscMethods.toCol;
 import static com.drdedd.simplichess.misc.MiscMethods.toRow;
@@ -13,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.drdedd.simplichess.R;
+import com.drdedd.simplichess.data.Regexes;
 import com.drdedd.simplichess.game.gameData.Player;
 import com.drdedd.simplichess.game.gameData.Rank;
 import com.drdedd.simplichess.game.pieces.Bishop;
@@ -30,22 +30,22 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
 
 /**
  * Stores pieces location, enPassant square and other board UI data<br>
  */
 public class BoardModel implements Serializable, Cloneable {
+    private static final String TAG = "BoardModel";
+    public final HashMap<String, Integer> resIDs = new HashMap<>();
+    private final HashMap<String, String> unicodes = new HashMap<>();
     /**
      * Set of all the pieces on the board
      */
     public LinkedHashSet<Piece> pieces = new LinkedHashSet<>();
-    public final HashMap<String, Integer> resIDs = new HashMap<>();
     private King whiteKing = null, blackKing = null;
     public Pawn enPassantPawn = null;
     public String enPassantSquare = "", fromSquare = "", toSquare = "";
-    private final HashMap<String, String> unicodes = new HashMap<>();
-    private static final String TAG = "BoardModel";
+    private int halfMove, fullMove;
 
     public BoardModel(Context context, boolean initializeBoard) {
         Player.WHITE.setInCheck(false);
@@ -105,6 +105,9 @@ public class BoardModel implements Serializable, Cloneable {
             addPiece(new Pawn(Player.WHITE, 1, i, R.drawable.pw, res.getString(R.string.unicode_pw)));
             addPiece(new Pawn(Player.BLACK, 6, i, R.drawable.pb, res.getString(R.string.unicode_pb)));
         }
+
+        halfMove = 0;
+        fullMove = 1;
     }
 
     /**
@@ -314,11 +317,11 @@ public class BoardModel implements Serializable, Cloneable {
      */
     public String toFEN(GameLogicInterface gameLogicInterface) {
         String[] fenStrings = toFENStrings(gameLogicInterface);
-        return String.format(Locale.ENGLISH, "%s %s %s %s", fenStrings[0], fenStrings[1], fenStrings[2], fenStrings[3]);
+        return String.format(Locale.ENGLISH, "%s %s %s %s %s %s", fenStrings[0], fenStrings[1], fenStrings[2], fenStrings[3], fenStrings[4], fenStrings[5]);
     }
 
     private String[] toFENStrings(GameLogicInterface gameLogicInterface) {
-        String[] FEN = new String[4];
+        String[] FEN = new String[6];
 
         StringBuilder position = new StringBuilder();
         int i, j, c = 0;
@@ -353,6 +356,9 @@ public class BoardModel implements Serializable, Cloneable {
         if (enPassantSquare.isEmpty()) FEN[3] = "-";
         else FEN[3] = enPassantSquare;
 
+        FEN[4] = String.valueOf(halfMove);
+        FEN[5] = String.valueOf(fullMove);
+
         return FEN;
     }
 
@@ -381,8 +387,7 @@ public class BoardModel implements Serializable, Cloneable {
     public static BoardModel parseFEN(String FEN, Context context) {
         Resources res = context.getResources();
         BoardModel boardModel = new BoardModel(context, false);
-        Matcher matcher = FENPattern.matcher(FEN);
-        if (!matcher.find()) {
+        if (!FEN.matches(Regexes.FENRegex)) {
             Log.d(TAG, "parseFEN: Invalid FEN! FEN didn't match the pattern");
             return null;
         }
@@ -489,5 +494,18 @@ public class BoardModel implements Serializable, Cloneable {
         ArrayList<Piece> capturedPieces = new ArrayList<>();
         for (Piece piece : pieces) if (piece.isCaptured()) capturedPieces.add(piece);
         return capturedPieces;
+    }
+
+    public void setMoveClocks(int halfMove, int fullMove) {
+        this.halfMove = halfMove;
+        this.fullMove = fullMove;
+    }
+
+    public int getHalfMove() {
+        return halfMove;
+    }
+
+    public int getFullMove() {
+        return fullMove;
     }
 }

@@ -1,14 +1,15 @@
 package com.drdedd.simplichess.misc.lichess;
 
+import static com.drdedd.simplichess.data.Regexes.FENRegex;
+
 import android.util.Log;
 
 import com.drdedd.simplichess.data.Regexes;
+import com.drdedd.simplichess.misc.MiscMethods;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -42,11 +43,35 @@ public class LichessAPI {
         return null;
     }
 
+    public static JSONObject getEval(String fen, int lines) {
+        try {
+            if (!fen.matches(FENRegex)) return new JSONObject("{\"error\":\"Invalid FEN!\"}");
+
+            if (lines < 1 || lines > 5) lines = 1;
+            String url = buildURL(urlEndPoint + urlCloudEval, "", FEN, fen, MULTI_PV, String.valueOf(lines));
+            String response = getResponse(url, typeJSON);
+            if (!response.isEmpty()) return new JSONObject(response);
+        } catch (Exception e) {
+            Log.e(TAG, "getEval: Exception occurred!", e);
+        }
+        return null;
+    }
+
+    public static JSONObject getDailyPuzzle() {
+        try {
+            return new JSONObject(getResponse(urlEndPoint + urlDailyPuzzle, typeJSON));
+        } catch (Exception e) {
+            Log.e(TAG, "getDailyPuzzle: Exception occurred!", e);
+            return null;
+        }
+    }
+
     private static boolean isValidJSON(JSONObject json) {
         return !json.has("error");
     }
 
     private static String getResponse(String url, String type) {
+        Log.i(TAG, "getResponse: Requesting url:\n" + url);
         try {
             URL urlRequest = new URL(url);
             HttpsURLConnection connection = (HttpsURLConnection) urlRequest.openConnection();
@@ -54,16 +79,12 @@ public class LichessAPI {
             connection.setRequestMethod("GET");
             connection.connect();
             int statusCode = connection.getResponseCode();
-            if (statusCode == HttpsURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuilder response = new StringBuilder();
-                while ((line = br.readLine()) != null) response.append(line).append('\n');
-                br.close();
-                Log.d(TAG, "getResponse: Response string: " + response);
-                return response.toString();
-            } else if (statusCode == HttpsURLConnection.HTTP_NOT_FOUND) {
+            if (statusCode == HttpsURLConnection.HTTP_OK)
+                return MiscMethods.getString(connection.getInputStream());
+            else if (statusCode == HttpsURLConnection.HTTP_NOT_FOUND) {
+                String s = MiscMethods.getString(connection.getErrorStream());
                 Log.d(TAG, "getResponse: Not found!\nRequest: " + urlRequest);
+                if (!s.isEmpty()) return s;
                 return "{\"error\":\"Not found\"}";
             }
         } catch (Exception e) {

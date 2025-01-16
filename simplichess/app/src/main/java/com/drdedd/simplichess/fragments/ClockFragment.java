@@ -225,8 +225,7 @@ public class ClockFragment extends Fragment implements GameLogicInterface {
         return null;
     }
 
-    @Override
-    public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
+    public HashMap<String, HashSet<Integer>> getAllLegalMoves() {
         return null;
     }
 

@@ -8,11 +8,6 @@ import static com.drdedd.simplichess.data.Regexes.numberedAnnotationRegex;
 import static com.drdedd.simplichess.data.Regexes.resultRegex;
 import static com.drdedd.simplichess.data.Regexes.singleMoveStrictRegex;
 import static com.drdedd.simplichess.data.Regexes.startingMovePattern;
-import static com.drdedd.simplichess.fragments.LoadGameFragment.ERROR_KEY;
-import static com.drdedd.simplichess.fragments.LoadGameFragment.PARSED_GAME_KEY;
-import static com.drdedd.simplichess.fragments.LoadGameFragment.PARSE_RESULT_FLAG;
-import static com.drdedd.simplichess.fragments.LoadGameFragment.READ_RESULT_KEY;
-import static com.drdedd.simplichess.misc.MiscMethods.isLichessLink;
 import static com.drdedd.simplichess.misc.MiscMethods.toNotation;
 
 import android.content.Context;
@@ -34,6 +29,7 @@ import com.drdedd.simplichess.game.pieces.King;
 import com.drdedd.simplichess.game.pieces.Pawn;
 import com.drdedd.simplichess.game.pieces.Piece;
 import com.drdedd.simplichess.misc.Constants;
+import com.drdedd.simplichess.misc.MiscMethods;
 import com.drdedd.simplichess.misc.lichess.LichessAPI;
 import com.drdedd.simplichess.misc.lichess.LichessGame;
 
@@ -84,18 +80,36 @@ public class PGNParser extends Thread {
         boolean lichess, readResult;
         long start = 0, end = 0;
 
-        if (isLichessLink(pgnContent)) {
-            Log.d(TAG, "inputPGNDialog: Given lichess game link");
-            start = System.nanoTime();
-            lichessGame = LichessGame.parse(LichessAPI.getGameJSONById(LichessAPI.extractCode(pgnContent)));
-            end = System.nanoTime();
-            lichess = true;
+        if (MiscMethods.isLichessLink(pgnContent)) {
+            if (MiscMethods.isConnected(context)) {
+                Log.d(TAG, "inputPGNDialog: Given lichess game link");
+                start = System.nanoTime();
+                lichessGame = LichessGame.parse(LichessAPI.getGameJSONById(LichessAPI.extractCode(pgnContent)));
+                end = System.nanoTime();
+                lichess = true;
+            } else {
+                data.putString(Constants.ERROR_KEY, "Couldn't connect to internet");
+                Message message = new Message();
+                message.setData(data);
+                handler.sendMessage(message);
+                if (progressBarDialog != null) progressBarDialog.dismiss();
+                return;
+            }
         } else if (pgnContent.matches(Regexes.lichessGameCodeRegex)) {
-            Log.d(TAG, "inputPGNDialog: Given lichess game id");
-            start = System.nanoTime();
-            lichessGame = LichessGame.parse(LichessAPI.getGameJSONById(pgnContent));
-            end = System.nanoTime();
-            lichess = true;
+            if (MiscMethods.isConnected(context)) {
+                Log.d(TAG, "inputPGNDialog: Given lichess game id");
+                start = System.nanoTime();
+                lichessGame = LichessGame.parse(LichessAPI.getGameJSONById(pgnContent));
+                end = System.nanoTime();
+                lichess = true;
+            } else {
+                data.putString(Constants.ERROR_KEY, "Couldn't connect to internet");
+                Message message = new Message();
+                message.setData(data);
+                handler.sendMessage(message);
+                if (progressBarDialog != null) progressBarDialog.dismiss();
+                return;
+            }
         } else lichess = false;
 
         if (lichess) {
@@ -140,7 +154,7 @@ public class PGNParser extends Thread {
                 }
             } else {
                 readResult = false;
-                data.putString(ERROR_KEY, "Lichess game not found!");
+                data.putString(Constants.ERROR_KEY, "Lichess game not found!");
             }
         } else {
             start = System.nanoTime();
@@ -148,7 +162,7 @@ public class PGNParser extends Thread {
             end = System.nanoTime();
         }
 
-        data.putBoolean(READ_RESULT_KEY, readResult);
+        data.putBoolean(Constants.READ_RESULT_KEY, readResult);
         if (readResult) {
             HomeFragment.printTime(TAG, "Reading PGN", end - start, pgnContent.length());
             Log.v(TAG, "run: No syntax errors in PGN");
@@ -159,37 +173,37 @@ public class PGNParser extends Thread {
             boolean parseResult = parsePGN();
             end = System.nanoTime();
 
-            data.putBoolean(PARSE_RESULT_FLAG, parseResult);
-            if (parseResult) {
-                Log.d(TAG, String.format("run: Time to Parse: %,3d ns", end - start));
-                Log.d(TAG, String.format("run: Game valid and parsed!%nFinal position:%s", gameLogic.getBoardModel()));
+//            data.putBoolean(PARSE_RESULT_FLAG, parseResult);
+//            if (parseResult) {
+            Log.d(TAG, String.format("run: Time to Parse: %,3d ns", end - start));
+            Log.d(TAG, String.format("run: Game valid and parsed!%nFinal position:%s", gameLogic.getBoardModel()));
 
-                String opening, eco;
-                if (gameLogic.getPGN().isFENEmpty()) {
-                    start = System.nanoTime();
-                    Openings openings = Openings.getInstance(context);
-                    String openingResult = openings.searchOpening(gameLogic.getPGN().getUCIMoves());
-                    end = System.nanoTime();
+            String opening, eco;
+            if (gameLogic.getPGN().isFENEmpty()) {
+                start = System.nanoTime();
+                Openings openings = Openings.getInstance(context);
+                String openingResult = openings.searchOpening(gameLogic.getPGN().getUCIMoves());
+                end = System.nanoTime();
 
-                    String[] split = openingResult.split(Openings.separator);
-                    int lastBookMove = Integer.parseInt(split[0]);
-                    if (lastBookMove != -1 && split.length == 3) {
-                        HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
-                        eco = split[1];
-                        opening = split[2];
-                        gameLogic.getPGN().setLastBookMoveNo(lastBookMove);
-                        gameLogic.getPGN().addTag(PGN.TAG_ECO, eco);
-                        gameLogic.getPGN().addTag(PGN.TAG_OPENING, opening);
-                        for (int i = 0; i <= lastBookMove; i++)
-                            gameLogic.getPGN().getPGNData().addAnnotation(i, Annotation.BOOK);
-                    } else {
-                        opening = eco = "";
-                        Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), gameLogic.getPGN().getUCIMoves().subList(0, Math.min(gameLogic.getPGN().getUCIMoves().size(), 10))));
-                    }
-                } else opening = eco = "";
+                String[] split = openingResult.split(Openings.separator);
+                int lastBookMove = Integer.parseInt(split[0]);
+                if (lastBookMove != -1 && split.length == 3) {
+                    HomeFragment.printTime(TAG, "searching opening", end - start, lastBookMove);
+                    eco = split[1];
+                    opening = split[2];
+                    gameLogic.getPGN().setLastBookMoveNo(lastBookMove);
+                    gameLogic.getPGN().addTag(PGN.TAG_ECO, eco);
+                    gameLogic.getPGN().addTag(PGN.TAG_OPENING, opening);
+                    for (int i = 0; i <= lastBookMove; i++)
+                        gameLogic.getPGN().getPGNData().addAnnotation(i, Annotation.BOOK);
+                } else {
+                    opening = eco = "";
+                    Log.d(TAG, String.format("readPGN: Opening not found!\n%s\nMoves: %s", Arrays.toString(split), gameLogic.getPGN().getUCIMoves().subList(0, Math.min(gameLogic.getPGN().getUCIMoves().size(), 10))));
+                }
+            } else opening = eco = "";
 
-                data.putSerializable(PARSED_GAME_KEY, new ParsedGame(gameLogic.getBoardModelStack(), gameLogic.getFENs(), gameLogic.getPGN(), eco, opening));
-            } else Log.d(TAG, "run: Game not parsed!");
+            data.putSerializable(Constants.PARSED_GAME_KEY, new ParsedGame(gameLogic.getBoardModelStack(), gameLogic.getFENs(), gameLogic.getPGN(), eco, opening));
+//            } else Log.d(TAG, "run: Game not parsed!");
         }
 
         Log.d(TAG, "run: Total invalid words: " + invalidWords.size());
@@ -213,7 +227,7 @@ public class PGNParser extends Thread {
         if (!foundMoves) {
             String error = "No moves in PGN!";
             Log.v(TAG, String.format("readPGN: %s\n%s", error, pgnContent));
-            data.putString(ERROR_KEY, error);
+            data.putString(Constants.ERROR_KEY, error);
             return false;
         }
 
@@ -285,7 +299,7 @@ public class PGNParser extends Thread {
             } catch (Exception e) {
                 String error = "Error at :" + word;
                 Log.e(TAG, "readPGN: " + error, e);
-                data.putString(ERROR_KEY, error);
+                data.putString(Constants.ERROR_KEY, error);
             }
         }
         return true;
@@ -327,16 +341,16 @@ public class PGNParser extends Thread {
             }
 
             try {
-                if (move.equals(PGN.SHORT_CASTLE)) {
+                if (move.startsWith(PGN.LONG_CASTLE)) {
+                    King king = gameLogic.isWhiteToPlay() ? gameLogic.getBoardModel().getWhiteKing() : gameLogic.getBoardModel().getBlackKing();
+                    if (king.canLongCastle(gameLogic))
+                        Log.d(TAG, String.format("parsePGN: Move: Long castle %s!", gameLogic.move(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2) ? "success" : "failed"));
+                    continue;
+                }
+                if (move.startsWith(PGN.SHORT_CASTLE)) {
                     King king = gameLogic.isWhiteToPlay() ? gameLogic.getBoardModel().getWhiteKing() : gameLogic.getBoardModel().getBlackKing();
                     if (king.canShortCastle(gameLogic)) {
-                        gameLogic.move(king.getRow(), king.getCol(), king.getRow(), king.getCol() + 2);
-                    }
-                    continue;
-                } else if (move.equals(PGN.LONG_CASTLE)) {
-                    King king = gameLogic.isWhiteToPlay() ? gameLogic.getBoardModel().getWhiteKing() : gameLogic.getBoardModel().getBlackKing();
-                    if (king.canLongCastle(gameLogic)) {
-                        gameLogic.move(king.getRow(), king.getCol(), king.getRow(), king.getCol() - 2);
+                        Log.d(TAG, String.format("parsePGN: Move: Short castle %s!", gameLogic.move(king.getRow(), king.getCol(), king.getRow(), king.getCol() + 2) ? "success" : "failed"));
                     }
                     continue;
                 }
@@ -410,7 +424,10 @@ public class PGNParser extends Thread {
                                     break;
                             }
                             Log.v(TAG, "parsePGN: Promotion rank: " + promotionRank);
-                            if (promotionRank == null) return false;
+                            if (promotionRank == null) {
+                                data.putString(Constants.ERROR_KEY, "Invalid move " + move);
+                                return false;
+                            }
                             break label;
 
                         case 'Q':
@@ -487,28 +504,30 @@ public class PGNParser extends Thread {
                             }
 
                         for (Piece tempPiece : tempPieces)
-                            if (gameLogic.getLegalMoves().containsKey(tempPiece) && Objects.requireNonNull(gameLogic.getLegalMoves().get(tempPiece)).contains(destCol + destRow * 8)) {
+                            if (gameLogic.getAllLegalMoves().containsKey(tempPiece.getSquare()) && Objects.requireNonNull(gameLogic.getAllLegalMoves().get(tempPiece.getSquare())).contains(destCol + destRow * 8))
                                 piece = tempPiece;
-                            }
 
-                        if (piece != null && gameLogic.move(piece.getRow(), piece.getCol(), destRow, destCol)) {
+                        if (gameLogic.move(piece.getRow(), piece.getCol(), destRow, destCol))
                             Log.d(TAG, "parsePGN: Move success after 2nd search! " + move);
-                        } else {
+                        else {
                             StringBuilder legalMoves = new StringBuilder();
-                            HashSet<Integer> pieceLegalMoves = gameLogic.getLegalMoves().get(piece);
+                            HashSet<Integer> pieceLegalMoves = gameLogic.getAllLegalMoves().get(piece.getSquare());
                             if (pieceLegalMoves != null) for (int legalMove : pieceLegalMoves)
                                 legalMoves.append(toNotation(legalMove)).append(' ');
                             Log.d(TAG, String.format("parsePGN: Move failed: %s%nPiece: %s%nLegalMoves: %s", move, piece, legalMoves));
+                            data.putString(Constants.ERROR_KEY, "Invalid move " + move);
                             return false;
                         }
                     }
                 } else {
+                    data.putString(Constants.ERROR_KEY, "Invalid move " + move);
                     Log.d(TAG, String.format("parsePGN: Move invalid! Piece not found! %s %s (%d,%d) -> %s move: %s", player, rank, startRow, startCol, toNotation(destRow, destCol), move));
 //                    Toast.makeText(context, "Invalid move " + move, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             } catch (Exception e) {
 //                Toast.makeText(context, "Error occurred after move " + move, Toast.LENGTH_LONG).show();
+                data.putString(Constants.ERROR_KEY, "Invalid move " + move);
                 Log.e(TAG, "parsePGN: Error occurred after move " + move, e);
                 return false;
             }

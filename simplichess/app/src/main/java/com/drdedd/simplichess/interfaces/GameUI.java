@@ -1,6 +1,6 @@
 package com.drdedd.simplichess.interfaces;
 
-public interface GameFragmentInterface {
+public interface GameUI {
     void updateViews();
 
     void terminateGame(String termination);

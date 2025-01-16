@@ -20,8 +20,7 @@ public class Regexes {
     public static final String resultRegex = "(1/2-1/2|\\*|0-1|1-0)\\s*$";
     public static final Pattern resultPattern = Pattern.compile(resultRegex);
 
-    public static final String FENRegex = "^\\s*([kqbnrp1-8]+/){7}[kqbnrp1-8]+ [wb] (-|[kq]+) (-|[a-h][1-8])( (-|[0-9]+) (-|[0-9]*))?\\s*$";
-    public static final Pattern FENPattern = Pattern.compile(FENRegex, Pattern.CASE_INSENSITIVE);
+    public static final String FENRegex = "^\\s*([KkQqRrNnBbPp1-8]+/){7}[KkQqRrNnBbPp1-8]+ [wb] (-|[KQkq]+) (-|[a-h][1-8])( (-|[0-9]+) (-|[0-9]*))?\\s*$";
 
     public static final String activePlayerRegex = "\\sw|b\\s";
     public static final Pattern activePlayerPattern = Pattern.compile(activePlayerRegex);

@@ -58,7 +58,7 @@ public interface GameLogicInterface {
     /**
      * Legal moves for all pieces
      */
-    HashMap<Piece, HashSet<Integer>> getLegalMoves();
+    HashMap<String, HashSet<Integer>> getAllLegalMoves();
 
     /**
      * @return <code>true|false</code> - White to play

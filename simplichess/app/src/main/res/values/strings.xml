@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">Simpli Chess</string>
-    <string name="close">Close</string>
-    <string name="app_icon">App icon</string>
 
     <!-- Fragment names -->
     <string name="home">Home</string>
     <string name="game">Game</string>
     <string name="about">About</string>
+    <string name="openings">Openings</string>
     <string name="analysis">Analysis</string>
     <string name="clock">Clock</string>
     <string name="settings">Settings</string>
@@ -20,7 +19,7 @@
 
     <!-- Game fragment strings -->
     <string name="reset_board">Reset Board</string>
-    <string name="undo">Undo</string>
+    <string name="undoLastMove">Undo last move</string>
     <string name="offer_draw">Offer draw</string>
     <string name="resign">Resign</string>
     <string name="copy_pgn">Copy PGN</string>
@@ -62,6 +61,7 @@
     <string name="move_previous">Move previous</string>
 
     <!-- About fragment strings -->
+    <string name="app_icon">App icon</string>
     <string name="version">Version</string>
     <string name="developedBy">Developed by</string>
     <string-array name="developers">
@@ -77,6 +77,10 @@
     <string name="test">Test</string>
 
     <!-- Dialog strings -->
+    <string name="single_player">Single Player</string>
+    <string name="two_players">2 players</string>
+    <string name="play_as">Play As</string>
+    <string name="start">Start</string>
     <string name="export_pgn">Export PGN</string>
     <string name="load_from_pgn">Load from PGN</string>
     <string name="load">Load</string>
@@ -84,6 +88,7 @@
     <string name="paste_your_pgn_here">Paste your PGN here</string>
     <string name="paste_from_clipboard">Paste from clipboard</string>
     <string name="game_over">Game Over</string>
+    <string name="close">Close</string>
 
     <!-- Chess pieces -->
     <string name="king">King</string>
@@ -147,11 +152,15 @@
 
     <!-- Lipsum -->
     <string name="lipsum1">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
-    <string name="accuracy">Accuracy</string>
-    <string name="average_cpl">Average CPL</string>
-    <string name="blunder">Blunder</string>
-    <string name="mistake">Mistake</string>
+
     <string name="inaccuracy">Inaccuracy</string>
+    <string name="mistake">Mistake</string>
+    <string name="blunder">Blunder</string>
+    <string name="average_cpl">Average CPL</string>
+    <string name="accuracy">Accuracy</string>
     <string name="zero">0</string>
     <string name="zero_percent">0%</string>
+
+    <string name="shrink_expand">Shrink/Expand board</string>
+    <string name="sample_uci_promotion">e7e8q</string>
 </resources>

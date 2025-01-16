@@ -1,7 +1,7 @@
 package com.drdedd.simplichess.fragments;
 
 import static android.content.Context.VIBRATOR_SERVICE;
-import static com.drdedd.simplichess.data.Regexes.FENPattern;
+import static com.drdedd.simplichess.data.Regexes.FENRegex;
 import static com.drdedd.simplichess.data.Regexes.resultPattern;
 import static com.drdedd.simplichess.misc.MiscMethods.shareContent;
 
@@ -12,8 +12,10 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -29,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -55,10 +59,13 @@ import com.drdedd.simplichess.game.pieces.Piece;
 import com.drdedd.simplichess.interfaces.GameLogicInterface;
 import com.drdedd.simplichess.interfaces.PGNRecyclerViewInterface;
 import com.drdedd.simplichess.misc.Constants;
-import com.drdedd.simplichess.views.ChessBoard;
 import com.drdedd.simplichess.views.CompactBoard;
 import com.drdedd.simplichess.views.EvalBar;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,8 +81,6 @@ import java.util.regex.Matcher;
  */
 public class LoadGameFragment extends Fragment {
     private static final String TAG = "LoadGameFragment";
-    public static final String PGN_CONTENT_KEY = "PGNContent", FILE_EXISTS_KEY = "FileExists";
-    public static final String PARSED_GAME_KEY = "parsedGame", READ_RESULT_KEY = "readResult", PARSE_RESULT_FLAG = "parseResult", ERROR_KEY = "error";
     private static final int gone = View.GONE, visible = View.VISIBLE;
     private FragmentLoadGameBinding binding;
     private ClipboardManager clipboardManager;
@@ -85,6 +90,12 @@ public class LoadGameFragment extends Fragment {
     private Dialog dialog;
     private EditText pgnTxt;
     private boolean gameLoaded = false, fileExists;
+    private final ActivityResultLauncher<Intent> fileOpenResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), r -> {
+        if (r.getResultCode() == AppCompatActivity.RESULT_OK) {
+            Intent i = r.getData();
+            if (i != null) openFile(i.getData());
+        } else Log.i(TAG, "ActivityResult: Result not ok!");
+    });
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -96,9 +107,9 @@ public class LoadGameFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            fileExists = args.getBoolean(FILE_EXISTS_KEY, false);
-            if (args.containsKey(PARSED_GAME_KEY)) {
-                ParsedGame parsedGame = (ParsedGame) args.getSerializable(PARSED_GAME_KEY);
+            fileExists = args.getBoolean(Constants.FILE_EXISTS_KEY, false);
+            if (args.containsKey(Constants.PARSED_GAME_KEY)) {
+                ParsedGame parsedGame = (ParsedGame) args.getSerializable(Constants.PARSED_GAME_KEY);
                 if (parsedGame != null) try {
                     pgn = parsedGame.getPGN();
                     pgnString = pgn.toString();
@@ -108,8 +119,8 @@ public class LoadGameFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e(TAG, "onCreateView: Error while loading game", e);
                 }
-            } else if (args.containsKey(PGN_CONTENT_KEY)) {
-                String pgnContent = args.getString(PGN_CONTENT_KEY);
+            } else if (args.containsKey(Constants.PGN_CONTENT_KEY)) {
+                String pgnContent = args.getString(Constants.PGN_CONTENT_KEY);
                 readPGN(pgnContent);
             }
         }
@@ -153,39 +164,42 @@ public class LoadGameFragment extends Fragment {
             public void handleMessage(@NonNull Message message) {
                 super.handleMessage(message);
                 Bundle data = message.getData();
-                if (data.getBoolean(READ_RESULT_KEY)) {
+                if (data.getBoolean(Constants.READ_RESULT_KEY)) {
                     Log.v(TAG, "handleMessage: No errors in PGN");
                     if (dialog != null) dialog.dismiss();
 
-                    if (data.getBoolean(PARSE_RESULT_FLAG)) {
-                        ParsedGame parsedGame = (ParsedGame) data.getSerializable(PARSED_GAME_KEY);
-                        if (parsedGame != null) {
-                            pgn = parsedGame.getPGN();
-                            binding.analysisBoard.setOpening(parsedGame.getECO(), parsedGame.getOpening());
-                            pgnString = pgn.toString();
-                            gameLoaded = true;
-                            loadGameView(new ArrayList<>(parsedGame.getBoardModelStack()), new ArrayList<>(parsedGame.getFENs()), data);
-                        } else Log.d(TAG, "handleMessage: Parsed game is null!");
-                    } else {
-                        Log.d(TAG, "handleMessage: Game not parsed!");
-                        gameLoaded = false;
-                    }
+//                    if (data.getBoolean(PARSE_RESULT_FLAG)) {
+                    ParsedGame parsedGame = (ParsedGame) data.getSerializable(Constants.PARSED_GAME_KEY);
+                    if (parsedGame != null) {
+                        pgn = parsedGame.getPGN();
+                        binding.analysisBoard.setOpening(parsedGame.getECO(), parsedGame.getOpening());
+                        pgnString = pgn.toString();
+                        gameLoaded = true;
+                        loadGameView(new ArrayList<>(parsedGame.getBoardModelStack()), new ArrayList<>(parsedGame.getFENs()), data);
+                    } else Log.d(TAG, "handleMessage: Parsed game is null!");
+//                    } else {
+//                        Log.d(TAG, "handleMessage: Game not parsed!");
+//                        gameLoaded = false;
+//                    }
                 } else {
-                    String error;
-                    if (data.containsKey(ERROR_KEY))
-                        error = data.getString(ERROR_KEY, "Invalid PGN!");
-                    else error = "Invalid PGN!";
-
-                    Log.v(TAG, error);
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "handleMessage: Invalid PGN!");
+                    Toast.makeText(requireContext(), "Invalid PGN!", Toast.LENGTH_SHORT).show();
                     if (pgnTxt != null) pgnTxt.getText().clear();
                     gameLoaded = false;
                 }
+
+                if (data.containsKey(Constants.ERROR_KEY)) {
+                    String error;
+                    error = data.getString(Constants.ERROR_KEY, "Invalid PGN!");
+                    Log.v(TAG, error);
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+                }
+
                 refresh();
             }
         };
 
-//        PGNParser pgnParser = new PGNParser(requireContext(), tagsMap, moves, commentsMap, moveAnnotationMap, alternateMoveSequence, evalMap, pgnContent, pgnParserHandler);
+        //        PGNParser pgnParser = new PGNParser(requireContext(), tagsMap, moves, commentsMap, moveAnnotationMap, alternateMoveSequence, evalMap, pgnContent, pgnParserHandler);
         PGNParser pgnParser = new PGNParser(requireContext(), pgnContent, pgnParserHandler);
         pgnParser.start();
     }
@@ -200,6 +214,14 @@ public class LoadGameFragment extends Fragment {
         pgnTxt = dialog.findViewById(R.id.load_pgn_txt);
 
         pgnTxt.setOnClickListener(v -> pgnTxt.selectAll());
+
+        dialog.findViewById(R.id.openFile).setOnClickListener(v -> {
+            dialog.dismiss();
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType(Constants.PGN_MIME_TYPE);
+            fileOpenResultLauncher.launch(intent);
+        });
 
         dialog.findViewById(R.id.cancel).setOnClickListener(v -> {
 //            navController.popBackStack();
@@ -217,8 +239,8 @@ public class LoadGameFragment extends Fragment {
             String FEN = isFEN(pgnContent);
             if (!FEN.isEmpty()) {
                 Bundle args = new Bundle();
-                args.putString(GameFragment.FEN_KEY, FEN);
-                args.putBoolean(GameFragment.NEW_GAME_KEY, false);
+                args.putString(Constants.FEN_KEY, FEN);
+                args.putBoolean(Constants.NEW_GAME_KEY, false);
                 Log.v(TAG, "inputPGNDialog: Found FEN, navigating to GameFragment");
                 dialog.dismiss();
                 navController.navigate(R.id.nav_game, args);
@@ -319,9 +341,25 @@ public class LoadGameFragment extends Fragment {
      * @return <code>String</code> - FEN or empty string
      */
     private String isFEN(String PGN) {
-        Matcher FENmatcher = FENPattern.matcher(PGN);
-        if (FENmatcher.find()) return FENmatcher.group().trim();
-        return "";
+        return PGN.matches(FENRegex) ? PGN.trim() : "";
+    }
+
+    private void openFile(Uri uri) {
+        if (uri != null) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            try {
+                InputStream inputStream = requireContext().getContentResolver().openInputStream(uri);
+                BufferedReader bf = new BufferedReader(new InputStreamReader(inputStream));
+                while ((line = bf.readLine()) != null) stringBuilder.append(line).append('\n');
+
+                String pgnContent = stringBuilder.toString();
+                Log.d(TAG, "openFile: Content:\n" + pgnContent);
+                readPGN(pgnContent);
+            } catch (IOException e) {
+                Log.e(TAG, "openFile: Error while reading uri file", e);
+            }
+        } else Log.i(TAG, "openFile: Uri is null!");
     }
 
     @Override
@@ -339,7 +377,6 @@ public class LoadGameFragment extends Fragment {
         private static final String TAG = "GameViewer";
         private final ArrayList<BoardModel> boardModels;
         private final ArrayList<String> FENs;
-        private final ChessBoard chessBoard;
         private final CompactBoard compactBoard;
         private final boolean vibrationEnabled, sound, animate;
         private final int length;
@@ -376,7 +413,6 @@ public class LoadGameFragment extends Fragment {
 
             boardModel = boardModels.get(0);
             compactBoard = binding.analysisBoard;
-            chessBoard = compactBoard.getBoard();
             pgnRecyclerView = binding.pgnRecyclerView;
             evalBar = binding.gameEvalBar;
 
@@ -413,11 +449,11 @@ public class LoadGameFragment extends Fragment {
             if (sound) mediaPlayer = MediaPlayer.create(activity, R.raw.move_sound);
             animate = dataManager.getBoolean(DataManager.ANIMATION);
 
-            chessBoard.setData(this, true);
+            compactBoard.setBoardData(this, true);
+            compactBoard.getBoard().setAnalysis(true);
             update();
 
-            PGN.PGNRecyclerViewAdapter adapter = new PGN.PGNRecyclerViewAdapter(activity, pgn, this);
-            pgnRecyclerView.setAdapter(adapter);
+            pgnRecyclerView.setAdapter(new PGN.PGNRecyclerViewAdapter(activity, pgn, this));
             pgnRecyclerView.setLayoutManager(new LinearLayoutManager(activity, RecyclerView.HORIZONTAL, false));
 
             autoplayRunning = false;
@@ -483,7 +519,7 @@ public class LoadGameFragment extends Fragment {
         }
 
         @Override
-        public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
+        public HashMap<String, HashSet<Integer>> getAllLegalMoves() {
             return null;
         }
 
@@ -564,16 +600,18 @@ public class LoadGameFragment extends Fragment {
             });
 
             if (animate && reverse)
-                chessBoard.initializeReverseAnimation(boardModel.toSquare, boardModel.fromSquare);
+                compactBoard.initializeReverseAnimation(boardModel.toSquare, boardModel.fromSquare);
             boardModel = boardModels.get(pointer);
             Log.d(TAG, "update: FEN of current boardModel:" + FENs.get(pointer));
-            chessBoard.annotation = -1;
+            compactBoard.setAnnotation(-1);
             if (annotationMap.containsKey(pointer - 1)) {
-                Log.d(TAG, "update: Annotation: " + annotationMap.get(pointer - 1));
-                chessBoard.annotation = annotationMap.get(pointer - 1).getResID();
+                Annotation annotation = annotationMap.get(pointer - 1);
+                Log.d(TAG, "update: Annotation: " + annotation);
+                if (annotation != null) compactBoard.setAnnotation(annotation.getResID());
             }
-            chessBoard.invalidate();
-            if (animate && !reverse) chessBoard.initializeAnimation();
+            compactBoard.invalidate();
+            if (animate && !reverse)
+                compactBoard.initializeAnimation(boardModel.fromSquare, boardModel.toSquare);
 
             long start = System.nanoTime();
             boolean isChecked = false;

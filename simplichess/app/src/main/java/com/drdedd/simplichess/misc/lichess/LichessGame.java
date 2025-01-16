@@ -10,8 +10,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Set;
 
@@ -22,7 +24,7 @@ public class LichessGame {
     private static final String keyInaccuracy = "inaccuracy", keyMistake = "mistake", keyBlunder = "blunder", keyACPL = "acpl", keyAccuracy = "accuracy";
     private static final String keyOpening = "opening", keyECO = "eco", keyPly = "ply", keyClocks = "clocks", keyMoves = "moves", keyAnalysis = "analysis";
     private static final String keyEval = "eval", keyMate = "mate", keyBest = "best", keyJudgement = "judgment", keyVariation = "variation", keyComment = "comment";
-    private static final String keyCreatedAt = "createdAt";
+    private static final String keyCreatedAt = "createdAt", keyPGN = "pgn";
 
     private static final Set<String> statuses = Set.of("started", "mate", "draw", "timeout", "outoftime", "resign");
 
@@ -56,6 +58,14 @@ public class LichessGame {
             game.speed = json.optString(keySpeed, "");
             game.status = json.optString(keyStatus, PGN.RESULT_ONGOING);
 
+            SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
+            Calendar calendar = Calendar.getInstance();
+            long ms = json.optLong(keyCreatedAt, 0);
+            if (ms != 0) {
+                calendar.setTimeInMillis(ms);
+                game.date = format.format(calendar.getTime());
+            }
+
             JSONObject openingJSON = json.getJSONObject(keyOpening);
             game.opening = openingJSON.optString(keyName, "");
             game.eco = openingJSON.optString(keyECO, "");
@@ -79,7 +89,10 @@ public class LichessGame {
                 game.blackAccuracy = new PlayerAccuracy(game.black.name, false, blackPlayer.getJSONObject(keyAnalysis));
             }
 
-            game.moves.addAll(Arrays.asList(json.getString(keyMoves).split(" ")));
+            if (json.has(keyMoves))
+                game.moves.addAll(Arrays.asList(json.getString(keyMoves).split(" ")));
+            if (game.moves.isEmpty() && json.has(keyPGN))
+                game.moves.addAll(Arrays.asList(json.getString(keyPGN).split(" ")));
             if (json.has(keyClocks)) {
                 JSONArray clocks = json.getJSONArray(keyClocks);
                 for (int i = 0; i < clocks.length(); i++) game.clocks.add(clocks.getInt(i));

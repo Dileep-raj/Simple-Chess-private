@@ -104,7 +104,7 @@ public class Openings implements Serializable {
      * Use {@link Openings#separator separator} to separate move number and opening
      *
      * @param movesList List of moves
-     * @return Opening and move number<br>Format: <code>MoveNumber%Opening</code>
+     * @return Opening and move number<br>Format: <code>MoveNumber%OpeningECO%OpeningName</code>
      */
     public String searchOpening(LinkedList<String> movesList) {
         Log.d(TAG, "searchOpening: Searching opening");

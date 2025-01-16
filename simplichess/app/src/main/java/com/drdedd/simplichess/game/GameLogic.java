@@ -12,6 +12,8 @@ import static com.drdedd.simplichess.misc.MiscMethods.toRow;
 import android.content.Context;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaPlayer;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
@@ -30,16 +32,19 @@ import com.drdedd.simplichess.game.pgn.PGNData;
 import com.drdedd.simplichess.game.pieces.King;
 import com.drdedd.simplichess.game.pieces.Pawn;
 import com.drdedd.simplichess.game.pieces.Piece;
-import com.drdedd.simplichess.interfaces.GameFragmentInterface;
 import com.drdedd.simplichess.interfaces.GameLogicInterface;
+import com.drdedd.simplichess.interfaces.GameUI;
 import com.drdedd.simplichess.views.ChessBoard;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -53,34 +58,40 @@ public class GameLogic implements GameLogicInterface {
     private final Context context;
     private final DataManager dataManager;
     private final ChessBoard chessBoard;
-    private final GameFragmentInterface gameFragmentInterface;
+    private final GameUI gameUI;
+    private final Handler gameFragmentHandler;
     private final String FEN;
+    private final Random random = new Random();
     private final boolean newGame, saveProgress;
-    private int count;
-    private boolean vibrationEnabled, loadingPGN, sound, animate, gameTerminated, whiteToPlay;
+    private int count, halfMove, fullMove;
+    private boolean vibrationEnabled, loadingPGN, sound, animate, gameTerminated, whiteToPlay, singlePlayer, infinitePlay;
+    private Player botPlayer;
     private String white, black, app, date, fromSquare, toSquare, termination;
     private PGN pgn;
     private BoardModel boardModel = null;
     private ChessState gameState;
     private Stack<BoardModel> boardModelStack;
-    private HashMap<Piece, HashSet<Integer>> legalMoves;
+    private HashMap<String, HashSet<Integer>> allLegalMoves;
     private Stack<String> FENs;
     private MediaPlayer mediaPlayer;
     private Vibrator vibrator;
+    private Thread randomMoveThread;
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     /**
      * GameLogic for normal game setup
      *
-     * @param gameFragmentInterface Game fragment interface reference
-     * @param context               Context of the fragment
-     * @param chessBoard            ChessBoard view
-     * @param newGame               Start new game or resume saved game
+     * @param gameUI     Game fragment interface reference
+     * @param context    Context of the fragment
+     * @param chessBoard ChessBoard view
+     * @param newGame    Start new game or resume saved game
      */
-    public GameLogic(GameFragmentInterface gameFragmentInterface, Context context, ChessBoard chessBoard, boolean newGame) {
-        saveProgress = gameFragmentInterface.saveProgress();
+    public GameLogic(GameUI gameUI, Context context, ChessBoard chessBoard, boolean newGame) {
+        saveProgress = gameUI.saveProgress();
         dataManager = new DataManager(context);
         this.context = context;
-        this.gameFragmentInterface = gameFragmentInterface;
+        this.gameUI = gameUI;
+        gameFragmentHandler = new Handler(Looper.getMainLooper());
         this.chessBoard = chessBoard;
         this.newGame = newGame;
         FEN = "";
@@ -93,17 +104,18 @@ public class GameLogic implements GameLogicInterface {
     /**
      * GameLogic with a starting position
      *
-     * @param gameFragmentInterface Game fragment reference
-     * @param context               Context of fragment
-     * @param chessBoard            ChessBoard view
-     * @param FEN                   FEN of the starting position
+     * @param gameUI     Game fragment reference
+     * @param context    Context of fragment
+     * @param chessBoard ChessBoard view
+     * @param FEN        FEN of the starting position
      */
-    public GameLogic(GameFragmentInterface gameFragmentInterface, Context context, ChessBoard chessBoard, String FEN) {
+    public GameLogic(GameUI gameUI, Context context, ChessBoard chessBoard, String FEN) {
         newGame = false;
-        saveProgress = gameFragmentInterface.saveProgress();
+        saveProgress = gameUI.saveProgress();
         dataManager = new DataManager(context);
         this.context = context;
-        this.gameFragmentInterface = gameFragmentInterface;
+        this.gameUI = gameUI;
+        gameFragmentHandler = new Handler(Looper.getMainLooper());
         this.chessBoard = chessBoard;
         this.FEN = FEN;
         chessBoard.setData(this, false);
@@ -122,7 +134,8 @@ public class GameLogic implements GameLogicInterface {
         this.context = context;
         dataManager = new DataManager(context);
         loadingPGN = true;
-        gameFragmentInterface = null;
+        gameUI = null;
+        gameFragmentHandler = null;
         chessBoard = null;
         saveProgress = false;
 
@@ -164,10 +177,16 @@ public class GameLogic implements GameLogicInterface {
         date = pgnDate.format(new Date());
 
         if (!newGame) {
-            boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
-            pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
-            boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.STACK_FILE);
-            FENs = (Stack<String>) dataManager.readObject(DataManager.FENS_LIST_FILE);
+            try {
+                boardModel = (BoardModel) dataManager.readObject(DataManager.BOARD_FILE);
+                pgn = (PGN) dataManager.readObject(DataManager.PGN_FILE);
+                boardModelStack = (Stack<BoardModel>) dataManager.readObject(DataManager.STACK_FILE);
+                FENs = (Stack<String>) dataManager.readObject(DataManager.FENS_LIST_FILE);
+            } catch (Exception e) {
+                Log.e(TAG, "initializeData: Exception occurred while reading game files!", e);
+                if (dataManager.deleteGameFiles())
+                    Log.d(TAG, "initializeData: Deleted game files!");
+            }
         }
 
         if (boardModel == null || pgn == null) {
@@ -185,6 +204,10 @@ public class GameLogic implements GameLogicInterface {
     }
 
     public void reset() {
+        halfMove = 0;
+        fullMove = 1;
+
+        stopInfinitePlay();
         if (chessBoard != null) chessBoard.clearSelection();
         gameTerminated = false;
         whiteToPlay = true;
@@ -214,6 +237,89 @@ public class GameLogic implements GameLogicInterface {
         return boardModel.pieceAt(row, col);
     }
 
+    public void playRandomMove() {
+        try {
+            if (randomMoveThread == null) {
+                randomMoveThread = getNewThread();
+                randomMoveThread.start();
+            } else Log.wtf(TAG, "playRandomMove: Already playing random move!");
+        } catch (Exception e) {
+            Log.e(TAG, "playRandomMove: Exception!", e);
+        }
+    }
+
+    private Thread getNewThread() {
+
+        return new Thread(() -> {
+            try {
+                // Disable manual moves until random move is performed
+                chessBoard.setViewOnly(true);
+                Thread.sleep(infinitePlay ? 400 : 700);
+                Set<String> squares = allLegalMoves.keySet();
+                ArrayList<String> array = new ArrayList<>(squares);
+                Collections.shuffle(array);
+
+                // Pick a random piece square
+                String square = array.get(random.nextInt(array.size()));
+                if (square != null) {
+                    HashSet<Integer> moves = allLegalMoves.get(square);
+
+                    // If piece has no legal moves pick another piece
+                    if (moves == null || moves.isEmpty()) for (String p : squares) {
+                        moves = allLegalMoves.get(p);
+                        if (moves != null && !moves.isEmpty()) {
+                            square = p;
+                            break;
+                        }
+                    }
+
+                    // If legal moves found for a piece
+                    if (moves != null && !moves.isEmpty()) {
+                        Piece piece = pieceAt(toRow(square), toCol(square));
+                        ArrayList<Integer> legalMoves = new ArrayList<>(moves);
+                        int position = legalMoves.get(random.nextInt(legalMoves.size()));
+                        int fromRow = piece.getRow(), fromCol = piece.getCol(), row = position / 8, col = position % 8;
+
+                        // If move is promotion promote to random rank
+                        if (piece.getRank() == Rank.PAWN) {
+                            Pawn pawn = (Pawn) piece;
+                            Rank[] ranks = {Rank.QUEEN, Rank.ROOK, Rank.BISHOP, Rank.KNIGHT};
+                            if (pawn.canPromote() && promote(pawn, row, col, fromRow, fromCol, ranks[random.nextInt(ranks.length)]))
+                                return;
+                        }
+
+                        // Perform the randomly picked move
+                        String finalSquare = square;
+                        handler.post(() -> Log.i(TAG, String.format("run: Move %s: %s %s->%s", move(fromRow, fromCol, row, col) ? "played" : "failed!", piece.getUnicode(), finalSquare, piece.getSquare())));
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "run: Exception occurred!", e);
+            }
+            Log.d(TAG, "run: Thread stopped");
+            chessBoard.setViewOnly(false);
+            randomMoveThread = null;
+        });
+    }
+
+    public void toggleInfinitePlay() {
+        if (infinitePlay) stopInfinitePlay();
+        else {
+            singlePlayer = false;
+            infinitePlay = true;
+            playRandomMove();
+        }
+    }
+
+    public void stopInfinitePlay() {
+        infinitePlay = false;
+        try {
+            if (randomMoveThread != null) randomMoveThread.join();
+        } catch (Exception e) {
+            Log.e(TAG, "stopInfinitePlay: Exception occurred while stopping random move thread!", e);
+        }
+    }
+
     @Override
     public boolean move(int fromRow, int fromCol, int toRow, int toCol) {
         if (gameTerminated) return false;
@@ -229,38 +335,43 @@ public class GameLogic implements GameLogicInterface {
                 return true;
             }
             return false;
-        } else {
-            Piece movingPiece = pieceAt(fromRow, fromCol);
-            if (movingPiece == null) return false;
-
-            if (isPieceToPlay(movingPiece)) if (legalMoves.get(movingPiece) != null) {
-                HashSet<Integer> pieceLegalMoves = legalMoves.get(movingPiece);
-                if (pieceLegalMoves != null)
-                    if (!pieceLegalMoves.contains(toCol + toRow * 8)) return false;
-            }
-            boolean result = makeMove(movingPiece, fromRow, fromCol, toRow, toCol);
-            if (result) {
-                if (!loadingPGN && sound) mediaPlayer.start();
-                boardModel.fromSquare = toNotation(fromRow, fromCol);
-                boardModel.toSquare = toNotation(toRow, toCol);
-
-                boardModel.enPassantPawn = null;
-                boardModel.enPassantSquare = "";
-
-                if (movingPiece.getRank() == Rank.PAWN && Math.abs(fromRow - toRow) == 2) {
-                    Pawn enPassantPawn = (Pawn) movingPiece;
-                    boardModel.enPassantPawn = enPassantPawn;
-                    boardModel.enPassantSquare = toNotation(enPassantPawn.getRow() - enPassantPawn.direction, enPassantPawn.getCol());
-                    //Log.d(TAG, "move: EnPassantPawn: " + boardModel.enPassantPawn.getPosition() + " EnPassantSquare: " + boardModel.enPassantSquare);
-                }
-                fromSquare = toNotation(fromRow, fromCol);
-                toSquare = toNotation(toRow, toCol);
-                toggleGameState();
-                pushToStack();
-                if (playerToPlay().isInCheck()) printLegalMoves();
-            }
-            return result;
         }
+
+        Piece movingPiece = pieceAt(fromRow, fromCol);
+        if (movingPiece == null) return false;
+
+        // Check if the piece belongs to the active player
+        if (isPieceToPlay(movingPiece) && allLegalMoves.get(movingPiece.getSquare()) != null) {
+            HashSet<Integer> pieceLegalMoves = allLegalMoves.get(movingPiece.getSquare());
+            if (pieceLegalMoves != null && !pieceLegalMoves.contains(toCol + toRow * 8))
+                return false; // Return false if the move is an illegal move
+        }
+        boolean result = makeMove(movingPiece, fromRow, fromCol, toRow, toCol);
+        if (result) {
+            if (movingPiece.getRank() == Rank.PAWN || pgn.getMoves().getLast().contains(PGN.CAPTURE))
+                halfMove = 0;
+            else halfMove = boardModel.getHalfMove() + 1;
+
+            if (!loadingPGN && sound) mediaPlayer.start();
+            boardModel.fromSquare = toNotation(fromRow, fromCol);
+            boardModel.toSquare = toNotation(toRow, toCol);
+
+            boardModel.enPassantPawn = null;
+            boardModel.enPassantSquare = "";
+
+            if (movingPiece.getRank() == Rank.PAWN && Math.abs(fromRow - toRow) == 2) {
+                Pawn enPassantPawn = (Pawn) movingPiece;
+                boardModel.enPassantPawn = enPassantPawn;
+                boardModel.enPassantSquare = toNotation(enPassantPawn.getRow() - enPassantPawn.direction, enPassantPawn.getCol());
+                //Log.d(TAG, "move: EnPassantPawn: " + boardModel.enPassantPawn.getPosition() + " EnPassantSquare: " + boardModel.enPassantSquare);
+            }
+            fromSquare = toNotation(fromRow, fromCol);
+            toSquare = toNotation(toRow, toCol);
+            toggleGameState();
+            pushToStack();
+            if (playerToPlay().isInCheck()) printLegalMoves();
+        }
+        return result;
     }
 
     /**
@@ -375,7 +486,7 @@ public class GameLogic implements GameLogicInterface {
             if (!startRow.isEmpty() && !startCol.isEmpty()) break;
             if (tempPiece.isCaptured() || tempPiece == piece) continue;
             if (tempPiece.getPlayer() == piece.getPlayer() && tempPiece.getRank() == piece.getRank()) {
-                HashSet<Integer> tempPieceMoves = legalMoves.get(tempPiece);
+                HashSet<Integer> tempPieceMoves = allLegalMoves.get(tempPiece.getSquare());
                 if (tempPieceMoves != null && tempPieceMoves.contains(toRow * 8 + toCol))
                     if (piece.getRank() == Rank.KNIGHT) {
                         if (startCol.isEmpty() && piece.getCol() != tempPiece.getCol()) {
@@ -445,6 +556,10 @@ public class GameLogic implements GameLogicInterface {
             Log.v(TAG, String.format("promote: Promoted to %s %s->%s", rank, toNotation(fromRow, fromCol), toNotation(row, col)));
             fromSquare = toNotation(fromRow, fromCol);
             toSquare = toNotation(row, col);
+
+            halfMove = 0;
+            if (!pawn.isWhite()) fullMove = boardModel.getFullMove() + 1;
+
             toggleGameState();
             pushToStack();
         });
@@ -478,6 +593,8 @@ public class GameLogic implements GameLogicInterface {
             promoted = true;
         }
         if (promoted) {
+            halfMove = 0;
+            if (!pawn.isWhite()) fullMove = boardModel.getFullMove() + 1;
             addMove(sanMove, uciMove);
             fromSquare = toNotation(fromRow, fromCol);
             toSquare = toNotation(row, col);
@@ -495,7 +612,7 @@ public class GameLogic implements GameLogicInterface {
         pgn.setWhiteToPlay(whiteToPlay);
         if (chessBoard != null) {
             chessBoard.clearSelection();
-            if (animate) chessBoard.initializeAnimation();
+            if (animate) chessBoard.initializeAnimation(boardModel.fromSquare, boardModel.toSquare);
         }
     }
 
@@ -507,6 +624,7 @@ public class GameLogic implements GameLogicInterface {
         FENs.push(boardModel.toFEN(this));
         boardModel.fromSquare = fromSquare;
         boardModel.toSquare = toSquare;
+        boardModel.setMoveClocks(halfMove, fullMove);
         fromSquare = "";
         toSquare = "";
         updateAll();
@@ -548,9 +666,11 @@ public class GameLogic implements GameLogicInterface {
         end = System.nanoTime();
         printTime(TAG, "checking Game Termination", end - start, -1);
 
-        if (gameFragmentInterface != null) gameFragmentInterface.updateViews();
+        if (gameUI != null) gameUI.updateViews();
         if (chessBoard != null) chessBoard.invalidate();
         Log.d(TAG, "updateAll: Updated and saved game");
+        randomMoveThread = null;
+        if (singlePlayer && playerToPlay() == botPlayer || infinitePlay) playRandomMove();
     }
 
     /**
@@ -600,9 +720,10 @@ public class GameLogic implements GameLogicInterface {
      * @return <code>true|false</code> - Player has no legal moves
      */
     private boolean noLegalMoves() {
-        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
-        for (Map.Entry<Piece, HashSet<Integer>> entry : pieces)
+        Set<Map.Entry<String, HashSet<Integer>>> legalMoves = allLegalMoves.entrySet();
+        for (Map.Entry<String, HashSet<Integer>> entry : legalMoves)
             if (!entry.getValue().isEmpty()) return false;
+        Log.d(TAG, "noLegalMoves: No legal moves for " + playerToPlay());
         return true;
     }
 
@@ -632,12 +753,12 @@ public class GameLogic implements GameLogicInterface {
         }
 
         Log.v(TAG, "terminateGame: Game terminated by: " + terminationState);
-        if (gameFragmentInterface != null) gameFragmentInterface.terminateGame(termination);
+        if (gameUI != null) gameFragmentHandler.post(() -> gameUI.terminateGame(termination));
     }
 
     @Override
     public void terminateByTimeOut(Player player) {
-        termination = opponentPlayer(playerToPlay()) + " won on time";
+        termination = opponentPlayer(player) + " won on time";
         pgn.setTermination(termination);
         terminateGame(ChessState.TIMEOUT);
     }
@@ -733,17 +854,16 @@ public class GameLogic implements GameLogicInterface {
      * Prints all legal moves for the player in check
      */
     private void printLegalMoves() {
-        if (legalMoves == null) return;
-        Set<Map.Entry<Piece, HashSet<Integer>>> pieces = legalMoves.entrySet();
-        for (Map.Entry<Piece, HashSet<Integer>> entry : pieces) {
-            Piece piece = entry.getKey();
+        if (allLegalMoves == null) return;
+        Set<Map.Entry<String, HashSet<Integer>>> pieces = allLegalMoves.entrySet();
+        for (Map.Entry<String, HashSet<Integer>> entry : pieces) {
             HashSet<Integer> moves = entry.getValue();
             if (!moves.isEmpty()) {
                 StringBuilder allMoves = new StringBuilder();
                 for (int move : moves)
                     allMoves.append(toNotation(move)).append(" ");
                 //Log.d(TAG, "printLegalMoves: Legal Moves for " + piece.getPosition() + ": " + allMoves);
-            } else Log.v(TAG, "printLegalMoves: No legal moves for " + piece.getPosition());
+            } else Log.v(TAG, "printLegalMoves: No legal moves for " + entry.getKey());
         }
     }
 
@@ -751,7 +871,7 @@ public class GameLogic implements GameLogicInterface {
      * Computes and updates all legal moves for the player to play
      */
     private void computeLegalMoves() {
-        legalMoves = new HashMap<>();
+        allLegalMoves = new HashMap<>();
         LinkedHashSet<Piece> pieces = boardModel.pieces;
         for (Piece piece : pieces) {
             if (!isPieceToPlay(piece) || piece.isCaptured()) continue;
@@ -763,7 +883,7 @@ public class GameLogic implements GameLogicInterface {
             }
 
             possibleMoves.removeAll(illegalMoves);
-            legalMoves.put(piece, possibleMoves);
+            allLegalMoves.put(piece.getSquare(), possibleMoves);
         }
     }
 
@@ -808,9 +928,8 @@ public class GameLogic implements GameLogicInterface {
         return PGN.RESULT_ONGOING;
     }
 
-    @Override
-    public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
-        return legalMoves;
+    public HashMap<String, HashSet<Integer>> getAllLegalMoves() {
+        return allLegalMoves;
     }
 
     @Override
@@ -860,6 +979,13 @@ public class GameLogic implements GameLogicInterface {
         return gameTerminated;
     }
 
+    public void setBotPlayer(Player botPlayer) {
+        if (botPlayer == null) return;
+        this.botPlayer = botPlayer;
+        singlePlayer = true;
+        updateAll();
+    }
+
     public static String getTAG() {
         return TAG;
     }
@@ -903,8 +1029,7 @@ public class GameLogic implements GameLogicInterface {
             return tempBoardModel;
         }
 
-        @Override
-        public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
+        public HashMap<String, HashSet<Integer>> getAllLegalMoves() {
             return null;
         }
 

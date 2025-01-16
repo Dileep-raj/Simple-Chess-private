@@ -24,14 +24,14 @@ public class SettingsViewModel extends ViewModel implements GameLogicInterface {
     private BoardTheme boardTheme;
     private DataManager dataManager;
     private BoardModel boardModel;
-    private HashMap<Piece, HashSet<Integer>> legalMoves;
+    private HashMap<String, HashSet<Integer>> legalMoves;
 
     public void initializeData(Context context) {
         boardModel = BoardModel.parseFEN("3k4/8/3KQ3/8/8/8/8/8 w - - 0 1", context);
         if (boardModel == null) boardModel = new BoardModel(context, true);
         Piece piece = boardModel.pieceAt(5, 4);
         Log.d("TestFragment", "initializeData: Piece: " + piece);
-        legalMoves = new HashMap<>(Map.of(piece, piece.getPossibleMoves(this)));
+        legalMoves = new HashMap<>(Map.of(piece.getSquare(), piece.getPossibleMoves(this)));
         dataManager = new DataManager(context);
         fullScreen = dataManager.getBoolean(DataManager.FULL_SCREEN);
         cheatMode = dataManager.getBoolean(DataManager.CHEAT_MODE);
@@ -205,7 +205,7 @@ public class SettingsViewModel extends ViewModel implements GameLogicInterface {
     }
 
     @Override
-    public HashMap<Piece, HashSet<Integer>> getLegalMoves() {
+    public HashMap<String, HashSet<Integer>> getAllLegalMoves() {
         return legalMoves;
     }
 

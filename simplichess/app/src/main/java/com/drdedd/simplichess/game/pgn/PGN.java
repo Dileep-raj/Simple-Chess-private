@@ -212,7 +212,7 @@ public class PGN implements Serializable {
         StringBuilder pgn = new StringBuilder();
         int length = data.getSANMoves().size();
         for (int i = 0; i < length; i++) {
-            if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
+            if (i % 2 == 0) pgn.append(i / 2 + 1).append(". ");
             pgn.append(data.getSANMoves().get(i)).append(' ');
         }
         return pgn.toString();
@@ -225,7 +225,7 @@ public class PGN implements Serializable {
         StringBuilder pgn = new StringBuilder();
         int length = data.getSANMoves().size();
         for (int i = 0; i < length; i++) {
-            if (i % 2 == 0) pgn.append(i / 2 + 1).append('.');
+            if (i % 2 == 0) pgn.append(i / 2 + 1).append(". ");
             pgn.append(data.getSANMoves().get(i));
             if (data.getAnnotationMap().containsKey(i))
                 pgn.append(data.getAnnotationMap().get(i).getAnnotation());

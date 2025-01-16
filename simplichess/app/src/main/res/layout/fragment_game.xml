@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/free_serif"
                         android:text="@string/unicode_kw"
-                        android:textColor="@color/primary_700"
+                        android:textColor="@color/black"
                         android:textSize="20sp" />
 
                     <TextView
@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/free_serif"
                         android:text="@string/unicode_kb"
-                        android:textColor="@color/primary_700"
+                        android:textColor="@color/black"
                         android:textSize="20sp" />
 
                     <TextView
@@ -239,7 +239,7 @@
         <ImageButton
             android:id="@+id/btn_undo_move"
             style="@style/ImageButton40dp"
-            android:contentDescription="@string/undo"
+            android:contentDescription="@string/undoLastMove"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_draw"
             app:layout_constraintStart_toEndOf="@+id/btn_reset"

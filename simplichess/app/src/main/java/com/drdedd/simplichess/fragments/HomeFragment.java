@@ -20,12 +20,13 @@ import com.drdedd.simplichess.R;
 import com.drdedd.simplichess.data.DataManager;
 import com.drdedd.simplichess.data.GameStatistics;
 import com.drdedd.simplichess.databinding.FragmentHomeBinding;
+import com.drdedd.simplichess.dialogs.SelectGameModeDialog;
+import com.drdedd.simplichess.misc.Constants;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
-
     private static final String TAG = "HomeFragment";
     private NavController navController;
     private static GameStatistics gameStatistics;
@@ -72,9 +73,24 @@ public class HomeFragment extends Fragment {
 
     public void startGame(boolean newGame) {
         Bundle args = new Bundle();
-        args.putBoolean(GameFragment.NEW_GAME_KEY, newGame);
-        navController.navigate(R.id.nav_game, args);
-        Log.d(TAG, "startGame: Game started");
+        args.putBoolean(Constants.NEW_GAME_KEY, newGame);
+        if (newGame) {
+            SelectGameModeDialog dialog = new SelectGameModeDialog(requireContext());
+            dialog.setOnDismissListener(d -> {
+                if (dialog.isStart()) {
+                    args.putBoolean(Constants.SINGLE_PLAYER, dialog.isSinglePlayer());
+                    if (dialog.isSinglePlayer())
+                        args.putBoolean(Constants.PLAY_AS_WHITE, dialog.isPlayAsWhite());
+                    navController.navigate(R.id.nav_game, args);
+                    Log.d(TAG, "startGame: Game started");
+                }
+            });
+            dialog.show();
+        } else {
+            args.putBoolean(Constants.PLAY_AS_WHITE, true);
+            navController.navigate(R.id.nav_game, args);
+            Log.d(TAG, "startGame: Game started");
+        }
     }
 
     public void exit_app() {
